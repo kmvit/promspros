@@ -1,0 +1,103 @@
+{%extends 'base.html'%}
+{% load thumbnail %}
+{%block description%}Компании{%endblock%}
+{%block pagetitle%}Компании{%endblock%}
+{%block content%}
+{% load endless %}
+
+            <div class="breadcrumbs">
+                <div itemscope="" itemtype="http://schema.org/BreadcrumbList">
+                    <span itemprop="name"><a href="/">Главная</a></span>
+                    <span>&frasl;</span>
+                    <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
+                        <a itemprop="item" href="/companies" class="active">Компании </a>
+                    </span>
+                </div>
+            </div>
+            <div class="content">
+                <div class="content-inner">
+                    <div class="content-inner-top clearfix">
+                        <h1 class="section-heading">Компании</h1>
+                    </div>
+                    <div class="orders-mini-wrapper">
+                        {% paginate company_list %}
+                        {%for item in company_list%}
+                        <div class="orders-mini clearfix">
+                            <div itemscope itemtype="http://schema.org/Offer">
+                            <div class="orders-mini-img-block">
+                                {% if user.is_authenticated %}
+                                
+                                {% thumbnail item.user.userprofile.avatar "100x100" crop="center" as im %}
+                                <a href="{{ item.id }}" class="button-h-opacity">
+                                <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
+                                </a>
+                                {% endthumbnail %}
+                              
+                                {% else %}
+                                <img itemprop="image" src="/media/images/company/company_no-reg.jpg" alt="{{item.title}}">
+                                {% endif %}
+                            </div>
+                            <div class="orders-mini-content">
+                                <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
+                                    <a href="/companies/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+                                </div>
+                                <div class="orders-mini-content-text" itemprop="description">{{item.info|slice:":70"}}</div>
+                                <div class="orders-mini-content-bottom">
+                                    <div class="left">
+                                        {%if item.user.company_set.all%}
+                                        {%for a in item.user.company_set.all%}
+                                        <a href="http://{{a.url}}" itemprop="seller" class="orders-mini-enterprise">{{a.url}}</a>
+                                        {%endfor%}
+                                        {%else%}
+                                        <a href="{%url 'notcompany_detail' item.user.id%}" itemprop="seller" class="orders-mini-enterprise">{{item.user}}</a>
+                                        {%endif%}
+                                        <span class="orders-mini-date">{{item.born}}</span>
+                                    </div>
+                                    <div class="orders-mini-content-top-info clearfix right">
+                                        <form action="/search-city/" class="orders-mini-content-geo" method="get">
+                                            <input type="hidden" name="city"  itemprop="eligibleRegion" value="{{item.city}}">
+                                            <input type="hidden" name="modeltype" value="company">
+                                            <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}"></p>
+                                        </form>
+                                        {%if user.is_authenticated%}
+                                        {%if user == item.user%}
+                                        <p>Свое</p>
+                                        {%else%}
+                                        <a href="#"
+                                        class="add-to-favorites"
+                                        data-id="{{ item.id }}"
+                                        {% if item in user.userprofile.liked_company.all %}
+                                        data-in_favorites="true"
+                                        {% else %}
+                                        data-in_favorites="false"
+                                        {% endif %}
+                                        data-type="company"
+                                        >
+                                        {% if item in user.userprofile.liked_company.all %}
+                                        <i class="orders-mini-content-favourite orders-mini-content-favourite-active" aria-hidden="true"></i>
+                                        {% else %}
+                                        <i class="orders-mini-content-favourite" aria-hidden="true"></i>
+                                        {% endif %}
+                                        </a>
+                                        {%endif%}
+                                        {%endif%}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        {%endfor%}
+                       
+                    </div>
+                    <div class="pager">
+                        <div class="table-wrapper">
+                            <div class="table-wrapper-inner">
+                                {% show_pages %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+      
+
+{%endblock%}

@@ -1,0 +1,503 @@
+<!DOCTYPE html><!--[if IE 7]>
+<html class = "ie7">
+   <![endif]--><!--[if IE 8]>
+   <html class = "ie8">
+      <![endif]--><!--[if IE 9]>
+      <html class = "ie9">
+         <![endif]--><!--[if !(IE 7) | !(IE 8) | !(IE 9) ]><!-->
+         <html>
+            <!--<![endif]-->
+            <head>
+               <title>{%block pagetitle%}Промспрос | Портал производственных решений{%endblock%}</title>
+               {% load static %}
+               {%block meta%}
+               <meta name="google-site-verification" content="3k5eXC39_vVPx0EZIxn1Haff06zucB6yt_GeFATTYEQ" />
+               <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+               <meta name="description" content="{%block description%}Промспрос | Портал производственных решений{%endblock%}">
+               <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}"/>
+               <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+               <link rel="stylesheet" type="text/css" href="{% static 'css/msc-style.css' %}" />
+               <link href="https://fonts.googleapis.com/css?family=Cuprum" rel="stylesheet">
+               <link rel="stylesheet" type="text/css" href="{% static 'css/noJS.css' %}" />
+               <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+               <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+               <!-- JS file -->
+               <script src="{% static 'EasyAutocomplete-1.3.5/jquery.easy-autocomplete.min.js' %}"></script> 
+               <!-- CSS file -->
+               <link rel="stylesheet" href="{% static 'EasyAutocomplete-1.3.5/easy-autocomplete.min.css' %}">
+               <!-- Additional CSS Themes file - not required-->
+               <link rel="stylesheet" href="{% static 'EasyAutocomplete-1.3.5/easy-autocomplete.themes.min.css' %}">
+               <!-- Add fancyBox -->
+               <link rel="stylesheet" href="{% static 'css/jquery.fancybox.css?v=2.1.5'%}" type="text/css" media="screen" />
+               <script type="text/javascript" src="{% static 'js/jquery.fancybox.pack.js?v=2.1.5'%}"></script>
+               <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+               <script type="text/javascript" src="{% static 'js/modernizr.custom.79639.js' %}"></script> 
+               <script type="text/javascript" src="{% static 'js/cookie/jquery.cookie.js' %}"></script>
+               <script type="text/javascript" src="{% static 'js/script.js' %}" ></script>
+               <script type="text/javascript" src="{% static 'js/msc-script.js' %}" ></script>
+               <script type="text/javascript" src="{% static 'js/jquery.formset.js' %}"></script>
+               <script type="text/javascript" src="{% static 'js/scrollup.js' %}"></script>
+               <script type="text/javascript" src="{% static 'js/ajax-script.js' %}" ></script>
+               <script src="{% static 'js/jquery.placeholder.min.js' %}"></script>
+               <script src="{% static 'js/cusel-min-2.5.js' %}"></script>
+               <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+               <script src="{% static 'js/my.js' %}"></script>
+               <!--[if IE]><script src="js/html5.js"></script>
+               <link rel="stylesheet" type="text/css" href="css/ie.css">
+               <![endif]-->
+               <script>  
+                  $(function(){
+                  var options = {
+                  url: "{% static 'russia.locality.json'%}",
+                  
+                  getValue: "name",
+                  
+                  list: {
+                  match: {
+                  enabled: true
+                  }
+                  }
+                  };
+                  
+                  $("#id_city").easyAutocomplete(options);
+                  });           
+               </script> 
+               <script>  
+                  $(function(){
+                  var options = {
+                  url: "{% static 'russia.locality.json'%}",
+                  
+                  getValue: "name",
+                  
+                  list: {
+                  match: {
+                  enabled: true
+                  }
+                  }
+                  };
+                  
+                  $("#automplete-2").easyAutocomplete(options);
+                  });           
+               </script>     
+               <script type="text/javascript">
+                  $(function() {
+                      $(".inline.{{ company_form.prefix }}").formset({
+                      prefix: "{{ company_form.prefix }}",
+                      })
+                    
+                  })
+               </script>
+               <script type="text/javascript">
+                  $(document).ready(function() {
+                  	/*
+                  	 *  Simple image gallery. Uses default settings
+                  	 */
+                  
+                  	$('.fancybox').fancybox();
+                  
+                  	/*
+                  	 *  Different effects
+                  	 */
+                  
+                  	// Change title type, overlay closing speed
+                  	$(".fancybox-effects-a").fancybox({
+                  		helpers: {
+                  			title : {
+                  				type : 'outside'
+                  			},
+                  			overlay : {
+                  				speedOut : 0
+                  			}
+                  		}
+                  	});
+                  
+                  	// Disable opening and closing animations, change title type
+                  	$(".fancybox-effects-b").fancybox({
+                  		openEffect  : 'none',
+                  		closeEffect	: 'none',
+                  
+                  		helpers : {
+                  			title : {
+                  				type : 'over'
+                  			}
+                  		}
+                  	});
+                  
+                  	// Set custom style, close if clicked, change title type and overlay color
+                  	$(".fancybox-effects-c").fancybox({
+                  		wrapCSS    : 'fancybox-custom',
+                  		closeClick : true,
+                  
+                  		openEffect : 'none',
+                  
+                  		helpers : {
+                  			title : {
+                  				type : 'inside'
+                  			},
+                  			overlay : {
+                  				css : {
+                  					'background' : 'rgba(238,238,238,0.85)'
+                  				}
+                  			}
+                  		}
+                  	});
+                  
+                  	// Remove padding, set opening and closing animations, close if clicked and disable overlay
+                  	$(".fancybox-effects-d").fancybox({
+                  		padding: 0,
+                  
+                  		openEffect : 'elastic',
+                  		openSpeed  : 150,
+                  
+                  		closeEffect : 'elastic',
+                  		closeSpeed  : 150,
+                  
+                  		closeClick : true,
+                  
+                  		helpers : {
+                  			overlay : null
+                  		}
+                  	});
+                  
+                  	/*
+                  	 *  Button helper. Disable animations, hide close button, change title type and content
+                  	 */
+                  
+                  	$('.fancybox-buttons').fancybox({
+                  		openEffect  : 'none',
+                  		closeEffect : 'none',
+                  
+                  		prevEffect : 'none',
+                  		nextEffect : 'none',
+                  
+                  		closeBtn  : false,
+                  
+                  		helpers : {
+                  			title : {
+                  				type : 'inside'
+                  			},
+                  			buttons	: {}
+                  		},
+                  
+                  		afterLoad : function() {
+                  			this.title = 'Image ' + (this.index + 1) + ' of ' + this.group.length + (this.title ? ' - ' + this.title : '');
+                  		}
+                  	});
+                  
+                  
+                  	/*
+                  	 *  Thumbnail helper. Disable animations, hide close button, arrows and slide to next gallery item if clicked
+                  	 */
+                  
+                  	$('.fancybox-thumbs').fancybox({
+                  		prevEffect : 'none',
+                  		nextEffect : 'none',
+                  
+                  		closeBtn  : false,
+                  		arrows    : false,
+                  		nextClick : true,
+                  
+                  		helpers : {
+                  			thumbs : {
+                  				width  : 50,
+                  				height : 50
+                  			}
+                  		}
+                  	});
+                  
+                  	/*
+                  	 *  Media helper. Group items, disable animations, hide arrows, enable media and button helpers.
+                  	*/
+                  	$('.fancybox-media')
+                  		.attr('rel', 'media-gallery')
+                  		.fancybox({
+                  			openEffect : 'none',
+                  			closeEffect : 'none',
+                  			prevEffect : 'none',
+                  			nextEffect : 'none',
+                  
+                  			arrows : false,
+                  			helpers : {
+                  				media : {},
+                  				buttons : {}
+                  			}
+                  		});
+                  
+                  
+                  });
+               </script> 
+               <script>
+                  $(document).ready(function(){
+                  
+                  var $menu = $("#menu");
+                  
+                  $(window).scroll(function(){
+                  if ( $(this).scrollTop() > 73 && $menu.hasClass("default") ){
+                   $menu.removeClass("default").addClass("fixed");
+                  } else if($(this).scrollTop() <= 73 && $menu.hasClass("fixed")) {
+                   $menu.removeClass("fixed").addClass("default");
+                  }
+                  });//scroll
+                  });
+               </script>
+               <script>
+                  function DropDown(el) {
+                  this.dd = el;
+                  this.placeholder = this.dd.children('span');
+                  this.opts = this.dd.find('ul.dropdown > li');
+                  this.val = '';
+                  this.index = -1;
+                  this.initEvents();
+                  }
+                  DropDown.prototype = {
+                  initEvents : function() {
+                  var obj = this;
+                  
+                  obj.dd.on('click', function(event){
+                  $(this).toggleClass('active');
+                  return false;
+                  });
+                  
+                  obj.opts.on('click',function(){
+                  var opt = $(this);
+                  obj.val = opt.text();
+                  obj.index = opt.index();
+                  obj.placeholder.text('Gender: ' + obj.val);
+                  });
+                  },
+                  getValue : function() {
+                  return this.val;
+                  },
+                  getIndex : function() {
+                  return this.index;
+                  }
+                  }
+                   
+               </script>
+               <script>
+                  window.onload = function(){
+                      document.getElementById('close').onclick = function(){
+                          this.parentNode.parentNode.parentNode
+                          .removeChild(this.parentNode.parentNode);
+                          return false;
+                      };
+                  };
+               </script>
+               <script type="text/javascript">
+                  function openbox(id){
+                      display = document.getElementById(id).style.display;
+                  
+                      if(display=='none'){
+                         document.getElementById(id).style.display='block';
+                      }else{
+                         document.getElementById(id).style.display='none';
+                      }
+                  }
+               </script>
+               <style>
+                  #preview-photo ul {margin: 20px 0 0 0; padding: 0; width: 600px; overflow: hidden}
+                  #preview-photo li {
+                  list-style: none;
+                  display:inline-block;
+                  margin-right: 10px;
+                  margin-bottom: 10px;
+                  width: 150px;
+                  }
+                  #preview-photo span.delete {
+                  cursor: pointer;
+                  }
+               </style>
+               {%endblock%} 
+            </head>
+            <body>
+               <header class="main-section-2">
+                  <div class="header-inner main-section clearfix">
+                     <a href="/" class="logo"></a>
+                     {% if user.is_authenticated %}
+                     <div class="login-block">
+                        {% load company_tags%}
+                        <a href="/profile/{{user.userprofile.id}}#tabs-3" class="favourite-link">Избранное</a>
+                        <div class="user-login">
+                           <a href="#" class="user-login-link">{{user.email}}</a>
+                           <div class="user-login-hidden">
+                              <div class="user-login-hidden-inner">
+                                 <ul class="user-login-hidden-list">
+                                    <li><a href="/profile/{{user.id}}">Профиль</a></li>
+                                    <li><a href="/accounts/logout/">Выход</a></li>
+                                 </ul>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     {%else%}
+                     <a href="/accounts/login/?next={{request.path}}" class="entry-button">войти</a>
+                     {%endif%}
+                  </div>
+                  <div class="header-nav-wrapper main-section-2">
+                     <nav class="header-nav main-section">
+                        <ul>
+                           <li>
+                              {% url 'home' as home_url %}
+                              <a href="{% url 'home' %}" {%if home_url == request.path %}class="header-nav-active"{%endif%}>Главная</a>
+                           </li>
+                           <li>
+                              <a href="/orders" {%if 'orders' in request.path %}class="header-nav-active"{%endif%}>Заказы</a>
+                           </li>
+                           <li>
+                              <a href="/sentences" {%if 'sentences' in request.path %}class="header-nav-active"{%endif%}>Предложения</a>
+                           </li>
+                           <li>
+                              <a href="/companies" {%if 'companies' in request.path %}class="header-nav-active"{%endif%}>Компании</a>
+                           </li>
+                           <li>
+                              <a href="/contact" {%if 'contact' in request.path %}class="header-nav-active"{%endif%}>Информация</a>
+                           </li>
+                        </ul>
+                     </nav>
+                  </div>
+               </header>
+               {%if user.is_authenticated%}
+               {%if user.company_set.count == 1%}
+               {%else%}
+               <div id="overlay">
+                  <a class="fragment" href="/profile/{{user.userprofile.id}}">
+                     <div>
+                        <span id='close'>x</span>
+                        <p class="text">
+                           Введите информацию о компании, чтобы участвовать в рез-тах поиска.
+                        </p>
+                     </div>
+                  </a>
+               </div>
+               {%endif%}
+               {%endif%}
+               <section class="search-block main-section">
+                  <div class="search-form-wrapper">
+                     {%block search%}
+                     <form method="get" action="/search/">
+                        <table class="search-form-table">
+                           <tr>
+                              <td>
+                                 <input type="text" name="q" class="search-input" placeholder="Введите ключевые слова">
+                              </td>
+                              <td>
+                                 <select id="s12" name="s" class="cusel" >
+                                    <option value="order">Заказы</option>
+                                    <option value="sentence">Предложения </option>
+                                    <option value="company">Компания </option>
+                                 </select>
+                              </td>
+                              <td>
+                                 <input type="text" class="search-input" name="city" id="automplete-2" placeholder="Введите город">
+                              </td>
+                              <td>
+                                 <input type="submit" class="search-button button-h-opacity" value="НАЙТИ">
+                              </td>
+                           </tr>
+                        </table>
+                     </form>
+                     {%endblock%}
+                  </div>
+               </section>
+               {%block bread%}
+               {%endblock%}
+               <section class="main-content main-section-2">
+                  <div class="main-content-inner main-section clearfix">
+                     {%block content%}
+                     {%endblock%}
+                     {%block aside%}
+                     <aside class="sidebar">
+                        {%if user.is_authenticated%}
+                        <a href="/order/add" class="order-button">заказ</a>
+                        <a href="/sentence/add" class="order-button">предложение</a>
+                        {%else%}
+                        <a href="/accounts/login" class="order-button">заказ</a>
+                        <a href="/accounts/login" class="order-button">предложение</a>
+                        {%endif%}
+                        <div class="sidebar-inner">
+                           {%block info%}
+                           <div class="sidebar-heading">Информация</div>
+                           <div class="sidebar-text">На нашем сайте вы можете размещать заказы и предложения.</div>
+                           {%endblock%}
+                        </div>
+                        <div class="sidebar-inner">
+                           {%block last-company%}
+                           <div class="sidebar-heading">Новые компании</div>
+                           <ul class="sidebar-list link-h-underline-parent">
+                              {% load company_tags%}
+                              {% show_company %}
+                           </ul>
+                           <div class="orders-mini-wrapper-bottom">
+                              <a href="/companies">Все компании &gt;</a>
+                           </div>
+                           {%endblock%}
+                        </div>
+                     </aside>
+                     {%endblock%}
+                  </div>
+               </section>
+               <footer class="main-section-2">
+                  <div class="footer-inner main-section">
+                     <div class="footer-top clearfix">
+                        <a href="#" class="logo"></a>
+                        <div class="footer-social">
+                           <a href="#"></a>
+                           <a href="#"></a>
+                           <a href="#"></a>
+                           <a href="#"></a>
+                        </div>
+                        <div class="footer-info">
+                           <a href="/page/confir">Правила пользования </a>
+                        </div>
+                     </div>
+                     <div class="footer-bottom clearfix">
+                        <div class="footer-copy">  &copy; promspros.ru, 2017</div>
+                        <div class="footer-info">
+                           служба поддержки: <a href="mailto:info@promspros.ru">info@promspros.ru</a>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- Yandex.Metrika counter -->
+                  <script type="text/javascript">
+                     (function (d, w, c) {
+                         (w[c] = w[c] || []).push(function() {
+                             try {
+                                 w.yaCounter44320978 = new Ya.Metrika({
+                                     id:44320978,
+                                     clickmap:true,
+                                     trackLinks:true,
+                                     accurateTrackBounce:true
+                                 });
+                             } catch(e) { }
+                         });
+                     
+                         var n = d.getElementsByTagName("script")[0],
+                             s = d.createElement("script"),
+                             f = function () { n.parentNode.insertBefore(s, n); };
+                         s.type = "text/javascript";
+                         s.async = true;
+                         s.src = "https://mc.yandex.ru/metrika/watch.js";
+                     
+                         if (w.opera == "[object Opera]") {
+                             d.addEventListener("DOMContentLoaded", f, false);
+                         } else { f(); }
+                     })(document, window, "yandex_metrika_callbacks");
+                  </script>
+                  <noscript>
+                     <div><img src="https://mc.yandex.ru/watch/44320978" style="position:absolute; left:-9999px;" alt="" /></div>
+                  </noscript>
+                  <!-- /Yandex.Metrika counter -->
+                  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-97670419-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+               </footer>
+               <div class=""></div>
+            </body>
+         </html>

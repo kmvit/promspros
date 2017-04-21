@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+{%block content%}
+<div class="reg">
+<form class="login-form clearfix" method="post" action="">
+   {% csrf_token %}
+   {{ form.as_p }}
+   
+   <input type="submit" value="Принять" />
+</form>
+<p class="reg-act">Регистрируясь, я подтверждаю своё согласие с условиями <a href="/pages/soglashenie">пользовательского соглашения</a></p>
+<!-- .login-form -->
+<div class="post-footer">
+   <p class="reg-act">Уже зарегистрированы?<a href="/accounts/login/"> Войти</a></p>
+</div>
+
+</div>
+{%endblock%}

@@ -1,0 +1,62 @@
+{%extends 'base.html'%}
+{%block description%}Главная страница{%endblock%}
+{%block pagetitle%}Информация{%endblock%}
+
+{%block content%}
+<div class="breadcrumbs">
+    <a href="/">Главная</a>
+    <span>&frasl;</span>
+    <a href="">Информация</a>
+    
+</div>
+<div class="content">
+    
+    <div class="content-inner">
+        <div class="content-inner-top clearfix">
+                        <h1 class="section-heading">Информация</h1>
+                    </div>
+{{page.body|safe}}
+
+<form enctype="multipart/form-data" action="/contact/" method="post">{% csrf_token %}
+<div class="main-form-wrapper">
+<table class="main-form-table main-form-table-2">
+    <tbody>
+    
+	<tr>
+	  <td><label for="id_subject">Тема:</label></td>
+	  
+	  <td>{{ form.subject }} {{ form.subject.errors }} {{ form.non_field_errors }}</td>
+	</tr>
+	<tr>
+	  <td><label for="id_sender">E-mail:</label></td>
+	 
+	  <td>{{ form.sender }}  {{ form.sender.errors }}</td>
+	</tr>
+	<tr>
+	  <td><label for="id_message">Сообщение:</label></td>
+	
+	 <td> {{ form.message }}  {{ form.message.errors }}</td>
+	</tr>
+
+
+ </tbody>
+</table>
+</div>
+<div class="main-form-wrapper">
+                        <table class="main-form-table main-form-table-2">
+                            <tbody>
+                            <tr>
+                                <td>
+                                </td>
+                                <td>
+                                    <input type="submit" class="main-entry-button button-h-opacity" value="Отправить">
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </div>
+</form>
+
+
+</div>
+</div>
+{%endblock%}

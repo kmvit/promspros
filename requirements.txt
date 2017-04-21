@@ -1,0 +1,13 @@
+Django==1.8.2
+Pillow
+django-filter==0.11.0
+django-filters==0.2.1
+django-multiupload==0.5.1
+django-registration==2.0.3
+django-registration-redux==1.2
+django-tinymce==2.0.6
+django-userena==1.4.1
+djangoajax==2.3.6
+easy-thumbnails==2.2.1
+simplejson==2.1.1
+sorl-thumbnail==12.4a1
