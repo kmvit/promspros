@@ -113,6 +113,8 @@ class Home(ListView):
         context['order_list'] = Order.objects.filter(status=1)
         context['sentence_list'] = Sentence.objects.filter(status=1)
         context['company_list'] = Company.objects.all()
+        context['category_list'] = Category.objects.all()
+        context['subcategory_list'] = Subcategory.objects.all()
         return context
 
 
@@ -147,6 +149,8 @@ class OrderCreate(CreateView):
     def get_context_data(self,**kwargs):
         context = super(OrderCreate, self).get_context_data(**kwargs)
         context['user_profile'] = UserProfile.objects.filter(id=self.request.user.id)
+        context['category_list'] = Category.objects.all()
+        context['subcategory_list'] = Subcategory.objects.all()
         return context
     
     def get_absolute_url(self):
@@ -156,6 +160,7 @@ class OrderCreate(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.email = self.request.user.email
+        form.instance.category = get_object_or_404(Subcategory, title=self.request.POST['category'])
         if 'submit-ch' in self.request.POST:
             form.instance.status = '3'
         self.object = form.save()
@@ -251,6 +256,8 @@ class SentenceCreate(CreateView):
     def get_context_data(self,**kwargs):
         context = super(SentenceCreate, self).get_context_data(**kwargs)
         context['user_profile'] = UserProfile.objects.filter(id=self.request.user.id)
+        context['category_list'] = Category.objects.all()
+        context['subcategory_list'] = Subcategory.objects.all()
         return context
     
     def get_absolute_url(self):
@@ -259,6 +266,7 @@ class SentenceCreate(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.email = self.request.user.email
+        form.instance.category = get_object_or_404(Subcategory, title=self.request.POST['category'])
         if 'submit-ch' in self.request.POST:
             form.instance.status = '3'
         self.object = form.save()
@@ -505,6 +513,28 @@ def handle_uploaded_file(f):
     with open('some/file/name.txt', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
+            
+
+class CategoryView(DetailView):
+    model = Category
+    template_name = 'category_list.html'
+    def get_context_data(self, **kwargs):
+        context = super(CategoryView, self).get_context_data(**kwargs)
+        context['subcategory_list'] = Subcategory.objects.filter(parent_id=self.kwargs['pk'])
+        context['order_list'] = Order.objects.filter(category__parent_id=self.kwargs['pk'])
+        context['sentence_list'] = Sentence.objects.filter(category__parent_id=self.kwargs['pk'])
+        return context
+
+            
+class SubcategoryDetail(DetailView):
+    model = Subcategory
+    template_name = 'subcategory.html'
+    def get_context_data(self, **kwargs):
+        context = super(SubcategoryDetail, self).get_context_data(**kwargs)
+        context['order_list'] = Order.objects.filter(category_id=self.kwargs['pk'])
+        context['sentence_list'] = Sentence.objects.filter(category_id=self.kwargs['pk'])
+        return context
+
             
 def contactView(request):
 	if request.method == 'POST':

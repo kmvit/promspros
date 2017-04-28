@@ -19,9 +19,30 @@ class Page(models.Model):
 
     def __unicode__(self):
         return  u'%s' % self.title
+        
+        
+class Category(models.Model):
+    title = models.CharField(max_length=300, verbose_name=u'Категории')
+    class Meta:
+        verbose_name = u'Категории'
+        verbose_name_plural = u'Категория'
+
+    def __unicode__(self):
+        return u'%s' % self.title
+        
+class Subcategory(models.Model):
+    title = models.CharField(max_length=300, verbose_name=u'Подкатегории')
+    parent = models.ForeignKey(Category, verbose_name=u'Родитель')
+    class Meta:
+        verbose_name = u'Подкатегории'
+        verbose_name_plural = u'Подкатегория'
+
+    def __unicode__(self):
+        return u'%s' % self.title
 
 class Sentence(models.Model):
     title = models.CharField(max_length=200, verbose_name=u'Название')
+    category = models.ForeignKey(Subcategory, verbose_name='Категория')
     born = models.DateField(verbose_name="День создания", default=timezone.now)
     user = models.ForeignKey(User, verbose_name=u'Пользователь')
     email = models.EmailField(verbose_name=u'Почта')
@@ -90,6 +111,7 @@ class SentenceImage(models.Model):
 
 class Order(models.Model):
     title = models.CharField(max_length=200, verbose_name=u'Название')
+    category = models.ForeignKey(Subcategory, verbose_name='Категория')
     born = models.DateField(verbose_name="День создания", default=timezone.now)
     user = models.ForeignKey(User, verbose_name=u'Пользователь')
     email = models.EmailField(verbose_name=u'Почта')

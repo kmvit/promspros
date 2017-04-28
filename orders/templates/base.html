@@ -432,6 +432,17 @@
                            </div>
                            {%endblock%}
                         </div>
+                        
+                           {%block category%}
+                           <div class="sidebar-inner">
+                           <div class="sidebar-heading">Категории</div>
+                           <ul class="sidebar-list link-h-underline-parent">
+                              {% load company_tags%}
+                              {% category_list %}
+                           </ul>
+                            </div>
+                           {%endblock%}
+                       
                      </aside>
                      {%endblock%}
                   </div>

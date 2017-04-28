@@ -1,32 +1,37 @@
 {%extends 'base.html'%}
 {% load thumbnail %}
+{% load endless %}
 {%block description%}Главная страница{%endblock%}
 {%block content%}
+<div class="breadcrumbs">
+   <div itemscope="" itemtype="http://schema.org/BreadcrumbList">
+      <span itemprop="name"><a href="/">Главная</a></span>
+      <span>&frasl;</span>
+      <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/category/{{subcategory.parent.id}}">{{subcategory.parent.title}}</a>
+      </span>
+      <span>&frasl;</span>
+      <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
+      <a itemprop="item" class="active">{{subcategory.title}}</a>
+      </span>
+   </div>
+</div>
 <div class="content">
     <div class="content-inner">
-        <div class="content-inner-top clearfix">
-                        <h1 class="section-heading">Промышленные объявления</h1>
-                    </div>
-        <div class="categories-wrapper">
-                        <ul class="categories-list link-h-underline-parent">
-                            {%for category in category_list%}
-                            <li>
-                                <a href="/category/{{category.id}}" class="orders-mini-content-title">{{category.title}}</a>
-                                <ul class="categories-list-inner">
-                                    {%for subcategory in category.subcategory_set.all%}
-                                    <li><a href="/subcategory/{{subcategory.id}}">{{subcategory.title}}</a><span>{{subcategory.order_set.count|add:subcategory.sentence_set.count}}</span></li>
-                                    {%endfor%}
-                                </ul>
-                            </li>
-                            {%endfor%}
-                        </ul>
-                    </div>
-        
-        <div class="content-inner-top content-inner-top-2 clearfix">
-            <h1 class="section-heading">Новые заказы</h1>
-            <a href="/orders" class="orders-more-link button-h-opacity"></a>
+      <div class="profile-wrapper">
+         <div class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+            <ul class="menu-list ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" role="tablist">
+               <li class="ui-state-default ui-corner-top ui-tabs-tab ui-tab ui-tabs-active ui-state-active" role="tab" tabindex="0" aria-controls="tabs-1" aria-labelledby="ui-id-1" aria-selected="true" aria-expanded="true"><a href="#tabs-1" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1">Заказы</a></li>
+               <li class="ui-state-default ui-corner-top ui-tabs-tab ui-tab" role="tab" tabindex="-1" aria-controls="tabs-2" aria-labelledby="ui-id-2" aria-selected="false" aria-expanded="false"><a href="#tabs-2" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-2">Предложения</a></li>
+            </ul>
+            <div id="tabs-1" aria-labelledby="ui-id-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" aria-hidden="false" style="display: block;">
+               <div class="tabs-inner">
+                  <div class="content-inner-top content-inner-top-2 clearfix">
+            
+           
         </div>
         <div class="orders-mini-wrapper">
+            {% paginate order_list %}
             {%for item in order_list|slice:":6"%}
             <div itemscope itemtype="http://schema.org/Offer">
             <div class="orders-mini clearfix">
@@ -94,9 +99,14 @@
             </div>
             </div>
             {%endfor%}
-            <div class="orders-mini-wrapper-bottom">
-                <a href="/orders">Смотреть все &gt;</a>
-            </div>
+             <div class="pager">
+                        <div class="table-wrapper">
+                            <div class="table-wrapper-inner">
+                                
+                                 {% show_pages %}
+                            </div>
+                        </div>
+                    </div>
         </div>
         <div id="favourite_confirm" class="favourite-confirm">
             <form>
@@ -120,13 +130,16 @@
                 </div>
             </form>
         </div>
-    </div>
-    <div class="content-inner">
-        <div class="content-inner-top content-inner-top-2 clearfix">
-            <h2 class="section-heading">Новые предложения</h2>
-            <a href="/sentences" class="orders-more-link button-h-opacity"></a>
+               </div>
+            </div>
+            <div id="tabs-2" aria-labelledby="ui-id-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" aria-hidden="true" style="display: none;">
+               <div class="tabs-inner">
+                  <div class="content-inner-top content-inner-top-2 clearfix">
+            
+           
         </div>
         <div class="orders-mini-wrapper">
+            {% paginate sentence_list %}
             {%for item in sentence_list|slice:":6"%}
             <div itemscope itemtype="http://schema.org/Offer">
             <div class="orders-mini clearfix">
@@ -193,13 +206,20 @@
             </div>
             </div>
             {%endfor%}
-            <div class="orders-mini-wrapper-bottom">
-                <a href="/sentences">Смотреть все &gt;</a>
-            </div>
+            <div class="pager">
+                        <div class="table-wrapper">
+                            <div class="table-wrapper-inner">
+                                
+                                 {% show_pages %}
+                            </div>
+                        </div>
+                    </div>
         </div>
-    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+  
 </div>
-{%block category%}
-
-{%endblock%}
 {%endblock%}

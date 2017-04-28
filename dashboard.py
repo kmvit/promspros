@@ -33,6 +33,8 @@ class CustomIndexDashboard(Dashboard):
                         'orders.models.Sentence',
                         'orders.models.Company',
                         'orders.models.City',
+                        'orders.models.Category',
+                        'orders.models.Subcategory',
                     ),
                 )
             )

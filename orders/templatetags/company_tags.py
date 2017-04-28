@@ -16,3 +16,10 @@ def all_favorite(context):
     all_favorites = Order.objects.all()
     context_dict = {'all_favorites':all_favorites,}
     return context_dict
+    
+@register.inclusion_tag('category_tags.html', takes_context=True)
+def category_list(context):
+    request = context['request']
+    category_list = Category.objects.all()
+    context_dict = {'category_list':category_list,}
+    return context_dict

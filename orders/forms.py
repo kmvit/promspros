@@ -19,10 +19,11 @@ class ContactForm(forms.Form):
 	
 
 class AddOrderForm(forms.ModelForm):
+    
     class Meta:
         model = Order
         fields = '__all__'
-        exclude = ['user','status','email','born']
+        exclude = ['user','status','email','born','category']
         widgets = {
             'body': TinyMCE(attrs={'cols': 80, 'rows': 20}),
         }
