@@ -183,8 +183,6 @@ class Company(models.Model):
     ur_adress = models.CharField(max_length=300, verbose_name=u'Юридиеский адрес')
     pochta_adress = models.CharField(max_length=300, verbose_name=u'Почтовый адрес')
     inn = models.CharField(max_length=12, verbose_name=u'ИНН', validators=[alphanumeric])
-    bik = models.CharField(max_length=9, verbose_name=u'БИК', validators=[alphanumeric])
-    bank = models.CharField(max_length=200, verbose_name=u'Наименование банка')
 
     class Meta:
         verbose_name = u'Копания'

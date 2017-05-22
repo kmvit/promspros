@@ -1,7 +1,7 @@
 {%extends 'base.html'%}
 {% load thumbnail %}
 {% load endless %}
-{%block description%}Главная страница{%endblock%}
+{%block description%}{{subcategory}} от производителя купить не дорого{%endblock%}
 {%block content%}
 <div class="breadcrumbs">
    <div itemscope="" itemtype="http://schema.org/BreadcrumbList">
@@ -12,7 +12,7 @@
       </span>
       <span>&frasl;</span>
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
-      <a itemprop="item" class="active">{{subcategory.title}}</a>
+      <a href="/subcategory/{{subcategory.id}}" itemprop="item" class="active">{{subcategory.title}}</a>
       </span>
    </div>
 </div>

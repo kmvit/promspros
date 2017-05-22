@@ -25,17 +25,16 @@ DEBUG = False
 TEMPLATE_DEBUG = True
 THUMBNAIL_FORCE_OVERWRITE = True
 
+CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
 
 ALLOWED_HOSTS = ['*']
-
-EMAIL_HOST = 'smtp.jino.ru'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'registry@promspros.ru'
-EMAIL_HOST_PASSWORD = 'reg-meg'
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'registry@promspros.ru'
-SERVER_EMAIL = 'mail.ymalinovsky.myjino.ru'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 ADMINS = (
     ('Andrey', 'justscoundrel@yandex.ru'),
@@ -85,12 +84,13 @@ LOGIN_URL = '/accounts/login/'  # The page users are directed to if they are not
 MIDDLEWARE_CLASSES = (
     'django_ajax.middleware.AJAXMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+
 
 )
 
@@ -177,3 +177,7 @@ TINYMCE_DEFAULT_CONFIG = {
     
 }
 
+try:
+    from .settings_local import *
+except ImportError:
+    raise Exception("Please copy settings_local.py to settings_local.py and modify it accordinly to your installation")

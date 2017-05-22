@@ -1,5 +1,5 @@
 {%extends 'base.html'%}
-{%block description%}Страница заказа {{order.title}}{%endblock%}
+{%block description%}{{order.body|slice:":160"}}{%endblock%}
 {%block pagetitle%}{{order.title}}{%endblock%}
 {% load thumbnail %}
 {% load endless %}
@@ -9,9 +9,9 @@
       <span itemprop="name"><a href="/">Главная</a></span>
       <span>&frasl;</span>
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
-         <a itemprop="item" href="/orders" class="active">Заказы </a>
+         <a itemprop="item" href="/orders">Заказы </a>
       <span>&frasl;</span>
-        <a itemprop="item" href="/{{order.id}}" class="active">{{order.title}}</a>
+        <a itemprop="item" href="/order/{{order.id}}" class="active">{{order.title}}</a>
       </span>
    </div>
 </div>

@@ -1,5 +1,5 @@
 {%extends 'base.html'%}
-{%block description%}{{company.title}}{%endblock%}
+{%block description%}{{company.info|slice:":160"}}{%endblock%}
 {%block pagetitle%}{{company.title}}{%endblock%}
 {% load thumbnail %}
 {%block content%}
@@ -9,9 +9,9 @@
       <span itemprop="name"><a href="/">Главная</a></span>
       <span>&frasl;</span>
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
-         <a itemprop="item" href="/companies" class="active">Компании</a>
+         <a itemprop="item" href="/companies">Компании</a>
       <span>&frasl;</span>
-        <a itemprop="item" href="/{{company.id}}" class="active">{{company.title}}</a>
+        <a itemprop="item" href="/companies/{{company.id}}" class="active">{{company.title}}</a>
       </span>
    </div>
 </div>
@@ -46,7 +46,7 @@
                <tr>
                   <td>
                      {%if company.user.userprofile.avatar%}
-                     <img src="{{company.user.userprofile.avatar.url}}" width="80"  alt="{{company.title}}">
+                     <img src="{{company.user.userprofile.avatar.url}}" width="100%"  alt="{{company.title}}">
                      {%else%}
                      <p>Нет лого</p>
                      {%endif%}
@@ -125,7 +125,7 @@
                   
                      
                            {% thumbnail file.file_up "150" crop="center" as im %}
-                           <a href="{{ im.url }}" class="button-h-opacity modalbox" rel="gal-1">
+                           <a href="{{ file.file_up.url }}" class="button-h-opacity modalbox" rel="gal-1">
           
                              
                            <img src="{{ im.url }}" alt="{{company.title}}">
@@ -167,7 +167,7 @@
                            {% endthumbnail %}
                            {%endfor%}
                            {% else %}
-                           <img src="/media/images/company/company_no-reg.jpg">
+                           <img src="/media/images/company/company_no-reg.jpg" alt="{{item.title}}">
                            {% endif %}
                         </div>
                         <div class="orders-mini-content">
@@ -254,7 +254,7 @@
                            {% endthumbnail %}
                            {%endfor%}
                            {% else %}
-                           <img src="/media/images/company/company_no-reg.jpg">
+                           <img src="/media/images/company/company_no-reg.jpg" alt="{{item.title}}">
                            {% endif %}
                         </div>
                         <div class="orders-mini-content">

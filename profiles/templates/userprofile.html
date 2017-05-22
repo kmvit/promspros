@@ -712,6 +712,14 @@
                 <div class="sidebar-inner">
                     <div class="sidebar-heading">Личный кабинет</div>
                     <div class="profile-sidebar-text">
+                        <div class="profile-sidebar-text-top">Аватар:</div>
+                          {% thumbnail profile.avatar "200" as im %}
+               
+                            <img src="{{ im.url }}" alt="{{profile.name}}">
+               
+                          {% endthumbnail %}
+                    </div>
+                    <div class="profile-sidebar-text">
                         <div class="profile-sidebar-text-top">ФИО:</div>
                         <p>{{profile.name}}</p>
                     </div>

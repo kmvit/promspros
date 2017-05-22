@@ -491,7 +491,7 @@ class SearchCityList(ListView):
             context['search_list_count'] = Order.objects.filter(city=self.request.GET['city'], status=1).count()
         elif self.request.GET['city'] and object_model_name == 'company':
             context['search_list'] = Company.objects.filter(city=self.request.GET['city'])
-            context['search_list_count'] = Company.objects.filter(city=self.request.GET['city'], status=1).count()
+            context['search_list_count'] = Company.objects.filter(city=self.request.GET['city']).count()
         else:
             context['search_list'] = Sentence.objects.filter(city=self.request.GET['city'], status=1)
             context['search_list_count'] = Sentence.objects.filter(city=self.request.GET['city'], status=1).count()

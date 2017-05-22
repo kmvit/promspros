@@ -18,6 +18,11 @@ class EditProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['avatar','name','phone']
+        widgets = {
+            'phone': forms.TextInput(attrs={'placeholder': 'Например: +79241112223'}),
+            'description': forms.Textarea(
+                attrs={'placeholder': 'Enter description here'}),
+        }
     def __init__(self, *args, **kwargs):
         super(EditProfileForm, self).__init__(*args, **kwargs)
         for myField in self.fields:

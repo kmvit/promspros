@@ -25,17 +25,14 @@
                         <div class="orders-mini clearfix">
                             <div itemscope itemtype="http://schema.org/Offer">
                             <div class="orders-mini-img-block">
-                                {% if user.is_authenticated %}
                                 
-                                {% thumbnail item.user.userprofile.avatar "100x100" crop="center" as im %}
+                                
+                                {% thumbnail item.user.userprofile.avatar "100x100" as im %}
                                 <a href="{{ item.id }}" class="button-h-opacity">
                                 <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                                 </a>
                                 {% endthumbnail %}
                               
-                                {% else %}
-                                <img itemprop="image" src="/media/images/company/company_no-reg.jpg" alt="{{item.title}}">
-                                {% endif %}
                             </div>
                             <div class="orders-mini-content">
                                 <div class="orders-mini-content-top clearfix" itemprop="itemOffered">

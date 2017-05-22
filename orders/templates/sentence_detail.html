@@ -1,5 +1,5 @@
 {%extends 'base.html'%}
-{%block description%}{{sentence.title}}{%endblock%}
+{%block description%}{{sentence.body|slice:":160"}}{%endblock%}
 {%block pagetitle%}{{sentence.title}}{%endblock%}
 {% load endless %}
 {% load thumbnail %}
@@ -9,9 +9,9 @@
       <span itemprop="name"><a href="/">Главная</a></span>
       <span>&frasl;</span>
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
-         <a itemprop="item" href="/sentences" class="active"> Предложения </a>
+         <a itemprop="item" href="/sentences"> Предложения </a>
       <span>&frasl;</span>
-        <a itemprop="item" href="/{{sentence.id}}" class="active">{{sentence.title}}</a>
+        <a itemprop="item" href="/sentence/{{sentence.id}}" class="active">{{sentence.title}}</a>
       </span>
    </div>
 </div>

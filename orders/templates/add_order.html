@@ -16,40 +16,29 @@
          {% csrf_token %}
          {%for item in user_profile%}
          {{ form.non_field_errors }}
-   
-            
          <div class="main-form-wrapper">
             <table class="main-form-table">
-                 <tr>
+               <tr>
                   <td>
                      <label class="main-input-label">Категория</label>
                   </td>
                   <td class="tabs ui-tabs ui-corner-all ui-widget ui-widget-content" id="category-block">
-                    <div id="item">
-                        
+                     <div id="item">
                         {%for category in category_list%}
                         <input id="tab{{ forloop.counter }}" type="radio" name="tabs">
                         <label for="tab{{ forloop.counter }}">{{category.title}}</label>
                         {%endfor%}
-                         
-             
                         {%for category in category_list%}
-                        
-                       <section id="content{{ forloop.counter }}">
-                            
-                            {%for item in category.subcategory_set.all%}
-                                <input id="id_category{{category.id}}{{ item.id }}" name="category" type="radio" value="{{item.title}}">
-                                <label for="id_category{{category.id}}{{ item.id }}">{{item.title}}</label>
-                            {%endfor%}
-                           
+                        <section id="content{{ forloop.counter }}">
+                           {%for item in category.subcategory_set.all%}
+                           <input id="id_category{{category.id}}{{ item.id }}" name="category" type="radio" value="{{item.title}}">
+                           <label for="id_category{{category.id}}{{ item.id }}">{{item.title}}</label>
+                           {%endfor%}
                         </section>
                         {%endfor%}
-                     
-                     
-                
-                </div>
-                <input id="selected_title" class="main-input" style='display:none'>
-                {{ form.category.errors }}
+                     </div>
+                     <input id="selected_title" class="main-input" style='display:none'>
+                     {{ form.category.errors }}
                      <p id='err_id_category' class='errorlist'></p>
                   </td>
                </tr>
@@ -144,6 +133,8 @@
       </form>
    </div>
 </div>
+{%endblock%}
+{%block script%}
 <script>
    var previewWidth = 150, // ширина превью
        previewHeight = 150, // высота превью
@@ -314,16 +305,15 @@
    };
 </script>
 <script>
-  $("input[name='category']").on('click', function() {
-      $('#selected_title').val($(this).val());
-      $('#item').css('display','none');
-      $('#selected_title').css('display','block');
-  });
-  $('#selected_title').on('click', function() {
-      $('#selected_title').val('');
-      $('#selected_title').css('display','none');
-      $('#item').css('display','block');
-  });
+   $("input[name='category']").on('click', function() {
+       $('#selected_title').val($(this).val());
+       $('#item').css('display','none');
+       $('#selected_title').css('display','block');
+   });
+   $('#selected_title').on('click', function() {
+       $('#selected_title').val('');
+       $('#selected_title').css('display','none');
+       $('#item').css('display','block');
+   });
 </script>
-
 {%endblock%}

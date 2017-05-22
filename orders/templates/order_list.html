@@ -27,7 +27,7 @@
                 <div class="orders-mini-img-block">
                     {% if user.is_authenticated %}
                     {%for file in item.orderimage_set.all|slice:":1"%}
-                    {% thumbnail file.file "150" crop="center" as im %}
+                    {% thumbnail file.file "150" as im %}
                     <a href="/order/{{item.id}}" class="button-h-opacity">
                     <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                     </a>
