@@ -1,0 +1,72 @@
+{%extends 'base.html'%}
+{%block content%}
+<div class="content">
+    <div class="content-inner">
+        <div class="main-form-wrapper">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <table class="main-form-table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label class="main-input-label"><label for="id_phone">Логин:</label></label>
+                                
+                            </td>
+                            <td>
+                                {{ user.email }}
+                                <a class="button secondaryAction" href="/accounts/password/reset/">Изменить пароль?</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="main-input-label">{{ form.name.label_tag }}</label>
+                            </td>
+                            <td>
+                                {{ form.name }}
+                                <p>{{ form.name.errors }}</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="main-input-label">{{ form.phone.label_tag }}</label>
+                            </td>
+                            <td>
+                                {{ form.phone }}
+                                <p>{{ form.phone.errors }}</p>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <label class="main-input-label">{{ form.avatar.label_tag }}</label>
+                            </td>
+                            <td>
+                                {{ form.avatar }}
+                                <p>Название должно быть на латинице.</p>
+                                <p>{{ form.avatar.errors }}</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="main-form-wrapper">
+                    <table class="main-form-table main-form-table-2">
+                        <tbody>
+                            <tr>
+                                <td>
+                                </td>
+                                <td>
+                                    <input type="submit" class="main-entry-button button-h-opacity" value="Сохранить">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{%endblock%}

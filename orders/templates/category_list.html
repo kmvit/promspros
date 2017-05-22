@@ -1,0 +1,238 @@
+{%extends 'base.html'%}
+{% load endless %}
+{% load thumbnail %}
+{%block description%}{{category.title}}{%endblock%}
+{%block content%}
+<div class="breadcrumbs">
+   <div itemscope="" itemtype="http://schema.org/BreadcrumbList">
+      <span itemprop="name"><a href="/">Главная</a></span>
+      <span>&frasl;</span>
+      <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
+      <a itemprop="item" class="active">{{category.title}}</a>
+      </span>
+   </div>
+</div>
+<div class="content">
+    <div class="content-inner">
+        <div class="content-inner-top clearfix">
+                        <h1 class="section-heading">{{category.title}}</h1>
+                    </div>
+        <div class="categories-wrapper">
+                        <ul class="categories-list link-h-underline-parent">
+                            {%for category in subcategory_list%}
+                            <li><a href="/subcategory/{{category.id}}">{{category.title}}</a><span>{{category.order_set.count|add:category.sentence_set.count}}</span></li>
+                            {%endfor%}
+                        </ul>
+                    </div>
+        
+        
+    </div>
+   
+    
+    <div class="content-inner">
+      <div class="profile-wrapper">
+         <div class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+            <ul class="menu-list ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" role="tablist">
+               <li class="ui-state-default ui-corner-top ui-tabs-tab ui-tab ui-tabs-active ui-state-active" role="tab" tabindex="0" aria-controls="tabs-1" aria-labelledby="ui-id-1" aria-selected="true" aria-expanded="true"><a href="#tabs-1" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1">Заказы</a></li>
+               <li class="ui-state-default ui-corner-top ui-tabs-tab ui-tab" role="tab" tabindex="-1" aria-controls="tabs-2" aria-labelledby="ui-id-2" aria-selected="false" aria-expanded="false"><a href="#tabs-2" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-2">Предложения</a></li>
+            </ul>
+            <div id="tabs-1" aria-labelledby="ui-id-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" aria-hidden="false" style="display: block;">
+               <div class="tabs-inner">
+                  <div class="content-inner-top content-inner-top-2 clearfix">
+            
+           
+        </div>
+        <div class="orders-mini-wrapper">
+            {% paginate order_list %}
+            {%for item in order_list%}
+            <div itemscope itemtype="http://schema.org/Offer">
+            <div class="orders-mini clearfix">
+                <div class="orders-mini-img-block">
+                    {% if user.is_authenticated %}
+                    {%for file in item.orderimage_set.all|slice:":1"%}
+                    {% thumbnail file.file "150" crop="center" as im %}
+                    <a href="/order/{{item.id}}" class="button-h-opacity">
+                    <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
+                    </a>
+                    {% endthumbnail %}
+                    {%endfor%}
+                    {% else %}
+                    <img itemprop="image" src="/media/images/company/company_no-reg.jpg">
+                    {% endif %}
+                </div>
+                <div class="orders-mini-content">
+                    <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
+                        <a href="/order/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+                    </div>
+                    <div class="orders-mini-content-text" itemprop="description">{{item.body|slice:":230"}}...</div>
+                    <div class="orders-mini-content-bottom">
+                        <div class="left">
+                            {%if item.user.company_set.all%}
+                            {%for a in item.user.company_set.all%}
+                            <span itemprop="seller"><a href="/companies/{{a.id}}" class="orders-mini-enterprise">{{a.title}}</a></span>
+                            {%endfor%}
+                            {%else%}
+                            <span itemprop="seller"><a href="{%url 'notcompany_detail' item.user.id%}" class="orders-mini-enterprise">{{item.user}}</a></span>
+                            {%endif%}
+                            <span class="orders-mini-date" itemprop="validFrom">{{item.born}}</span>
+                        </div>
+                        <div class="orders-mini-content-top-info clearfix right">
+                            <form action="/search-city/" class="orders-mini-content-geo" method="get">
+                                <input type="hidden" name="city" itemprop="eligibleRegion" value="{{item.city}}">
+                                <input type="hidden" name="modeltype" value="order">
+                                <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}" ></p>
+                            </form>
+                            {%if user.is_authenticated%}
+                            {%if user == item.user%}
+                            
+                            {%else%}
+                            <a href="#"
+                            class="add-to-favorites"
+                            data-id="{{ item.id }}"
+                            {% if item in user.userprofile.liked_order.all %}
+                            data-in_favorites="true"
+                            {% else %}
+                            data-in_favorites="false"
+                            {% endif %}
+                            data-type="order"
+                            >
+                            {% if item in user.userprofile.liked_order.all %}
+                            <i class="orders-mini-content-favourite orders-mini-content-favourite-active" aria-hidden="true"></i>
+                            {% else %}
+                            <i class="orders-mini-content-favourite" aria-hidden="true"></i>
+                            {% endif %}
+                            </a>
+                            {%endif%}
+                            {%endif%}
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            </div>
+            {%endfor%}
+            <div class="pager">
+                        <div class="table-wrapper">
+                            <div class="table-wrapper-inner">
+                                {% load endless %}
+                                 {% show_pages %}
+                            </div>
+                        </div>
+                    </div>
+        </div>
+        <div id="favourite_confirm" class="favourite-confirm">
+            <form>
+                <div class="table-wrapper">
+                    <div class="table-wrapper-inner">
+                        <h2 class="section-heading">Добавить в избранное:</h2>
+                        <input type="submit" class="main-entry-button cancel-button button-h-opacity" value="Отмена">
+                        <input type="submit" class="main-entry-button button-h-opacity" value="Добавить">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div id="favourite_confirm2" class="favourite-confirm">
+            <form>
+                <div class="table-wrapper">
+                    <div class="table-wrapper-inner">
+                        <h2 class="section-heading">Удалить из избранного:</h2>
+                        <input type="submit" class="main-entry-button cancel-button button-h-opacity" value="Отмена">
+                        <input type="submit" class="main-entry-button button-h-opacity" value="Удалить">
+                    </div>
+                </div>
+            </form>
+        </div>
+               </div>
+            </div>
+            <div id="tabs-2" aria-labelledby="ui-id-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" aria-hidden="true" style="display: none;">
+               <div class="tabs-inner">
+                  <div class="content-inner-top content-inner-top-2 clearfix">
+            
+           
+        </div>
+        <div class="orders-mini-wrapper">
+            {% paginate sentence_list %}
+            {%for item in sentence_list%}
+            <div itemscope itemtype="http://schema.org/Offer">
+            <div class="orders-mini clearfix">
+                <div class="orders-mini-img-block">
+                    {% if user.is_authenticated %}
+                    {%for file in item.sentenceimage_set.all|slice:":1"%}
+                    {% thumbnail file.file "150" crop="center" as im %}
+                    <a href="/sentence/{{item.id}}" class="button-h-opacity">
+                    <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
+                    </a>
+                    {% endthumbnail %}
+                    {%endfor%}
+                    {% else %}
+                    <img itemprop="image" src="/media/images/company/company_no-reg.jpg">
+                    {% endif %}
+                </div>
+                <div class="orders-mini-content">
+                    <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
+                        <a href="/sentence/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+                    </div>
+                    <div class="orders-mini-content-text" itemprop="description">{{item.body|slice:":200"}}</div>
+                    <div class="orders-mini-content-bottom">
+                        <div class="left">
+                            {%if item.user.company_set.all%}
+                            {%for a in item.user.company_set.all%}
+                            <span itemprop="seller"><a href="/companies/{{a.id}}" class="orders-mini-enterprise">{{a.title}}</a></span>
+                            {%endfor%}
+                            {%else%}
+                            <span itemprop="seller"><a href="{%url 'notcompany_detail' item.user.id%}" class="orders-mini-enterprise" >{{item.user}}</a></span>
+                            {%endif%}
+                            <span class="orders-mini-date" itemprop="validFrom">{{item.born}}</span>
+                        </div>
+                        <div class="orders-mini-content-top-info clearfix right">
+                            <form action="/search-city/" method="get" class="orders-mini-content-geo">
+                                <input type="hidden" name="city" itemprop="eligibleRegion" value="{{item.city}}">
+                                <input type="hidden" name="modeltype" value="sentence">
+                                <input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}">
+                            </form>
+                            {%if user.is_authenticated%}
+                            {%if user == item.user%}
+                          
+                            {%else%}
+                            <a href="#"
+                            class="add-to-favorites"
+                            data-id="{{ item.id }}"
+                            {% if item in user.userprofile.liked_sentence.all %}
+                            data-in_favorites="true"
+                            {% else %}
+                            data-in_favorites="false"
+                            {% endif %}
+                            data-type="sentence"
+                            >
+                            {% if item in user.userprofile.liked_sentence.all %}
+                            <i class="orders-mini-content-favourite orders-mini-content-favourite-active" aria-hidden="true"></i>
+                            {% else %}
+                            <i class="orders-mini-content-favourite" aria-hidden="true"></i>
+                            {% endif %}
+                            </a>
+                            {%endif%}
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            {%endfor%}
+            <div class="pager">
+                        <div class="table-wrapper">
+                            <div class="table-wrapper-inner">
+                                
+                                 {% show_pages %}
+                            </div>
+                        </div>
+                    </div>
+        </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+    
+    
+</div>
+{%endblock%}

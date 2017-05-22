@@ -1,0 +1,273 @@
+{%extends 'base.html'%}
+{%block description%}{{order.body|slice:":160"}}{%endblock%}
+{%block pagetitle%}{{order.title}}{%endblock%}
+{% load thumbnail %}
+{% load endless %}
+{%block content%}
+<div class="breadcrumbs">
+   <div itemscope="" itemtype="http://schema.org/BreadcrumbList">
+      <span itemprop="name"><a href="/">Главная</a></span>
+      <span>&frasl;</span>
+      <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
+         <a itemprop="item" href="/orders">Заказы </a>
+      <span>&frasl;</span>
+        <a itemprop="item" href="/order/{{order.id}}" class="active">{{order.title}}</a>
+      </span>
+   </div>
+</div>
+<div class="content">
+   <div class="content-inner">
+      <div class="content-inner-top clearfix">
+         <h1 class="section-heading">{{order.title}}</h1>
+         {% if user.is_authenticated %}
+         {%if user != order.user%}
+         <div class="orders-mini-content-top-info clearfix right">
+            <a href="#"
+            class="add-to-favorites"
+            data-id="{{ order.id }}"
+            {% if order in user.userprofile.liked_order.all %}
+            data-in_favorites="true"
+            {% else %}
+            data-in_favorites="false"
+            {% endif %}
+            data-type="order"
+            >
+            {% if order in user.userprofile.liked_order.all %}
+            <i class="orders-mini-content-favourite orders-mini-content-favourite-active" aria-hidden="true"></i>
+            {% else %}
+            <i class="orders-mini-content-favourite" aria-hidden="true"></i>
+            {% endif %}
+            </a>
+         </div>
+         {%endif%}
+         {% endif %}
+      </div>
+      <div class="orders-mini-wrapper">
+         <div class="profile-table-wrapper">
+            <div itemscope itemtype="http://schema.org/Offer">
+            <table class="profile-table">
+               <tr>
+                  <td>
+                  </td>
+                  
+               </tr>
+               <tr>
+                  <td>Описание заказа:</td>
+                  <td itemprop="description">{{order.body}} </td>
+               </tr>
+               <tr>
+                  <td>Город:</td>
+                  <td itemprop="eligibleRegion">{{order.city}}</td>
+               </tr>
+               <tr>
+                  <td>Компания:</td>
+                  {%for item in order.user.company_set.all%}
+                  <td><a href="{% url 'company_detail' item.id%}" class="main-input-link" itemprop="seller"> {{item.title}}</a></td>
+                  {%endfor%}
+               </tr>
+               
+               <tr>
+                  <td>Имя представителя:</td>
+                  <td itemprop="name">{{order.name}}</td>
+               </tr>
+               {%if user.is_authenticated%}
+               <div itemscope itemtype="http://schema.org/LocalBusiness">
+               <tr>
+                  <td>Телефон:</td>
+                  <td itemprop="telephone">{{order.phone}}</td>
+               </tr>
+               <tr>
+                  <td>Электронная почта:</td>
+                  <td itemprop="email"><a href="mailto:" class="main-input-link">{{order.email}}</a></td>
+               </tr>
+               </div>
+               <tr>
+                  <td>Файлы:</td>
+                  {%for file in files|slice:":1"%}
+                  <td>
+                     <form action="/download" method='GET'>
+                        <input type="hidden" name = "q" value="{{order.id}}">
+                        <button class="main-input-link" type="submit">Скачать архив</button>
+                     </form>
+                  </td>
+                  {%endfor%}
+                  
+               </tr>
+               <tr>
+                  <td></td>
+                  <td>
+                     <ul class="profile-table-img-list">
+                        {%for file in files%}
+                        <li>
+                           <div class="profile-table-img-list-img-block">
+                              <a href="{{file.file.url}}" class="button-h-opacity modalbox" rel="gal-1">
+                              <img src="{{file.file.url}}" alt="{{order.title}}">
+                              </a>
+                           </div>
+                           <div><a href="{{file.file.url}}" class="main-input-link" download>Скачать</a></div>
+                        </li>
+                        {%endfor%}
+                     </ul>
+                  </td>
+               </tr>
+               {%else%}
+               <tr>
+                  <td></td>
+                  <td>    <a href="/accounts/login/?next={{request.path}}" class="main-input-link">Авторизуйтесь</a>
+                     <span>чтобы увидеть полную информацию о компании</span>
+                  </td>
+               </tr>
+               {%endif%}
+               <tr>
+                   <td>
+                       </td>
+                   {% if user.is_authenticated %}
+                    {%if user == order.user%}
+                  <td>
+                    
+                     <div class="buttons-block clearfix">
+                         <ul class="retreat">
+                             <li><a href="{% url 'order_edit' order.id%}" class="orders-mini-enterprise">Редактировать</a></li>
+                        <li class="advertisement-o" data-type="order">
+                        <div class="user-login">
+                           <span class="user-login-link">Переместить в</span>
+                           <div class="user-login-hidden">
+                              <div class="user-login-hidden-inner">
+                                 <ul class="user-login-hidden-list">
+                                     {% for statuses in order.change %}
+                                     {% if statuses.0 != order.status %}
+                                     <li data-status="{{ statuses.0 }}" data-id="{{ order.id }}" class="move-in__item">
+                                            <a href="#">{{ statuses.1 }}</a>
+                                    </li>
+                                     {% endif %}
+                                     {% endfor %}
+                                 </ul>
+                              </div>
+                           </div>
+                        </div>
+                        </li>
+                        <li>
+                        
+                       <li> <a href="{% url 'order_delete' order.id%}" class="orders-mini-enterprise delete-link">Удалить</a></li>
+                       </ul>
+                     </div>
+                  </td>
+                  {%endif%}
+                  {%endif%}
+               </tr>
+            </table>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="content-inner">
+      <div class="content-inner-top clearfix">
+         {%for item in order.user.company_set.all%}
+         <h2 class="section-heading">Другие заказы {{item.title}}</h2>
+         {%endfor%}
+      </div>
+      <div class="orders-mini-wrapper">
+         {% paginate order_list %}
+         {%for item in order_list%}
+         <div class="orders-mini clearfix">
+            <div class="orders-mini-img-block">
+               {% if user.is_authenticated %}
+               {%for file in item.orderimage_set.all|slice:":1"%}
+               {% thumbnail file.file "100x100" crop="center" as im %}
+               <a href="/order/{{item.id}}" class="button-h-opacity">
+               <img src="{{ im.url }}" alt="{{item.title}}">
+               </a>
+               {% endthumbnail %}
+               {%endfor%}
+               {% else %}
+               <img src="/media/images/company/company_no-reg.jpg">
+               {% endif %}
+            </div>
+            <div class="orders-mini-content">
+               <div class="orders-mini-content-top clearfix">
+                  <a href="/order/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+               </div>
+               <div class="orders-mini-content-text">{{item.body|slice:":70"}}</div>
+               <div class="orders-mini-content-bottom">
+                  <div class="left">
+                     {%if item.user.company_set.all%}
+                     {%for a in item.user.company_set.all%}
+                     <a href="/companies/{{a.id}}" class="orders-mini-enterprise">{{a.title}}</a>
+                     {%endfor%}
+                     {%else%}
+                     <a href="{%url 'notcompany_detail' item.user.id%}" class="class="orders-mini-enterprise"">{{item.user}}</a>
+                     {%endif%}
+                     <span class="orders-mini-date">{{item.born}}</span>
+                  </div>
+                  <div class="orders-mini-content-top-info clearfix right">
+                     <form action="/search-city/" class="orders-mini-content-geo" method="get">
+                        <input type="hidden" name="city" value="{{item.city}}">
+                        <input type="hidden" name="modeltype" value="order">
+                        <input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}">
+                     </form>
+                     {%if user.is_authenticated%}
+                     {%if user == item.user%}
+                     Свое
+                     {%else%}
+                     <a href="#"
+                     class="add-to-favorites"
+                     data-id="{{ item.id }}"
+                     {% if item in user.userprofile.liked_order.all %}
+                     data-in_favorites="true"
+                     {% else %}
+                     data-in_favorites="false"
+                     {% endif %}
+                     data-type="order"
+                     >
+                     {% if item in user.userprofile.liked_order.all %}
+                     <i class="orders-mini-content-favourite orders-mini-content-favourite-active modalbox" aria-hidden="true"></i>
+                     {% else %}
+                     <i class="orders-mini-content-favourite  modalbox" aria-hidden="true"></i>
+                     {% endif %}
+                     </a>
+                     {%endif%}
+                     {%endif%}
+                  </div>
+               </div>
+            </div>
+         </div>
+         {%endfor%}
+      </div>
+      <div class="pager">
+         <div class="table-wrapper">
+            <div class="table-wrapper-inner">
+               {% show_pages %}
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{%endblock%}
+{%block aside%}
+<aside class="sidebar">
+   <div class="sidebar-inner">
+      {%for item in order.user.company_set.all%}
+      <div class="sidebar-heading"><a href="/companies/{{item.id}}">{{item.title}}</a></div>
+      <div class="sidebar-text">
+         <p>{{item.info}}</p>
+         <p>Сайт компании: <a href="http://{{item.url}}" class="main-input-link">{{item.url}}</a></p>
+      </div>
+      {%endfor%}
+   </div>
+   <div class="sidebar-inner">
+      <div class="sidebar-heading">Другие компании в {{order.city}}</div>
+      <ul class="sidebar-list link-h-underline-parent">
+         {%if company.count == 0%}
+         <p>Нет компаний</p>
+         {%else%}
+         {%for item in company%}
+         <li><a href="/companies/{{item.id}}">{{item}}</a></li>
+         {%endfor%}
+         {%endif%}
+      </ul>
+      <div class="orders-mini-wrapper-bottom">
+         <a href="/companies">Все компании &gt;</a>
+      </div>
+   </div>
+</aside>
+{% endblock %}

@@ -1,0 +1,319 @@
+{%extends 'base.html'%}
+{%block description%}Добавить заказ{%endblock%}
+{%block pagetitle%}Добавить заказ{%endblock%}
+{%block content%}
+<div class="breadcrumbs">
+   <a href="/">Главная</a>
+   <span>&frasl;</span>
+   <a href="#" class="active">Новый заказ</a>
+</div>
+<div class="content">
+   <div class="content-inner">
+      <div class="content-inner-top clearfix">
+         <h2 class="section-heading">Добавление заказа</h2>
+      </div>
+      <form onsubmit="return checkForm(this)" action="" method="post" enctype="multipart/form-data">
+         {% csrf_token %}
+         {%for item in user_profile%}
+         {{ form.non_field_errors }}
+         <div class="main-form-wrapper">
+            <table class="main-form-table">
+               <tr>
+                  <td>
+                     <label class="main-input-label">Категория</label>
+                  </td>
+                  <td class="tabs ui-tabs ui-corner-all ui-widget ui-widget-content" id="category-block">
+                     <div id="item">
+                        {%for category in category_list%}
+                        <input id="tab{{ forloop.counter }}" type="radio" name="tabs">
+                        <label for="tab{{ forloop.counter }}">{{category.title}}</label>
+                        {%endfor%}
+                        {%for category in category_list%}
+                        <section id="content{{ forloop.counter }}">
+                           {%for item in category.subcategory_set.all%}
+                           <input id="id_category{{category.id}}{{ item.id }}" name="category" type="radio" value="{{item.title}}">
+                           <label for="id_category{{category.id}}{{ item.id }}">{{item.title}}</label>
+                           {%endfor%}
+                        </section>
+                        {%endfor%}
+                     </div>
+                     <input id="selected_title" class="main-input" style='display:none'>
+                     {{ form.category.errors }}
+                     <p id='err_id_category' class='errorlist'></p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <label class="main-input-label">Название</label>
+                  </td>
+                  <td>
+                     <input type="text" id="id_title"  name="title" class="main-input" placeholder="Введите Название">
+                     {{ form.title.errors }}
+                     <p id='err_id_title' class='errorlist'></p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <label class="main-input-label">ФИО представителя</label>
+                  </td>
+                  <td>
+                     <input type="text" id="id_name" name="name" class="main-input" placeholder="Введите ФИО">
+                     {{ form.name.errors }}
+                     <p id='err_id_name' class='errorlist'></p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <label class="main-input-label">Телефон</label>
+                  </td>
+                  <td>
+                     <input type="text" id="id_phone" name="phone" class="main-input input-phone" placeholder="+7 (999) 999-99-99">
+                     {{ form.phone.errors }}
+                     <p id='err_id_phone' class='errorlist'></p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <label class="main-input-label">Город</label>
+                  </td>
+                  <td>
+                     <input type="text" id="id_city" name="city" class="main-input" placeholder="Введите Город" autocomplete="off">
+                     {{ form.city.errors }}
+                     <p id='err_id_city' class='errorlist'></p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <label class="main-input-label">Описание проекта</label>
+                  </td>
+                  <td>
+                     <textarea class="main-textarea" name="body" id="id_body" placeholder="Введите Описание"></textarea>
+                     {{ form.body.errors }}
+                     <p id='err_id_body' class='errorlist'></p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                  </td>
+                  <td>
+                     <div id="dropContainer">
+                        <div class="file-upload">
+                           <label>
+                              <p id='err_id_photo' class='errorlist'></p>
+                              <input type="file" multiple="" name="file" id="photo">
+                              <span>Нажмите или перетащите сюда фотографии. Максимальный размер 2Мб</span>
+                           </label>
+                        </div>
+                     </div>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                  </td>
+                  <td>
+                     <ul id="preview-photo" class="offer-img-list">
+                     </ul>
+                  </td>
+               </tr>
+            </table>
+         </div>
+         {%endfor%}
+         <div class="main-form-wrapper">
+            <table class="main-form-table main-form-table-2">
+               <tr>
+                  <td>
+                     <button class="btn btn-primary" type="submit" name="submit">Добавить</button>
+                  </td>
+                  <td>
+                     <button class="btn btn-primary" type="submit" name="submit-ch">Сохранить в черновик</button>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </form>
+   </div>
+</div>
+{%endblock%}
+{%block script%}
+<script>
+   var previewWidth = 150, // ширина превью
+       previewHeight = 150, // высота превью
+       maxFileSize = 2 * 1024 * 1024, // (байт) Максимальный размер файла (2мб)
+       selectedFiles = {},// объект, в котором будут храниться выбранные файлы
+       queue = [],
+       image = new Image(),
+       imgLoadHandler,
+       isProcessing = false,
+       errorMsg, // сообщение об ошибке при валидации файла
+       previewPhotoContainer = document.querySelector('#preview-photo'); // контейнер, в котором будут отображаться превью
+   
+   // Когда пользователь выбрал файлы, обрабатываем их
+   $('input[type=file][id=photo]').on('change', function() {
+       var newFiles = $(this)[0].files; // массив с выбранными файлами
+   
+       for (var i = 0; i < newFiles.length; i++) {
+   
+           var file = newFiles[i];
+   
+           // В качестве "ключей" в объекте selectedFiles используем названия файлов
+           // чтобы пользователь не мог добавлять один и тот же файл
+           // Если файл с текущим названием уже существует в массиве, переходим к следующему файлу
+           if (selectedFiles[file.name] != undefined) continue;
+   
+           // Валидация файлов (проверяем формат и размер)
+           if ( errorMsg = validateFile(file) ) {
+               alert(errorMsg);
+               return;
+           }
+   
+           // Добавляем файл в объект selectedFiles
+           selectedFiles[file.name] = file;
+           queue.push(file);
+   
+       }
+   
+       $(this).val('');
+       processQueue(); // запускаем процесс создания миниатюр
+   });
+   
+   // Валидация выбранного файла (формат, размер)
+   var validateFile = function(file)
+   {
+       if ( !file.type.match(/image\/(jpeg|jpg|png|gif)/) ) {
+           return 'Фотография должна быть в формате jpg, png или gif';
+       }
+   
+       if ( file.size > maxFileSize ) {
+           return 'Размер фотографии не должен превышать 2 Мб';
+       }
+   };
+   
+   var listen = function(element, event, fn) {
+       return element.addEventListener(event, fn, false);
+   };
+   
+   // Создание миниатюры
+   var processQueue = function()
+   {
+       // Миниатюры будут создаваться поочередно
+       // чтобы в один момент времени не происходило создание нескольких миниатюр
+       // проверяем запущен ли процесс
+       if (isProcessing) { return; }
+   
+       // Если файлы в очереди закончились, завершаем процесс
+       if (queue.length == 0) {
+           isProcessing = false;
+           return;
+       }
+   
+       isProcessing = true;
+   
+       var file = queue.pop(); // Берем один файл из очереди
+   
+       var li = document.createElement('LI');
+       var span = document.createElement('SPAN');
+       var spanDel = document.createElement('SPAN');
+       var canvas = document.createElement('CANVAS');
+       var ctx = canvas.getContext('2d');
+   
+       span.setAttribute('class', 'img');
+       spanDel.setAttribute('class', 'delete');
+       spanDel.innerHTML = 'Удалить';
+   
+       li.appendChild(span);
+       li.appendChild(spanDel);
+       li.setAttribute('data-id', file.name);
+   
+       image.removeEventListener('load', imgLoadHandler, false);
+   
+       // создаем миниатюру
+       imgLoadHandler = function() {
+           ctx.drawImage(image, 0, 0, previewWidth, previewHeight);
+           URL.revokeObjectURL(image.src);
+           span.appendChild(canvas);
+           isProcessing = false;
+           setTimeout(processQueue, 200); // запускаем процесс создания миниатюры для следующего изображения
+       };
+   
+       // Выводим миниатюру в контейнере previewPhotoContainer
+       previewPhotoContainer.appendChild(li);
+       listen(image, 'load', imgLoadHandler);
+       image.src = URL.createObjectURL(file);
+   
+       // Сохраняем содержимое оригинального файла в base64 в отдельном поле формы
+       // чтобы при отправке формы файл был передан на сервер
+       var fr = new FileReader();
+       fr.readAsDataURL(file);
+       fr.onload = (function (file) {
+           return function (e) {
+               $('#preview-photo').append(
+                       '<input type="hidden" name="photos[]" value="' + e.target.result + '" data-id="' + file.name+ '">'
+               );
+           }
+       }) (file);
+       
+   };
+   
+   // Удаление фотографии
+   $(document).on('click', '#preview-photo li span.delete', function() {
+       var fileId = $(this).parents('li').attr('data-id');
+   
+       if (selectedFiles[fileId] != undefined) delete selectedFiles[fileId]; // Удаляем файл из объекта selectedFiles
+       $(this).parents('li').remove(); // Удаляем превью
+       $('input[name^=photo][data-id="' + fileId + '"]').remove(); // Удаляем поле с содержимым файла
+   });
+   
+</script>
+<script>
+   dropContainer.ondragover = dropContainer.ondragenter = function(evt) {
+     evt.preventDefault();
+   };
+   
+   dropContainer.ondrop = function(evt) {
+     // pretty simple -- but not for IE :(
+     photo.files = evt.dataTransfer.files;
+     evt.preventDefault();
+   };
+</script>
+<script type="text/javascript">
+   function checkForm(form){
+   	if (document.getElementById('selected_title').value=="") {
+   		document.getElementById('err_id_category').innerHTML='Выберите Категорию';
+   		return false;
+   	};
+   	if (document.getElementById('id_title').value=="") {
+   		document.getElementById('err_id_title').innerHTML='Введите значение';
+   		return false;
+   	};
+   	if (document.getElementById('id_name').value=="") {
+   		document.getElementById('err_id_name').innerHTML='Введите значение';
+   		return false;
+   	};
+   	if (document.getElementById('id_phone').value=="") {
+   		document.getElementById('err_id_phone').innerHTML='Введите значение';
+   		return false;
+   	};
+   	if (document.getElementById('id_city').value=="") {
+   		document.getElementById('err_id_city').innerHTML='Введите значение';
+   		return false;
+   	};
+   	if (document.getElementById('id_body').value=="") {
+   		document.getElementById('err_id_body').innerHTML='Введите значение';
+   		return false;
+   	};
+   	return true;
+   };
+</script>
+<script>
+   $("input[name='category']").on('click', function() {
+       $('#selected_title').val($(this).val());
+       $('#item').css('display','none');
+       $('#selected_title').css('display','block');
+   });
+   $('#selected_title').on('click', function() {
+       $('#selected_title').val('');
+       $('#selected_title').css('display','none');
+       $('#item').css('display','block');
+   });
+</script>
+{%endblock%}

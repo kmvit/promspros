@@ -1,0 +1,19 @@
+{%extends 'base.html'%}
+{%block pagetitle%}Информация{%endblock%}
+{%block bread%}
+    <a href="/">Главная</a> | Информация
+{%endblock%}
+{%block content%}
+<div class="breadcrumbs">
+   <a href="/">Главная</a>
+   <span>&frasl;</span>
+   <a href="#">Письмо отправлено</a>
+   <span>&frasl;</span>
+   <a href="#" class="active">{{order.title}}</a>
+</div>
+<div class="content">
+   <div class="content-inner">
+<h3>Ваше письмо отправлено!</h3>
+</div>
+</div>
+{%endblock%}

@@ -1,0 +1,39 @@
+{%extends 'base.html'%}
+{%block description%}Удалить предложение{%endblock%}
+{%block pagetitle%}Удалить предложение{%endblock%}
+{%block content%}
+<div class="breadcrumbs">
+    <a href="/">Главная</a>
+    <span>&frasl;</span>
+    <a href="">Удаление предложения</a>
+    
+</div>
+<div class="content">
+    
+    <div class="content-inner">
+        <div class="content-inner-top clearfix">
+                        <h2 class="section-heading">Удаление заказа</h2>
+                    </div>
+		
+<form action="" method="post">{% csrf_token %}
+<div class="main-form-wrapper">
+<table class="main-form-table main-form-table-2">
+    <tbody>
+    
+	<tr>
+	  <td>Вы уверены, что хотите удалить обьявление {{ object }}?</td>
+	</tr>
+	<tr>
+	  <td><input type="submit" class="new-class-button" value="Удалить" /></td>
+	 
+	  <td><a class="delete-button" onclick="history.back(); return false;">НАЗАД</a></td>
+	</tr>
+	
+
+ </tbody>
+</table>
+</div>
+</form>
+</div>
+</div>
+{%endblock%}
