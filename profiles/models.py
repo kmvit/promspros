@@ -5,12 +5,17 @@ import datetime
 from orders.models import Order, Sentence, Company
 from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save
+import os
 
-
+def get_file_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (str(instance.id), ext)
+    return os.path.join('uploads','avatar', filename)
+    
 class UserProfile(User):
     name = models.CharField(max_length='200', verbose_name='ФИО', default='ФИО')
     phone = models.CharField(max_length='12', verbose_name='Телефон', default='+7123456789')
-    avatar = models.ImageField(upload_to='images/avatar',blank=True, verbose_name='Аватар')
+    avatar = models.ImageField(upload_to=get_file_path,blank=True, verbose_name='Аватар')
     liked_order = models.ManyToManyField(Order, verbose_name='Избранные заказы', blank=True)
     liked_sentence = models.ManyToManyField(Sentence, verbose_name='Избранные предложения', blank=True)
     liked_company = models.ManyToManyField(Company, verbose_name='Избранные компании', blank=True)
@@ -20,7 +25,8 @@ class UserProfile(User):
         verbose_name = u'Профиль'
         verbose_name_plural = u'Профили'
 
-        
+    
+    
     def get_absolute_url(self):
         return "/profile/%i/" % self.id
     

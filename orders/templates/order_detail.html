@@ -1,6 +1,6 @@
 {%extends 'base.html'%}
 {%block description%}{{order.body|slice:":160"}}{%endblock%}
-{%block pagetitle%}{{order.title}}{%endblock%}
+{%block pagetitle%}{{order}} {{order.category}} от производителя купить недорого{%endblock%}
 {% load thumbnail %}
 {% load endless %}
 {%block content%}

@@ -107,16 +107,7 @@ WSGI_APPLICATION = 'billboard.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'billboard',
-        'USER': 'justscoundrel',
-        'PASSWORD': 'urha-murha',
-        'HOST': '127.0.0.1',
-        'PORT': '',
-    }
-}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
