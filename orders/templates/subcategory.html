@@ -19,6 +19,16 @@
 </div>
 <div class="content">
     <div class="content-inner">
+        <div class="content-inner-top clearfix">
+                        <h1 class="section-heading">{{category.title}}</h1>
+                    </div>
+        <div class="categories-wrapper">
+                        <ul class="categories-list link-h-underline-parent">
+                            {%for category in subcategory_list%}
+                            <li><a href="{%url 'subsubcategorydetail' pk=category.id%}">{{category.title}}</a><span>{{category.order_set.count|add:category.order_set.count}}</span></li>
+                            {%endfor%}
+                        </ul>
+                    </div>
       <div class="profile-wrapper">
          <div class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
             <ul class="menu-list ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" role="tablist">

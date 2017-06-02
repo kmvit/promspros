@@ -531,10 +531,19 @@ class SubcategoryDetail(DetailView):
     template_name = 'subcategory.html'
     def get_context_data(self, **kwargs):
         context = super(SubcategoryDetail, self).get_context_data(**kwargs)
-        context['order_list'] = Order.objects.filter(category_id=self.kwargs['pk'])
-        context['sentence_list'] = Sentence.objects.filter(category_id=self.kwargs['pk'])
+        context['subcategory_list'] = Subsubcategory.objects.filter(parent_id=self.kwargs['pk'])
+        context['order_list'] = Order.objects.filter(category_id=self.kwargs['pk'], status=1)
+        context['sentence_list'] = Sentence.objects.filter(category_id=self.kwargs['pk'], status=1)
         return context
 
+class SubsubcategoryDetail(DetailView):
+    model = Subsubcategory
+    template_name = 'subsubcategory.html'
+    def get_context_data(self, **kwargs):
+        context = super(SubsubcategoryDetail, self).get_context_data(**kwargs)
+        context['order_list'] = Order.objects.filter(category_id=self.kwargs['pk'], status=1)
+        context['sentence_list'] = Sentence.objects.filter(category_id=self.kwargs['pk'], status=1)
+        return context
             
 def contactView(request):
 	if request.method == 'POST':

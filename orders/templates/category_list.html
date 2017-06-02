@@ -20,7 +20,7 @@
         <div class="categories-wrapper">
                         <ul class="categories-list link-h-underline-parent">
                             {%for category in subcategory_list%}
-                            <li><a href="/subcategory/{{category.id}}">{{category.title}}</a><span>{{category.order_set.count|add:category.sentence_set.count}}</span></li>
+                            <li><a href="/subcategory/{{category.id}}">{{category.title}}</a><span>{{category.order_set.count}}</span></li>
                             {%endfor%}
                         </ul>
                     </div>

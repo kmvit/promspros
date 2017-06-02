@@ -25,6 +25,7 @@ sentense_dict = {
 urlpatterns = [
     url(r'^category/(?P<pk>\d+)/$', CategoryView.as_view(), name='categorydetail'),
     url(r'^subcategory/(?P<pk>\d+)/$', SubcategoryDetail.as_view(), name='subcategorydetail'),
+    url(r'^subsubcategory/(?P<pk>\d+)/$', SubsubcategoryDetail.as_view(), name='subsubcategorydetail'),
     url(r'^page/(?P<slug>\w+)/$', PageView.as_view(), name='page_detail'),
     url(r'^contact/$', contactView, name='contact_form'),
     url(r'^admin_tools/', include('admin_tools.urls')),

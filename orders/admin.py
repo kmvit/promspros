@@ -32,6 +32,11 @@ class CompanyAdmin(admin.ModelAdmin):
 class CityAdmin(admin.ModelAdmin):
     list_display = ('title',)
     search_fields = ['title']
+    
+class SubcategoryAdmin(admin.ModelAdmin):
+    list_display = ('title','parent')
+    search_fields = ['title']
+    list_filter = ['parent']
 
     
 admin.site.register(Page)
@@ -40,4 +45,5 @@ admin.site.register(Sentence, SentenceAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(City, CityAdmin)
 admin.site.register(Category)
-admin.site.register(Subcategory)
+admin.site.register(Subcategory,SubcategoryAdmin)
+admin.site.register(Subsubcategory)

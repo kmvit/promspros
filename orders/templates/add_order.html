@@ -23,20 +23,30 @@
                      <label class="main-input-label">Категория</label>
                   </td>
                   <td class="tabs ui-tabs ui-corner-all ui-widget ui-widget-content" id="category-block">
-                     <div id="item">
-                        {%for category in category_list%}
-                        <input id="tab{{ forloop.counter }}" type="radio" name="tabs">
-                        <label for="tab{{ forloop.counter }}">{{category.title}}</label>
+                     <div id="item" style="width:200px">
+                       <ul class="menu_vert">  
+                         {%for category in category_list%}
+                          <li>
+                              <a href="#">{{category.title}}</a>
+                               <ul>
+                              {%for item in category.subcategory_set.all%}
+                              <li>
+                                  <a href="#" class="click">{{item.title}}</a>
+                                  <ul>
+                                     {%for i in item.subsubcategory_set.all%}
+                                      <li class="category"><a href="#">{{i.title}}</a></li>  
+                                     {%endfor%} 
+                                  </ul>
+                              </li>    
+                              {%endfor%}
+                               </ul>
+                          </li>
                         {%endfor%}
-                        {%for category in category_list%}
-                        <section id="content{{ forloop.counter }}">
-                           {%for item in category.subcategory_set.all%}
-                           <input id="id_category{{category.id}}{{ item.id }}" name="category" type="radio" value="{{item.title}}">
-                           <label for="id_category{{category.id}}{{ item.id }}">{{item.title}}</label>
-                           {%endfor%}
-                        </section>
-                        {%endfor%}
-                     </div>
+                     
+                       </ul>  
+                         
+   
+</div>
                      <input id="selected_title" class="main-input" style='display:none'>
                      {{ form.category.errors }}
                      <p id='err_id_category' class='errorlist'></p>
@@ -305,8 +315,87 @@
    };
 </script>
 <script>
-   $("input[name='category']").on('click', function() {
-       $('#selected_title').val($(this).val());
+(function($){
+	$.fn.liMenuVert = function(params){
+		var p = {
+			delayShow:300,		//Задержка перед появлением выпадающего меню (ms)
+			delayHide:300	    //Задержка перед исчезанием выпадающего меню (ms)
+		};
+		if (params) {
+			$.extend(p, params); 
+		}
+		return this.each(function(){
+			var 
+			menuWrap = $(this),
+			menuWrapWidth = menuWrap.outerWidth(),
+			menuWrapLeft = menuWrap.offset().left,
+			menuSubSub = $('ul',menuWrap)
+			menuSubSub.each(function(){
+				var 
+				mArrowRight = $('<div>').addClass('arrow-right'),
+				mSubSub = $(this),
+				mSubList = mSubSub.closest('li'),
+				mSubLink = mSubList.children('a').append(mArrowRight),
+				mSubArrow = $('<div>').addClass('arrow-left').prependTo(mSubSub),
+				mSubArrow2 = $('<div>').addClass('arrow-left2').prependTo(mSubSub),
+				mFuncId = function(){},
+				mFuncIdOut = function(){};
+				
+				mSubList.on('mouseenter',function(){
+					clearTimeout(mFuncIdOut);
+					mHoverLink = $(this).children('a');
+					mFuncId = setTimeout(function(){
+						mHoverLink.next('ul').children('li').width(mHoverLink.next('ul').width());	//correct width in ie7			
+						mSubArrow.css({top:mSubLink.outerHeight()/2 - 5});
+						mSubArrow2.css({top:mSubLink.outerHeight()/2 - 5});
+						var 
+						mSubSubLeft = mSubLink.position().left + mSubLink.outerWidth(),
+						p1 = (mSubLink.closest('ul').outerWidth()-mSubLink.closest('ul').width())/2;
+						mSubSub.css({top:(mSubLink.position().top - p1)});	
+						mSubSub.css({left:mSubSubLeft});
+						mSubSub.show();
+						var w3 = $(window).width();
+						var w6 = (mSubSub.offset().left + mSubSub.outerWidth());
+						if(w6 >= w3){
+							mSubSub.closest('ul').addClass('toLeft');
+							mSubSubLeft = -mSubSub.outerWidth();
+						}
+						if(mSubSub.parents('ul').hasClass('toLeft')){
+							mSubSubLeft = -mSubSub.outerWidth();
+						}
+						mSubSub.css({left:mSubSubLeft});				
+						mSubLink.addClass('active');
+					},p.delayShow)
+				})
+				mSubList.on('mouseleave',function(){
+					clearTimeout(mFuncId);
+					mFuncIdOut = setTimeout(function(){
+						
+						mSubSub.hide();
+						mSubLink.removeClass('active')
+					},p.delayHide)
+				});
+			});
+			menuWrapWidth = menuWrap.outerWidth();
+			menuWrapLeft = menuWrap.offset().left;
+			$(window).resize(function(){
+				menuWrapWidth = menuWrap.outerWidth();
+				menuWrapLeft = menuWrap.offset().left;	
+			});
+		});
+	};
+})(jQuery);
+    
+    /*инициализация*/
+    $('.menu_vert').liMenuVert({
+		delayShow:300,		//Задержка перед появлением выпадающего меню (ms)
+		delayHide:300	    //Задержка перед исчезанием выпадающего меню (ms)
+	});
+
+
+   $('.category').on('click', function() {
+       var number = $('a').text();
+       $('#selected_title').val($(this).text());
        $('#item').css('display','none');
        $('#selected_title').css('display','block');
    });
@@ -316,4 +405,84 @@
        $('#item').css('display','block');
    });
 </script>
+<style>
+/*layout css*/
+
+
+
+/*bind css (not edit)*/
+.menu_vert {margin: 0; padding: 0; position: relative; word-spacing: -0.25em; }
+.menu_vert li {border-bottom:1px solid #E8E8E8;  display:block; list-style: none; margin: 0; padding: 0; text-align: left; vertical-align: top; word-spacing: normal; zoom: 1; }
+.menu_vert>li:last-child { border:0} 
+.menu_vert a {color: #666; display: block; font: 12px/1.2em Arial, Helvetica, sans-serif; padding: 10px 20px 10px 10px; text-align: left; text-decoration: none; position:relative }
+.menu_vert a:hover { background: #eee; color: #000; text-decoration: none; text-shadow: 0 1px 0 #fff; }
+.menu_vert .active { background: #eee; color: #000; }
+.menu_vert ul li { display: block; list-style: none; margin: 0; padding: 0;  border:0;}
+.menu_vert ul a { display: block; border-radius: 5px;  }
+.menu_vert ul { background: #fff; border: 1px solid #c2c2c2; border-radius: 5px; box-shadow: 0 5px 10px rgba(0,0,0,0.2); top: 0; display: none; left: 0; margin: 0; //margin: 1px 0 0 0;padding: 0; position: absolute; top: 0; z-index:2}
+.arrow-left { border-bottom: 5px solid transparent; border-right: 5px solid #fff; border-top: 5px solid transparent; height: 0; left: -4px; position: absolute; top: 0; width: 0; z-index: 1; }
+.arrow-left2 { border-bottom: 5px solid transparent; border-right: 5px solid #c2c2c2; border-top: 5px solid transparent; height: 0; left: -5px; position: absolute; top: 0; width: 0; z-index: 0; }
+.toLeft .arrow-left { border-left: 5px solid #fff; border-right: 0; left: auto; right: -4px; }
+.toLeft .arrow-left2 { border-left: 5px solid #c2c2c2; border-right: 0; left: auto; right: -5px; }
+.arrow-right {width: 0; height: 0; border-top: 4px solid transparent;border-bottom: 4px solid transparent;    border-left: 4px solid #666; position:absolute; top:13px; right:8px;}
+
+/*user css (this edit)*/
+.menu_vert {
+
+}
+.menu_vert a {
+    font:12px/1.2em Arial, Helvetica, sans-serif;
+    text-align:left; 
+    padding: 10px 20px 10px 10px; 
+    text-decoration:none;
+    color:#666;
+}
+.menu_vert a:hover { 
+    background:#eee; 
+    color:#000; 
+    text-decoration:none; 
+    text-shadow:0 1px 0 #fff;
+}
+.menu_vert .active { 
+    background:#eee; 
+    color:#000;
+}
+.menu_vert ul { 
+    padding:0; 
+    background:#fff;
+    border:1px solid #c2c2c2;
+    border-radius:5px;
+    box-shadow:0 5px 10px rgba(0,0,0,0.2);
+}
+.menu_vert ul li { 
+    padding:0; 
+    margin:0;
+    border:0;
+}
+.menu_vert ul a {
+    border-radius: 5px;
+}
+.arrow-left {
+    border-right-color:#fff; 
+    left:-4px; 
+}
+.arrow-left2 {
+    border-right-color:#c2c2c2; 
+    left:-5px; 
+}
+.toLeft .arrow-left {
+    border-left-color:#fff;
+    right:-4px; 
+}
+.toLeft .arrow-left2 {
+    border-left-color:#c2c2c2;
+    right:-5px; 
+}
+.arrow-right {
+    top:13px; 
+    right:8px;
+    border-left-color:#666;
+}
+
+</style>
 {%endblock%}
