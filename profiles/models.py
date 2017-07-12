@@ -14,7 +14,7 @@ def get_file_path(instance, filename):
     
 class UserProfile(User):
     name = models.CharField(max_length='200', verbose_name='ФИО', default='ФИО')
-    phone = models.CharField(max_length='12', verbose_name='Телефон', default='+7123456789')
+    phone = models.CharField(max_length='18', verbose_name='Телефон', default='+7123456789')
     avatar = models.ImageField(upload_to=get_file_path,blank=True, verbose_name='Аватар')
     liked_order = models.ManyToManyField(Order, verbose_name='Избранные заказы', blank=True)
     liked_sentence = models.ManyToManyField(Sentence, verbose_name='Избранные предложения', blank=True)

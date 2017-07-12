@@ -37,6 +37,12 @@ class SubcategoryAdmin(admin.ModelAdmin):
     list_display = ('title','parent')
     search_fields = ['title']
     list_filter = ['parent']
+    
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('my_order','title')
+    list_display_links = ('title')
+    list_editable = ('my_order',)
+
 
     
 admin.site.register(Page)
@@ -44,6 +50,7 @@ admin.site.register(Order, OrderAdmin)
 admin.site.register(Sentence, SentenceAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(City, CityAdmin)
-admin.site.register(Category)
+admin.site.register(Category,CategoryAdmin)
 admin.site.register(Subcategory,SubcategoryAdmin)
 admin.site.register(Subsubcategory)
+admin.site.register(BlockInfo)

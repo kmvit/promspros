@@ -35,6 +35,7 @@ class CustomIndexDashboard(Dashboard):
                         'orders.models.City',
                         'orders.models.Category',
                         'orders.models.Subcategory',
+                        'orders.models.BlockInfo',
                     ),
                 )
             )

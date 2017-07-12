@@ -23,3 +23,9 @@ def category_list(context):
     category_list = Category.objects.all()
     context_dict = {'category_list':category_list,}
     return context_dict
+
+@register.inclusion_tag('block_info.html', takes_context=True)
+def block_info(context):
+    block = BlockInfo.objects.first()
+    context = {'block_info':block}
+    return context

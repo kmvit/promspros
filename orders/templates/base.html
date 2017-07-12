@@ -11,7 +11,7 @@
                <title>{%block pagetitle%}Промспрос | Портал производственных решений{%endblock%}</title>
                {% load static %}
                {%block meta_head%}
-               <meta name="google-site-verification" content="3k5eXC39_vVPx0EZIxn1Haff06zucB6yt_GeFATTYEQ" />
+               <meta name="google-site-verification" content="sdVaa75bRD4AqBK7fYcAGxdT_2Cuu_0OURyJ1KFMilI" />
                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
                <meta name="viewport" content="width=device-width, initial-scale=1.0">
                <meta name="description" content="{%block description%}Промспрос | Портал производственных решений{%endblock%}">
@@ -126,8 +126,7 @@
                         {%endif%}
                         <div class="sidebar-inner">
                            {%block info%}
-                           <div class="sidebar-heading">Информация</div>
-                           <div class="sidebar-text">На нашем сайте вы можете размещать заказы и предложения.</div>
+                           {% block_info %}
                            {%endblock%}
                         </div>
                         <div class="sidebar-inner">
@@ -207,6 +206,7 @@
                   <![endif]-->
                   <script src="//yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
                   <script src="//yastatic.net/share2/share.js"></script>
+                  {{ form.media }}
                   <!-- Yandex.Metrika counter -->
                   <script type="text/javascript">
                      (function (d, w, c) {
@@ -237,6 +237,7 @@
                      <div><img src="https://mc.yandex.ru/watch/44320978" style="position:absolute; left:-9999px;" alt="" /></div>
                   </noscript>
                   <!-- /Yandex.Metrika counter -->
+             
                   <script>  
                      $(function(){
                      var options = {

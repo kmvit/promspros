@@ -59,11 +59,57 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.vk',
     'endless_pagination',
     'sorl.thumbnail',
+    'tinymce',
+
 )
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile', 'user_friends'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': 'path.to.callable',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.4',
+    }
+}
+
+
 THUMBNAIL_DEBUG=True
 SITE_ID = 1
+
+
+ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
@@ -157,15 +203,13 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+TINYMCE_JS_URL = os.path.join(STATIC_URL + 'tiny_mce/tiny_mce.js')
 
 TINYMCE_DEFAULT_CONFIG = {
-    'width': '600',
-    'height':'300',
-    'plugins': 'paste',
-	'paste_remove_styles': 'true',
-	'paste_remove_styles_if_webkit': 'true',
-	'paste_strip_class_attributes': 'all',
-    
+    'theme': 'advanced',
+    'width': 300,
+    'height': 300,
+  
 }
 
 try:

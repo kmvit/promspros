@@ -7,12 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('profiles', '0001_initial'),
+        ('orders', '0026_category_slug'),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='userprofile',
-            name='site',
+        migrations.AlterField(
+            model_name='category',
+            name='slug',
+            field=models.SlugField(verbose_name=b'URL', blank=True),
         ),
     ]

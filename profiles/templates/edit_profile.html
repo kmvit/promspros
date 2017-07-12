@@ -9,11 +9,10 @@
                     <tbody>
                         <tr>
                             <td>
-                                <label class="main-input-label"><label for="id_phone">Логин:</label></label>
+                                <label class="main-input-label"><label for="id_phone">Логин/email:</label></label>
                                 
                             </td>
                             <td>
-                                {{ user.email }}
                                 <a class="button secondaryAction" href="/accounts/password/reset/">Изменить пароль?</a>
                             </td>
                         </tr>
@@ -31,7 +30,8 @@
                                 <label class="main-input-label">{{ form.phone.label_tag }}</label>
                             </td>
                             <td>
-                                {{ form.phone }}
+                                 
+                                 <input class="main-input input-phone" id="id_phone" maxlength="18" name="phone" placeholder="Например: +79241112223" type="text" value="{{ form.phone.value }}">
                                 <p>{{ form.phone.errors }}</p>
                             </td>
                         </tr>
@@ -46,6 +46,7 @@
                                 <p>{{ form.avatar.errors }}</p>
                             </td>
                         </tr>
+                        
                         <tr>
                             <td>
                             </td>

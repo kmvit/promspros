@@ -47,7 +47,7 @@
                          
    
 </div>
-                     <input id="selected_title" class="main-input" style='display:none'>
+                      <input id="id_category" maxlength="500" class="main-input" name="category" type="text">
                      {{ form.category.errors }}
                      <p id='err_id_category' class='errorlist'></p>
                   </td>
@@ -57,7 +57,7 @@
                      <label class="main-input-label">Название</label>
                   </td>
                   <td>
-                     <input type="text" id="id_title"  name="title" class="main-input" placeholder="Введите Название">
+                     <input type="text" id="id_title"  name="title" class="main-input" placeholder="Введите название">
                      {{ form.title.errors }}
                      <p id='err_id_title' class='errorlist'></p>
                   </td>
@@ -67,7 +67,7 @@
                      <label class="main-input-label">ФИО представителя</label>
                   </td>
                   <td>
-                     <input type="text" id="id_name" name="name" class="main-input" placeholder="Введите ФИО">
+                     <input type="text" id="id_name" name="name" class="main-input" value="{{user.userprofile.name}}" placeholder="Введите ФИО">
                      {{ form.name.errors }}
                      <p id='err_id_name' class='errorlist'></p>
                   </td>
@@ -77,9 +77,19 @@
                      <label class="main-input-label">Телефон</label>
                   </td>
                   <td>
-                     <input type="text" id="id_phone" name="phone" class="main-input input-phone" placeholder="+7 (999) 999-99-99">
+                     <input type="text" id="id_phone" name="phone" class="main-input input-phone" value="{{user.userprofile.phone}}" placeholder="+7 (999) 999-99-99">
                      {{ form.phone.errors }}
                      <p id='err_id_phone' class='errorlist'></p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <label class="main-input-label">Email</label>
+                  </td>
+                  <td>
+                     <input type="text" id="id_email"  name="email" class="main-input" value="{{user.userprofile.email}}">
+                     {{ form.email.errors }}
+                     <p id='err_id_email' class='errorlist'></p>
                   </td>
                </tr>
                <tr>
@@ -87,7 +97,7 @@
                      <label class="main-input-label">Город</label>
                   </td>
                   <td>
-                     <input type="text" id="id_city" name="city" class="main-input" placeholder="Введите Город" autocomplete="off">
+                     <input type="text" id="id_city" name="city" class="main-input" placeholder="Введите город" autocomplete="off" value="{{user.userprofile.city}}">
                      {{ form.city.errors }}
                      <p id='err_id_city' class='errorlist'></p>
                   </td>
@@ -97,7 +107,7 @@
                      <label class="main-input-label">Описание проекта</label>
                   </td>
                   <td>
-                     <textarea class="main-textarea" name="body" id="id_body" placeholder="Введите Описание"></textarea>
+                      <textarea class="tinymce main-textarea" cols="80" data-mce-conf="{&quot;spellchecker_languages&quot;: &quot;\u0411\u0443\u0440\u0441\u043a\u0438\u0439=af,\u0410\u0440\u0430\u0431\u0441\u043a\u0438\u0439=ar,\u0410\u0441\u0442\u0443\u0440\u0438\u0439\u0441\u043a\u0438\u0439=as,\u0410\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043d\u0441\u043a\u0438\u0439=az,\u0411\u043e\u043b\u0433\u0430\u0440\u0441\u043a\u0438\u0439=bg,\u0411\u0435\u043b\u043e\u0440\u0443\u0441\u043a\u0438\u0439=be,\u0411\u0435\u043d\u0433\u0430\u043b\u044c\u0441\u043a\u0438\u0439=bn,\u0411\u0440\u0435\u0442\u043e\u043d\u0441\u043a\u0438\u0439=br,\u0411\u043e\u0441\u043d\u0438\u0439\u0441\u043a\u0438\u0439=bs,\u041a\u0430\u0442\u0430\u043b\u0430\u043d\u0441\u043a\u0438\u0439=ca,\u0427\u0435\u0448\u0441\u043a\u0438\u0439=cs,\u0423\u044d\u043b\u044c\u0441\u043a\u0438\u0439=cy,\u0414\u0430\u0442\u0441\u043a\u0438\u0439=da,\u041d\u0435\u043c\u0435\u0446\u043a\u0438\u0439=de,\u0413\u0440\u0435\u0447\u0435\u0441\u043a\u0438\u0439=el,\u0410\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0439 / \u0410\u0432\u0441\u0442\u0440\u0430\u043b\u0438\u0439\u0441\u043a\u0438\u0439 \u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0439 / \u0411\u0440\u0438\u0442\u0430\u043d\u0441\u043a\u0438\u0439 \u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0439=en,\u042d\u0441\u043f\u0435\u0440\u0430\u043d\u0442\u043e=eo,\u0418\u0441\u043f\u0430\u043d\u0441\u043a\u0438\u0439 / \u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0441\u043a\u0438\u0439 \u0438\u0441\u043f\u0430\u043d\u0441\u043a\u0438\u0439 / \u041c\u0435\u043a\u0441\u0438\u043a\u0430\u043d\u0441\u043a\u0438\u0439 \u0438\u0441\u043f\u0430\u043d\u0441\u043a\u0438\u0439 / \u041d\u0438\u043a\u0430\u0440\u0430\u0433\u0443\u0430\u043d\u0441\u043a\u0438\u0439 \u0438\u0441\u043f\u0430\u043d\u0441\u043a\u0438\u0439 / \u0412\u0435\u043d\u0435\u0441\u0443\u044d\u043b\u044c\u0441\u043a\u0438\u0439 \u0418\u0441\u043f\u0430\u043d\u0441\u043a\u0438\u0439=es,\u042d\u0441\u0442\u043e\u043d\u0441\u043a\u0438\u0439=et,\u0411\u0430\u0441\u043a\u0441\u043a\u0438\u0439=eu,\u041f\u0435\u0440\u0441\u0438\u0434\u0441\u043a\u0438\u0439=fa,\u0424\u0438\u043d\u0441\u043a\u0438\u0439=fi,\u0424\u0440\u0430\u043d\u0446\u0443\u0437\u0441\u043a\u0438\u0439=fr,\u0424\u0440\u0438\u0437\u0441\u043a\u0438\u0439=fy,\u0418\u0440\u043b\u0430\u043d\u0434\u0441\u043a\u0438\u0439=ga,\u0413\u0430\u043b\u0438\u0441\u0438\u0439\u0441\u043a\u0438\u0439=gl,\u0418\u0432\u0440\u0438\u0442=he,\u0425\u0438\u043d\u0434\u0438=hi,\u0425\u043e\u0440\u0432\u0430\u0442\u0441\u043a\u0438\u0439=hr,\u0412\u0435\u043d\u0433\u0435\u0440\u0441\u043a\u0438\u0439=hu,\u0418\u043d\u0442\u0435\u0440\u043b\u0438\u043d\u0433\u0432\u0430=ia,\u0418\u043d\u0434\u043e\u043d\u0435\u0437\u0438\u0439\u0441\u043a\u0438\u0439=id,\u0418\u0434\u043e=io,\u0418\u0441\u043b\u0430\u043d\u0434\u0441\u043a\u0438\u0439=is,\u0418\u0442\u0430\u043b\u044c\u044f\u043d\u0441\u043a\u0438\u0439=it,\u042f\u043f\u043e\u043d\u0441\u043a\u0438\u0439=ja,\u0413\u0440\u0443\u0437\u0438\u043d\u0441\u043a\u0438\u0439=ka,\u041a\u0430\u0437\u0430\u0445\u0441\u043a\u0438\u0439=kk,\u041a\u0445\u043c\u0435\u0440\u0441\u043a\u0438\u0439=km,\u041a\u0430\u043d\u043d\u0430\u0434\u0430=kn,\u041a\u043e\u0440\u0435\u0439\u0441\u043a\u0438\u0439=ko,\u041b\u044e\u043a\u0441\u0435\u043c\u0431\u0443\u0440\u0433\u0441\u043a\u0438\u0439=lb,\u041b\u0438\u0442\u043e\u0432\u0441\u043a\u0438\u0439=lt,\u041b\u0430\u0442\u0432\u0438\u0439\u0441\u043a\u0438\u0439=lv,\u041c\u0430\u043a\u0435\u0434\u043e\u043d\u0441\u043a\u0438\u0439=mk,\u041c\u0430\u043b\u0430\u044f\u043b\u0430\u043c=ml,\u041c\u043e\u043d\u0433\u043e\u043b\u044c\u0441\u043a\u0438\u0439=mn,\u041c\u0430\u0440\u0430\u0442\u0445\u0438=mr,\u0411\u0438\u0440\u043c\u0430\u043d\u0441\u043a\u0438\u0439=my,\u041d\u043e\u0440\u0432\u0435\u0436\u0441\u043a\u0438\u0439 (\u0411\u0443\u043a\u043c\u043e\u043b)=nb,\u041d\u0435\u043f\u0430\u043b\u044c\u0441\u043a\u0438\u0439=ne,\u0413\u043e\u043b\u043b\u0430\u043d\u0434\u0441\u043a\u0438\u0439=nl,\u041d\u043e\u0440\u0432\u0435\u0436\u0441\u043a\u0438\u0439 (\u041d\u044e\u043d\u043e\u0440\u0441\u043a)=nn,\u041e\u0441\u0435\u0442\u0438\u043d\u0441\u043a\u0438\u0439=os,\u041f\u0430\u043d\u0434\u0436\u0430\u0431\u0438=pa,\u041f\u043e\u043b\u044c\u0441\u043a\u0438\u0439=pl,\u041f\u043e\u0440\u0442\u0443\u0433\u0430\u043b\u044c\u0441\u043a\u0438\u0439 / \u0411\u0440\u0430\u0437\u0438\u043b\u044c\u0441\u043a\u0438\u0439 \u043f\u043e\u0440\u0442\u0443\u0433\u0430\u043b\u044c\u0441\u043a\u0438\u0439=pt,\u0420\u0443\u043c\u044b\u043d\u0441\u043a\u0438\u0439=ro,+\u0420\u0443\u0441\u0441\u043a\u0438\u0439=ru,\u0421\u043b\u043e\u0432\u0430\u0446\u043a\u0438\u0439=sk,\u0421\u043b\u043e\u0432\u0435\u043d\u0441\u043a\u0438\u0439=sl,\u0410\u043b\u0431\u0430\u043d\u0441\u043a\u0438\u0439=sq,\u0421\u0435\u0440\u0431\u0441\u043a\u0438\u0439 / \u0421\u0435\u0440\u0431\u0441\u043a\u0438\u0439 (\u043b\u0430\u0442\u0438\u043d\u0438\u0446\u0430)=sr,\u0428\u0432\u0435\u0434\u0441\u043a\u0438\u0439=sv,\u0421\u0443\u0430\u0445\u0438\u043b\u0438=sw,\u0422\u0430\u043c\u0438\u043b\u044c\u0441\u043a\u0438\u0439=ta,\u0422\u0435\u043b\u0443\u0433\u0443=te,\u0422\u0430\u0439\u0441\u043a\u0438\u0439=th,\u0422\u0443\u0440\u0435\u0446\u043a\u0438\u0439=tr,\u0422\u0430\u0442\u0430\u0440\u0441\u043a\u0438\u0439=tt,\u0423\u0434\u043c\u0443\u0440\u0442\u0441\u043a\u0438\u0439=ud,\u0423\u043a\u0440\u0430\u0438\u043d\u0441\u043a\u0438\u0439=uk,\u0423\u0440\u0434\u0443=ur,\u0412\u044c\u0435\u0442\u043d\u0430\u043c\u0441\u043a\u0438\u0439=vi,\u0423\u043f\u0440\u043e\u0449\u0435\u043d\u043d\u044b\u0439 \u043a\u0438\u0442\u0430\u0439\u0441\u043a\u0438\u0439 / \u0423\u043f\u0440\u043e\u0449\u0435\u043d\u043d\u044b\u0439 \u043a\u0438\u0442\u0430\u0439\u0441\u043a\u0438\u0439 / \u0422\u0440\u0430\u0434\u0438\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u043a\u0438\u0442\u0430\u0439\u0441\u043a\u0438\u0439 / \u0422\u0440\u0430\u0434\u0438\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u043a\u0438\u0442\u0430\u0439\u0441\u043a\u0438\u0439=zh&quot;, &quot;elements&quot;: &quot;id_body&quot;, &quot;language&quot;: &quot;ru&quot;, &quot;paste_remove_styles_if_webkit&quot;: &quot;true&quot;, &quot;directionality&quot;: &quot;ltr&quot;, &quot;height&quot;: &quot;300&quot;, &quot;paste_strip_class_attributes&quot;: &quot;all&quot;, &quot;strict_loading_mode&quot;: 1, &quot;mode&quot;: &quot;exact&quot;, &quot;plugins&quot;: &quot;paste&quot;, &quot;paste_remove_styles&quot;: &quot;true&quot;, &quot;width&quot;: &quot;600&quot;}" id="id_body" name="body" rows="30"></textarea>
                      {{ form.body.errors }}
                      <p id='err_id_body' class='errorlist'></p>
                   </td>
@@ -135,7 +145,7 @@
                      <button class="btn btn-primary" type="submit" name="submit">Добавить</button>
                   </td>
                   <td>
-                     <button class="btn btn-primary" type="submit" name="submit-ch">Сохранить в черновик</button>
+                     <button class="btn btn-primary3" type="submit" name="submit-ch">Сохранить в черновик</button>
                   </td>
                </tr>
             </table>
@@ -145,6 +155,7 @@
 </div>
 {%endblock%}
 {%block script%}
+
 <script>
    var previewWidth = 150, // ширина превью
        previewHeight = 150, // высота превью
@@ -287,7 +298,7 @@
 </script>
 <script type="text/javascript">
    function checkForm(form){
-   	if (document.getElementById('selected_title').value=="") {
+   	if (document.getElementById('id_category').value=="") {
    		document.getElementById('err_id_category').innerHTML='Выберите Категорию';
    		return false;
    	};
@@ -394,14 +405,13 @@
 
 
    $('.category').on('click', function() {
-       var number = $('a').text();
-       $('#selected_title').val($(this).text());
+       $('#id_category').val($(this).text());
        $('#item').css('display','none');
-       $('#selected_title').css('display','block');
+       $('#id_category').css('display','block');
    });
-   $('#selected_title').on('click', function() {
-       $('#selected_title').val('');
-       $('#selected_title').css('display','none');
+   $('#id_category').on('click', function() {
+       $('#id_category').val('');
+       $('#id_category').css('display','none');
        $('#item').css('display','block');
    });
 </script>

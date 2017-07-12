@@ -2,7 +2,7 @@
 {% load thumbnail %}
 {% load endless %}
 {%block pagetitle%}{{subcategory}} от производителя купить не дорого{%endblock%}
-{%block description%}{{subcategory}} от производителя купить не дорого{%endblock%}
+{%block description%}{{subcategory.description}}{%endblock%}
 {%block content%}
 <div class="breadcrumbs">
    <div itemscope="" itemtype="http://schema.org/BreadcrumbList">
@@ -10,15 +10,15 @@
       <span>&frasl;</span>
       
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
-      <a href="/category/{{subsubcategory.parent.parent.id}}" itemprop="item" class="active">{{subsubcategory.parent.parent.title}}</a>
+      <a href="{% url 'categorydetail' slug=subsubcategory.parent.parent.slug %}" itemprop="item" >{{subsubcategory.parent.parent.title}}</a>
       </span>
       <span>&frasl;</span>
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
-      <a itemprop="item" href="/subcategory/{{subsubcategory.parent.id}}">{{subsubcategory.parent.title}}</a>
+      <a itemprop="item" href="{% url 'subcategorydetail' slug=subsubcategory.parent.parent.slug pk=subsubcategory.parent.id %}">{{subsubcategory.parent.title}}</a>
       </span>
       <span>&frasl;</span>
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
-      <a href="/subsubcategory/{{subsubcategory.id}}" itemprop="item" class="active">{{subsubcategory.title}}</a>
+      <a href="{% url 'subsubcategorydetail' category_slug=subsubcategory.parent.parent.slug  pk=subsubcategory.parent.id slug=subsubcategory.slug %}" itemprop="item" class="active">{{subsubcategory.title}}</a>
       </span>
    </div>
 </div>
@@ -41,14 +41,14 @@
         </div>
         <div class="orders-mini-wrapper">
             {% paginate order_list %}
-            {%for item in order_list|slice:":6"%}
+            {%for item in order_list%}
             <div itemscope itemtype="http://schema.org/Offer">
             <div class="orders-mini clearfix">
                 <div class="orders-mini-img-block">
                     {% if user.is_authenticated %}
                     {%for file in item.orderimage_set.all|slice:":1"%}
                     {% thumbnail file.file "150" crop="center" as im %}
-                    <a href="/order/{{item.id}}" class="button-h-opacity">
+                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                     <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                     </a>
                     {% endthumbnail %}
@@ -59,9 +59,9 @@
                 </div>
                 <div class="orders-mini-content">
                     <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                        <a href="/order/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+                        <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                     </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|slice:":230"}}...</div>
+                    <div class="orders-mini-content-text" itemprop="description">{{item.body|safe|linebreaks|slice:":230"}}...</div>
                     <div class="orders-mini-content-bottom">
                         <div class="left">
                             {%if item.user.company_set.all%}
@@ -149,14 +149,14 @@
         </div>
         <div class="orders-mini-wrapper">
             {% paginate sentence_list %}
-            {%for item in sentence_list|slice:":6"%}
+            {%for item in sentence_list%}
             <div itemscope itemtype="http://schema.org/Offer">
             <div class="orders-mini clearfix">
                 <div class="orders-mini-img-block">
                     {% if user.is_authenticated %}
                     {%for file in item.sentenceimage_set.all|slice:":1"%}
                     {% thumbnail file.file "150" crop="center" as im %}
-                    <a href="/sentence/{{item.id}}" class="button-h-opacity">
+                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                     <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                     </a>
                     {% endthumbnail %}
@@ -167,9 +167,9 @@
                 </div>
                 <div class="orders-mini-content">
                     <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                        <a href="/sentence/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+                        <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                     </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|slice:":200"}}</div>
+                    <div class="orders-mini-content-text" itemprop="description">{{item.body|safe|linebreaks|slice:":200"}}</div>
                     <div class="orders-mini-content-bottom">
                         <div class="left">
                             {%if item.user.company_set.all%}
@@ -229,6 +229,10 @@
          </div>
       </div>
    </div>
-  
+  <div class="content-inner">
+        <div class="categories-wrapper">
+            {{category.description|safe}}
+        </div>  
+    </div>
 </div>
 {%endblock%}

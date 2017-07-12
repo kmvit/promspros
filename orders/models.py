@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 import os
 from tinymce.models import HTMLField
 from django.core.validators import RegexValidator
+from unidecode import unidecode
 
 class Page(models.Model):
     title = models.CharField(max_length=200, verbose_name=u'Название')
@@ -23,10 +24,14 @@ class Page(models.Model):
         
 class Category(models.Model):
     title = models.CharField(max_length=300, verbose_name=u'Категории')
+    slug = models.SlugField(unique=True, verbose_name='URL')
+    description = models.TextField(verbose_name='Описание', blank=True)
     icon = models.ImageField(upload_to='images/icons', blank=True, verbose_name='Иконки')
+    my_order = models.PositiveIntegerField(default=0, blank=False, null=False, verbose_name='Порядок')
     class Meta:
         verbose_name = u'Категории'
         verbose_name_plural = u'Категория'
+        ordering = ('my_order',)
 
 
     def __unicode__(self):
@@ -34,6 +39,7 @@ class Category(models.Model):
         
 class Subcategory(models.Model):
     title = models.CharField(max_length=300, verbose_name=u'Подкатегории')
+    description = models.TextField(verbose_name='Описание', blank=True)
     icon = models.ImageField(upload_to='images/icons', blank=True, verbose_name='Иконки')
     parent = models.ForeignKey(Category, verbose_name=u'Родитель')
     class Meta:
@@ -46,6 +52,8 @@ class Subcategory(models.Model):
 
 class Subsubcategory(models.Model):
     title = models.CharField(max_length=300, verbose_name=u'Название')
+    slug = models.SlugField(unique=True, verbose_name='URL', max_length=300)
+    description = models.TextField(verbose_name='Описание', blank=True)
     icon = models.ImageField(upload_to='images/icons', blank=True, verbose_name='Иконки')
     parent = models.ForeignKey(Subcategory, verbose_name=u'Родитель')
     class Meta:
@@ -58,6 +66,7 @@ class Subsubcategory(models.Model):
 
 class Sentence(models.Model):
     title = models.CharField(max_length=200, verbose_name=u'Название')
+    slug = models.SlugField(unique=True, verbose_name='URL', max_length=300)
     category = models.ForeignKey(Subsubcategory, verbose_name='Категория', default=1)
     born = models.DateField(verbose_name="День создания", default=timezone.now)
     user = models.ForeignKey(User, verbose_name=u'Пользователь')
@@ -97,7 +106,7 @@ class Sentence(models.Model):
         return False
         
     def get_absolute_url(self):
-        return reverse('sentence_detail', kwargs={'pk': self.id})
+        return reverse('sentence_detail', kwargs={'category_slug': self.category.parent.parent.slug, 'subcategory_pk': self.category.parent.id, 'subsubcategory_slug': self.category.slug, 'slug': self.slug})
         
 class SentenceImage(models.Model):
     file = models.FileField(upload_to='images/sentence',blank=True, null=True,verbose_name=u'Фотографии')
@@ -127,6 +136,7 @@ class SentenceImage(models.Model):
 
 class Order(models.Model):
     title = models.CharField(max_length=200, verbose_name=u'Название')
+    slug = models.SlugField(unique=True, verbose_name='URL', max_length=300)
     category = models.ForeignKey(Subsubcategory, verbose_name='Категория', default=1)
     born = models.DateField(verbose_name="День создания", default=timezone.now)
     user = models.ForeignKey(User, verbose_name=u'Пользователь')
@@ -162,7 +172,9 @@ class Order(models.Model):
         return False
         
     def get_absolute_url(self):
-        return reverse('order_detail', kwargs={'pk': self.id})
+        return reverse('order_detail', kwargs={'category_slug': self.category.parent.parent.slug, 'subcategory_pk': self.category.parent.id, 'subsubcategory_slug': self.category.slug, 'slug': self.slug})
+    
+    
 
 class OrderImage(models.Model):
     file = models.FileField(upload_to='images/order',blank=True, null=True,verbose_name=u'Добавить файлы')
@@ -245,3 +257,13 @@ class City(models.Model):
 
     def __unicode__(self):
         return  u'%s' % self.title
+        
+        
+class BlockInfo(models.Model):
+    title = models.CharField(max_length=300, verbose_name='Название')
+    body = HTMLField(verbose_name='Содержание')
+    class Meta:
+        verbose_name = 'Блок Информации'
+    
+    def __unicode__(self):
+        return self.title

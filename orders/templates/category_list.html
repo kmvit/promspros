@@ -1,14 +1,14 @@
 {%extends 'base.html'%}
 {% load endless %}
 {% load thumbnail %}
-{%block description%}{{category.title}}{%endblock%}
+{%block description%}{{category.description}}{%endblock%}
 {%block content%}
 <div class="breadcrumbs">
    <div itemscope="" itemtype="http://schema.org/BreadcrumbList">
       <span itemprop="name"><a href="/">Главная</a></span>
       <span>&frasl;</span>
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
-      <a itemprop="item" class="active">{{category.title}}</a>
+      <a itemprop="item" href="{% url 'categorydetail' slug=category.slug %}" class="active">{{category.title}}</a>
       </span>
    </div>
 </div>
@@ -20,7 +20,7 @@
         <div class="categories-wrapper">
                         <ul class="categories-list link-h-underline-parent">
                             {%for category in subcategory_list%}
-                            <li><a href="/subcategory/{{category.id}}">{{category.title}}</a><span>{{category.order_set.count}}</span></li>
+                            <li><a href="{% url 'subcategorydetail' slug=category.parent.slug pk=category.id%}">{{category.title}}</a><span>{{category.subsubcategory.sentence_set.count}}</span></li>
                             {%endfor%}
                         </ul>
                     </div>
@@ -51,7 +51,7 @@
                     {% if user.is_authenticated %}
                     {%for file in item.orderimage_set.all|slice:":1"%}
                     {% thumbnail file.file "150" crop="center" as im %}
-                    <a href="/order/{{item.id}}" class="button-h-opacity">
+                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                     <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                     </a>
                     {% endthumbnail %}
@@ -62,9 +62,9 @@
                 </div>
                 <div class="orders-mini-content">
                     <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                        <a href="/order/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+                        <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                     </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|slice:":230"}}...</div>
+                    <div class="orders-mini-content-text" itemprop="description">{{item.body|safe|linebreaks|slice:":230"}}...</div>
                     <div class="orders-mini-content-bottom">
                         <div class="left">
                             {%if item.user.company_set.all%}
@@ -119,6 +119,7 @@
                             </div>
                         </div>
                     </div>
+              
         </div>
         <div id="favourite_confirm" class="favourite-confirm">
             <form>
@@ -159,7 +160,7 @@
                     {% if user.is_authenticated %}
                     {%for file in item.sentenceimage_set.all|slice:":1"%}
                     {% thumbnail file.file "150" crop="center" as im %}
-                    <a href="/sentence/{{item.id}}" class="button-h-opacity">
+                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                     <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                     </a>
                     {% endthumbnail %}
@@ -170,9 +171,9 @@
                 </div>
                 <div class="orders-mini-content">
                     <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                        <a href="/sentence/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+                        <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                     </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|slice:":200"}}</div>
+                    <div class="orders-mini-content-text" itemprop="description">{{item.body|safe|linebreaks|slice:":200"}}</div>
                     <div class="orders-mini-content-bottom">
                         <div class="left">
                             {%if item.user.company_set.all%}
@@ -227,12 +228,16 @@
                         </div>
                     </div>
         </div>
+        
                </div>
             </div>
          </div>
       </div>
    </div>
-    
-    
+   <div class="content-inner">
+        <div class="categories-wrapper">
+            {{category.description|safe}}
+        </div>  
+    </div>
 </div>
 {%endblock%}

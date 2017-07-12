@@ -16,10 +16,10 @@
                                 <img src="{{im.url}}">
                                 {%endthumbnail%}
                                 {%endif%}
-                                <a href="/category/{{category.id}}" class="orders-mini-content-title">{{category.title}}</a>
+                                <a href="{% url 'categorydetail' slug=category.slug%}" class="orders-mini-content-title">{{category.title}}</a>
                                 <ul class="categories-list-inner">
                                     {%for subcategory in category.subcategory_set.all%}
-                                    <li>{%if subcategory.icon%}<img src="{{subcategory.icon.url}}">{%endif%}<a href="/subcategory/{{subcategory.id}}">{{subcategory.title}}</a><span>{{subcategory.order_set.count}}</span></li>
+                                    <li>{%if subcategory.icon%}<img src="{{subcategory.icon.url}}">{%endif%}<a href="{% url 'subcategorydetail' slug=subcategory.parent.slug pk=subcategory.id %}">{{subcategory.title}}</a><span>{{subcategory.order_set.count}}</span></li>
                                     {%endfor%}
                                 </ul>
                             </li>
@@ -39,7 +39,7 @@
                     {% if user.is_authenticated %}
                     {%for file in item.orderimage_set.all|slice:":1"%}
                     {% thumbnail file.file "150" crop="center" as im %}
-                    <a href="/order/{{item.id}}" class="button-h-opacity">
+                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                     <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                     </a>
                     {% endthumbnail %}
@@ -50,9 +50,9 @@
                 </div>
                 <div class="orders-mini-content">
                     <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                        <a href="/order/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+                        <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                     </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|slice:":230"}}...</div>
+                    <div class="orders-mini-content-text" itemprop="description">{{item.body|safe|linebreaks|slice:":230"}}...</div>
                     <div class="orders-mini-content-bottom">
                         <div class="left">
                             {%if item.user.company_set.all%}
@@ -139,7 +139,7 @@
                     {% if user.is_authenticated %}
                     {%for file in item.sentenceimage_set.all|slice:":1"%}
                     {% thumbnail file.file "150" crop="center" as im %}
-                    <a href="/sentence/{{item.id}}" class="button-h-opacity">
+                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                     <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                     </a>
                     {% endthumbnail %}
@@ -150,9 +150,9 @@
                 </div>
                 <div class="orders-mini-content">
                     <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                        <a href="/sentence/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+                        <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                     </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|slice:":200"}}</div>
+                    <div class="orders-mini-content-text" itemprop="description">{{item.body|safe|linebreaks|slice:":200"}}</div>
                     <div class="orders-mini-content-bottom">
                         <div class="left">
                             {%if item.user.company_set.all%}

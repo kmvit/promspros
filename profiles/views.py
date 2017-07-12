@@ -52,6 +52,8 @@ class ProfileUpdate(UpdateView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(ProfileUpdate, self).dispatch(*args, **kwargs)
+        
+
     
 class NotCompanyView(DetailView):
     model = UserProfile

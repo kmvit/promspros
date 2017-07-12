@@ -26,7 +26,7 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.contrib.sitemaps import Sitemap
-
+from django.template.defaultfilters import slugify
 
 
 
@@ -154,13 +154,13 @@ class OrderCreate(CreateView):
         return context
     
     def get_absolute_url(self):
-        return reverse('order_detail', kwargs={'pk': self.object.id})
+        return reverse('order_detail', kwargs={'category_slug': self.object.category.parent.parent.slug, 'subcategory_pk': self.object.category.parent.id, 'subsubcategory_slug': self.object.category.slug, 'slug': self.object.slug})
         
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        form.instance.email = self.request.user.email
-        form.instance.category = get_object_or_404(Subcategory, title=self.request.POST['category'])
+        form.instance.category = get_object_or_404(Subsubcategory, title=self.request.POST['category'])
+        form.instance.slug = slugify(unidecode(form.cleaned_data['title']))
         if 'submit-ch' in self.request.POST:
             form.instance.status = '3'
         self.object = form.save()
@@ -187,9 +187,11 @@ class OrderUpdate(UpdateView):
     def get_context_data(self,**kwargs):
         context = super(OrderUpdate, self).get_context_data(**kwargs)
         context['orderimage_list'] = OrderImage.objects.filter(order=self.object.id)
+        context['category_list'] = Category.objects.all()
+        context['subcategory_list'] = Subcategory.objects.all()
         return context
     def get_absolute_url(self):
-        return reverse('order_detail', kwargs={'pk': self.object.id})
+        return reverse('order_detail', kwargs={'category_slug': self.object.category.parent.parent.slug, 'subcategory_pk': self.object.category.parent.id, 'subsubcategory_slug': self.object.category.slug, 'slug': self.object.slug})
         
     def form_valid(self, form):
         if self.request.user == self.object.user:
@@ -261,12 +263,12 @@ class SentenceCreate(CreateView):
         return context
     
     def get_absolute_url(self):
-        return reverse('sentence_detail', kwargs={'pk': self.object.id})
+        return reverse('sentence_detail', kwargs={'category_slug': self.object.category.parent.parent.slug, 'subcategory_pk': self.object.category.parent.id, 'subsubcategory_slug': self.object.category.slug, 'slug': self.object.slug})
     
     def form_valid(self, form):
         form.instance.user = self.request.user
-        form.instance.email = self.request.user.email
-        form.instance.category = get_object_or_404(Subcategory, title=self.request.POST['category'])
+        form.instance.category = get_object_or_404(Subsubcategory, title=self.request.POST['category'])
+        form.instance.slug = slugify(unidecode(form.cleaned_data['title']))
         if 'submit-ch' in self.request.POST:
             form.instance.status = '3'
         self.object = form.save()
@@ -298,10 +300,12 @@ class SentenceUpdate(UpdateView):
     def get_context_data(self,**kwargs):
         context = super(SentenceUpdate, self).get_context_data(**kwargs)
         context['sentenceimage_list'] = SentenceImage.objects.filter(sentence=self.object.id)
+        context['category_list'] = Category.objects.all()
+        context['subcategory_list'] = Subcategory.objects.all()
         return context
     
     def get_absolute_url(self):
-        return reverse('sentence_detail', kwargs={'pk': self.object.id})
+        return reverse('sentence_detail', kwargs={'category_slug': self.object.category.parent.parent.slug, 'subcategory_pk': self.object.category.parent.id, 'subsubcategory_slug': self.object.category.slug, 'slug': self.object.slug})
         
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -520,9 +524,9 @@ class CategoryView(DetailView):
     template_name = 'category_list.html'
     def get_context_data(self, **kwargs):
         context = super(CategoryView, self).get_context_data(**kwargs)
-        context['subcategory_list'] = Subcategory.objects.filter(parent_id=self.kwargs['pk'])
-        context['order_list'] = Order.objects.filter(category__parent_id=self.kwargs['pk'])
-        context['sentence_list'] = Sentence.objects.filter(category__parent_id=self.kwargs['pk'])
+        context['subcategory_list'] = Subcategory.objects.filter(parent__slug=self.kwargs['slug'])
+        context['order_list'] = Order.objects.filter(category__parent__parent__slug=self.kwargs['slug'])
+        context['sentence_list'] = Sentence.objects.filter(category__parent__parent__slug=self.kwargs['slug'])
         return context
 
             
@@ -532,17 +536,20 @@ class SubcategoryDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(SubcategoryDetail, self).get_context_data(**kwargs)
         context['subcategory_list'] = Subsubcategory.objects.filter(parent_id=self.kwargs['pk'])
-        context['order_list'] = Order.objects.filter(category_id=self.kwargs['pk'], status=1)
-        context['sentence_list'] = Sentence.objects.filter(category_id=self.kwargs['pk'], status=1)
+        context['order_list'] = Order.objects.filter(category__parent_id=self.kwargs['pk'], status=1)
+        context['sentence_list'] = Sentence.objects.filter(category__parent_id=self.kwargs['pk'], status=1)
         return context
 
 class SubsubcategoryDetail(DetailView):
     model = Subsubcategory
     template_name = 'subsubcategory.html'
+    def get_object(self):
+        return Subsubcategory.objects.get(slug=self.kwargs['slug'])
+        
     def get_context_data(self, **kwargs):
         context = super(SubsubcategoryDetail, self).get_context_data(**kwargs)
-        context['order_list'] = Order.objects.filter(category_id=self.kwargs['pk'], status=1)
-        context['sentence_list'] = Sentence.objects.filter(category_id=self.kwargs['pk'], status=1)
+        context['order_list'] = Order.objects.filter(category__slug=self.kwargs['slug'], status=1)
+        context['sentence_list'] = Sentence.objects.filter(category__slug=self.kwargs['slug'], status=1)
         return context
             
 def contactView(request):

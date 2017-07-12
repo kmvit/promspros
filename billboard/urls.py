@@ -10,6 +10,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from endless_pagination.views import AjaxListView
 from orders.ajax import *
 
+
 from django.contrib.sitemaps import GenericSitemap
 from django.contrib.sitemaps.views import sitemap
 admin.autodiscover()
@@ -23,9 +24,6 @@ sentense_dict = {
     'date_field': 'born',}
 
 urlpatterns = [
-    url(r'^category/(?P<pk>\d+)/$', CategoryView.as_view(), name='categorydetail'),
-    url(r'^subcategory/(?P<pk>\d+)/$', SubcategoryDetail.as_view(), name='subcategorydetail'),
-    url(r'^subsubcategory/(?P<pk>\d+)/$', SubsubcategoryDetail.as_view(), name='subsubcategorydetail'),
     url(r'^page/(?P<slug>\w+)/$', PageView.as_view(), name='page_detail'),
     url(r'^contact/$', contactView, name='contact_form'),
     url(r'^admin_tools/', include('admin_tools.urls')),
@@ -36,18 +34,10 @@ urlpatterns = [
     url(r'^$', Home.as_view(), name='home'),
     url(r'^add2favorites/$', add2favorites, name='add2favorites'),
     url(r'^move2/$', move2, name='move2'),
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^order/add/$', OrderCreate.as_view()),
     url(r'^download$', getfiles, name='zip'),
     url(r'^downloads$', getfiles_sentence, name='zip'),
-    url(r'^order/edit/(?P<pk>[-\w]+)/$', OrderUpdate.as_view(), name='order_edit'),
-    url(r'^order/delete/(?P<pk>[-\w]+)/$', OrderDelete.as_view(), name='order_delete'),
-    url(r'^orders/$', OrderList.as_view(), name='order-list'),
-    url(r'^order/(?P<pk>\d+)/$', OrderView.as_view(), name='order_detail'),
-    url(r'^sentence/add/$', SentenceCreate.as_view()),
-    url(r'^sentence/edit/(?P<pk>\d+)/$', SentenceUpdate.as_view(), name='sentence_edit'),
-    url(r'^sentence/delete/(?P<pk>\d+)/$', SentenceDelete.as_view(), name='sentence_delete'),
-    url(r'^sentences/$', SentenceList.as_view(), name='sentence_list'),
-    url(r'^sentence/(?P<pk>\d+)/$', SentenceView.as_view(), name='sentence_detail'),
     url(r'^company/add/$', CompanyCreate.as_view(), name='company_add'),
     url(r'^company/edit/(?P<pk>\d+)/$', CompanyUpdate.as_view(), name='company_edit'),
     url(r'^company/delete/(?P<pk>\d+)/$', CompanyDelete.as_view(), name='company_delete'),
@@ -64,6 +54,19 @@ urlpatterns = [
     url(r'^logout/$', logout_ajax, name='logout_ajax'),
     url(r'^robots.txt$', robots, name='robots'),
     url(r'^sitemap\.xml$', sitemap,  {'sitemaps': {'order': GenericSitemap(info_dict, priority=0.6), 'sentence':GenericSitemap(sentense_dict, priority=0.6)}}, name='django.contrib.sitemaps.views.sitemap'),
+    url(r'^order/edit/(?P<pk>[-\w]+)/$', OrderUpdate.as_view(), name='order_edit'),
+    url(r'^order/delete/(?P<pk>[-\w]+)/$', OrderDelete.as_view(), name='order_delete'),
+    url(r'^orders/$', OrderList.as_view(), name='order-list'),
+    url(r'^(?P<category_slug>[\w-]+)/(?P<subcategory_pk>\d+)/(?P<subsubcategory_slug>[\w-]+)/o/(?P<slug>[\w-]+)/$', OrderView.as_view(), name='order_detail'),
+    url(r'^sentence/add/$', SentenceCreate.as_view()),
+    url(r'^sentence/edit/(?P<pk>\d+)/$', SentenceUpdate.as_view(), name='sentence_edit'),
+    url(r'^sentence/delete/(?P<pk>\d+)/$', SentenceDelete.as_view(), name='sentence_delete'),
+    url(r'^sentences/$', SentenceList.as_view(), name='sentence_list'),
+    url(r'^(?P<category_slug>[\w-]+)/(?P<subcategory_pk>\d+)/(?P<subsubcategory_slug>[\w-]+)/s/(?P<slug>[\w-]+)/$', SentenceView.as_view(), name='sentence_detail'),
+    
+    url(r'^(?P<slug>[\w-]+)/$', CategoryView.as_view(), name='categorydetail'),
+    url(r'^(?P<slug>[\w-]+)/(?P<pk>\d+)/$', SubcategoryDetail.as_view(), name='subcategorydetail'),
+    url(r'^(?P<category_slug>[\w-]+)/(?P<pk>\d+)/(?P<slug>[\w-]+)/$', SubsubcategoryDetail.as_view(), name='subsubcategorydetail'),
 
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

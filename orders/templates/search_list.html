@@ -59,7 +59,7 @@
                                 {% if modeltype == 'order'%} 
                                 {%for file in item.orderimage_set.all|slice:":1"%}
                                 {% thumbnail file.file "100x100" crop="center" as im %}
-                                <a href="/order/{{item.id}}" class="button-h-opacity">
+                                <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{item.title}}">
                                 </a>
                                 {% endthumbnail %}
@@ -67,7 +67,7 @@
                                 {% elif modeltype == 'sentence'%} 
                                 {%for file in item.sentenceimage_set.all|slice:":1"%}
                                 {% thumbnail file.file "100x100" crop="center" as im %}
-                                <a href="/sentence/{{item.id}}" class="button-h-opacity">
+                                <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{item.title}}">
                                 </a>
                                 {% endthumbnail %}
@@ -88,15 +88,15 @@
                             <div class="orders-mini-content">
                                 <div class="orders-mini-content-top clearfix">
                                     {% if 'order' in modeltype%} 
-                                    <h1><a href="{% url 'order_detail' item.id %}" class="orders-mini-content-title">{{item.title}}</a></h1>
+                                    <h1><a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a></h1>
                                     {% elif 'sentence' in modeltype%}
-                                    <h1><a href="{% url 'sentence_detail' item.id %}" class="orders-mini-content-title">{{item.title}}</a></h1>
+                                    <h1><a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a></h1>
                                     {%else%}
                                     <h1><a href="{% url 'company_detail' item.id %}" class="orders-mini-content-title">{{item.title}}</a></h1>
                                     {%endif%}
                                 </div>
                                     {% if 'order' in modeltype or 'sentence' in modeltype%} 
-                                    <div class="orders-mini-content-text">{{item.body|slice:":230"}}...</div>
+                                    <div class="orders-mini-content-text">{{item.body|safe|slice:":230"}}...</div>
                                     {%else%}
                                     <div class="orders-mini-content-text">{{item.info|slice:":230"}}...</div>
                                     {%endif%}
