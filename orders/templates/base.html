@@ -17,6 +17,7 @@
                <meta name="description" content="{%block description%}Промспрос | Портал производственных решений{%endblock%}">
                <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}"/>
                <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+
                {%endblock%} 
             </head>
             <body>
@@ -40,7 +41,7 @@
                         </div>
                      </div>
                      {%else%}
-                     <a href="/accounts/login/?next={{request.path}}" class="entry-button">войти</a>
+                      <a href="/accounts/login/?next={{request.path}}" class="entry-button">войти</a>
                      {%endif%}
                   </div>
                   <div class="header-nav-wrapper main-section-2">
@@ -93,8 +94,8 @@
                               <td>
                                  <select id="s12" name="s" class="cusel" >
                                     <option value="order">Заказы</option>
-                                    <option value="sentence">Предложения </option>
-                                    <option value="company">Компания </option>
+                                    <option value="sentence" {%if 'sentences' in request.path %} selected="true" {% endif %}>Предложения </option>
+                                    <option value="company" {%if 'companies' in request.path %} selected="true" {% endif %}>Компания </option>
                                  </select>
                               </td>
                               <td>
@@ -126,7 +127,7 @@
                         {%endif%}
                         <div class="sidebar-inner">
                            {%block info%}
-                           {% block_info %}
+                                {% block_info %}
                            {%endblock%}
                         </div>
                         <div class="sidebar-inner">
@@ -141,15 +142,7 @@
                            </div>
                            {%endblock%}
                         </div>
-                        {%block category%}
-                        <div class="sidebar-inner">
-                           <div class="sidebar-heading">Категории</div>
-                           <ul class="sidebar-list link-h-underline-parent">
-                              {% load company_tags%}
-                              {% category_list %}
-                           </ul>
-                        </div>
-                        {%endblock%}
+                        
                      </aside>
                      {%endblock%}
                   </div>
@@ -169,6 +162,8 @@
                            служба поддержки: <a href="mailto:info@promspros.ru">info@promspros.ru</a>
                         </div>
                      </div>
+                    <p id="back-top"><a href="#top"><span>^</span></a></p>
+
                   </div>
                   {% load cache %}
                   {%cache 500 js_css_footer%}
@@ -488,6 +483,26 @@
                          }
                      }
                   </script>
+                  <script>
+$(document).ready(function(){
+$("#back-top").hide();
+$(function () {
+$(window).scroll(function () {
+if ($(this).scrollTop() > 100) {
+$('#back-top').fadeIn();
+} else {
+$('#back-top').fadeOut();
+}
+});
+$('#back-top a').click(function () {
+$('body,html').animate({
+scrollTop: 0
+}, 400);
+return false;
+});
+});
+});
+</script>
                   {%endblock%}
                   {%endcache%}
                   {%block script%}

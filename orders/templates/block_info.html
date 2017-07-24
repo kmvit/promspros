@@ -1,2 +1,13 @@
-<div class="sidebar-heading">{{block_info}}</div>
-<div class="sidebar-text">{{block_info.body|safe}}</div>
+<ul  class="drop_vert_menu">
+    {% for item in category %}
+	<li><a href="{% url 'categorydetail' slug=item.slug %}"><span>{{item.title}}</span></a>
+	<ul>
+	    {% for i in item.subcategory_set.all %}
+		
+            <li><a href="{% url 'subcategorydetail' slug=i.parent.slug pk=i.id %}"><span>{{i.title}}</span></a></li>
+       
+       {% endfor %}
+       </ul>
+       </li>
+	{% endfor %}
+</ul>

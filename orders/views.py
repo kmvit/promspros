@@ -536,6 +536,9 @@ class SubcategoryDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(SubcategoryDetail, self).get_context_data(**kwargs)
         context['subcategory_list'] = Subsubcategory.objects.filter(parent_id=self.kwargs['pk'])
+        context['category_list'] = Subcategory.objects.filter(parent__slug=self.kwargs['slug'])
+        cat = Subcategory.objects.get(id=self.kwargs['pk'])
+        context['url_item'] = cat.id
         context['order_list'] = Order.objects.filter(category__parent_id=self.kwargs['pk'], status=1)
         context['sentence_list'] = Sentence.objects.filter(category__parent_id=self.kwargs['pk'], status=1)
         return context
@@ -548,6 +551,7 @@ class SubsubcategoryDetail(DetailView):
         
     def get_context_data(self, **kwargs):
         context = super(SubsubcategoryDetail, self).get_context_data(**kwargs)
+        context['category_list'] = Subsubcategory.objects.filter(parent__id=self.kwargs['pk']).exclude(slug=self.kwargs['slug'])
         context['order_list'] = Order.objects.filter(category__slug=self.kwargs['slug'], status=1)
         context['sentence_list'] = Sentence.objects.filter(category__slug=self.kwargs['slug'], status=1)
         return context

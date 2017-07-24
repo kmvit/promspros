@@ -1,8 +1,8 @@
 {%extends 'base.html'%}
 {% load thumbnail %}
 {% load endless %}
-{%block pagetitle%}{{subcategory}} от производителя купить не дорого{%endblock%}
-{%block description%}{{subcategory.description}}{%endblock%}
+{%block pagetitle%}{{subsubcategory}} от производителя купить не дорого{%endblock%}
+{%block description%}{{subsubcategory.description}}{%endblock%}
 {%block content%}
 <div class="breadcrumbs">
    <div itemscope="" itemtype="http://schema.org/BreadcrumbList">
@@ -231,8 +231,21 @@
    </div>
   <div class="content-inner">
         <div class="categories-wrapper">
-            {{category.description|safe}}
+            {{subsubcategory.description|safe}}
         </div>  
     </div>
 </div>
+{%endblock%}
+{%block info%}
+<ul  class="drop_vert_menu">
+    <li>
+	    <span><b>{{subsubcategory.title}}</b></span>
+    </li>
+    {% for item in category_list %}
+	<li>
+	    <a href="{% url 'subsubcategorydetail' slug=item.slug pk=item.parent.id category_slug=item.parent.parent.slug %}"><span>{{item.title}}</span></a>
+    </li>
+	{% endfor %}
+</ul>
+
 {%endblock%}

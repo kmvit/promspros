@@ -14,24 +14,11 @@
       {% get_providers as socialaccount_providers %}
       {% if socialaccount_providers %}
       <div class="socialaccount_ballot">
-         <ul class="socialaccount_providers">
-            <li>
-            <a class="btn btn-social-icon btn-sm btn-vk" href="{% provider_login_url "vk" method="oauth2" %}">
-                <span class="fa fa-vk"></span>
-            </a>
-            </li>
-            <li>
-            <a class="btn btn-social-icon btn-sm btn-vk" href="{% provider_login_url "google" method="oauth2" %}">
-                <span class="fa fa-google"></span>
-            </a>
-            </li>
-            <li>    
-            <a class="btn btn-social-icon btn-sm btn-vk" href="{% provider_login_url "facebook" method="oauth2" %}">
-                <span class="fa fa-facebook"></span>
-            </a>
-            </li>
-         </ul>
-         <div class="login-or">{% trans 'or' %}</div>
+      
+          
+          
+         
+         
       </div>
       {% include "socialaccount/snippets/login_extra.html" %}
       {% else %}
@@ -62,7 +49,84 @@
             <button class="primaryAction" type="submit">{% trans "Sign In" %}</button>
          </div>
       </form>
+      <hr>
+      <div class="login-or">{% trans 'or' %}</div>
+      <ul class="socialaccount_providers">
+            <li>
+            <a class="btn btn-social-icon btn-sm btn-vk" href="{% provider_login_url "vk" method="oauth2" %}">
+                <span class="btn-social btn-social_vk"> <i class="i-social i-social_vk"></i> </span>
+            </a>
+            </li>
+            <li>
+            <a class="btn btn-social-icon btn-sm btn-vk" href="{% provider_login_url "google" method="oauth2" %}">
+                <span class="btn-social btn-social_gp"> <i class="i-social i-social_gp"></i> </span>
+            </a>
+            </li>
+            <li>    
+            <a class="btn btn-social-icon btn-sm btn-vk" href="{% provider_login_url "facebook" method="oauth2" %}">
+                <span class="btn-social btn-social_fb"> <i class="i-social i-social_fb"></i> </span>
+            </a>
+            </li>
+            <li>    
+            <a class="btn btn-social-icon btn-sm btn-ok" href="{% provider_login_url "odnoklassniki" method="oauth2" %}">
+                <span class="btn-social btn-social_ok"> <i class="i-social i-social_ok"></i> </span>
+            </a>
+            </li>
+         </ul>
    </div>
 </div>
+<style>
+.btn-social_vk {
+    background-color: #4d75a3;
+}
+.btn-social_fb {
+    background-color: #395185;
+}
+.btn-social_gp {
+    background-color: #dd4b39;
+}
+.btn-social_ok {
+    background-color: #e27e35;
+}
+.btn-social {
+    display: inline-block;
+    width: 48px;
+    height: 34px;
+    margin: 0 4px 0 0;
+    border-radius: 4px;
+    vertical-align: bottom;
+    line-height: 34px;
+    cursor: pointer;
+}
+.btn-social .i-social {
+    margin: -3px 0 0;
+}
+.i-social_vk {
+    width: 14px;
+    height: 17px;
+    background-image: url(/static/img/vkontakte.svg);
+}
+.i-social_fb {
+    width: 13px;
+    height: 25px;
+    background-image: url(/static/img/facebook.svg);
+}
+.i-social_gp {
+    width: 26px;
+    height: 18px;
+    background-image: url(/static/img/google+.svg);
+}
+.i-social_ok {
+    width: 12px;
+    height: 20px;
+    background-image: url(/static/img/odnoklassniki.svg);
+}
+.i-social {
+    display: inline-block;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+</style>
 {% endblock %}
 

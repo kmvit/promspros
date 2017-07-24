@@ -62,6 +62,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.vk',
+    'allauth.socialaccount.providers.odnoklassniki',
     'endless_pagination',
     'sorl.thumbnail',
     'tinymce',

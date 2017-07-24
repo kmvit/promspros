@@ -26,6 +26,12 @@ def category_list(context):
 
 @register.inclusion_tag('block_info.html', takes_context=True)
 def block_info(context):
+    category = Category.objects.all()
+    context = {'category':category}
+    return context
+    
+@register.inclusion_tag('block_info_main.html', takes_context=True)
+def block_info_main(context):
     block = BlockInfo.objects.first()
     context = {'block_info':block}
     return context

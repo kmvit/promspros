@@ -233,8 +233,27 @@
    </div>
   <div class="content-inner">
         <div class="categories-wrapper">
-            {{category.description|safe}}
+            {{subcategory.description|safe}}
         </div>  
     </div>
 </div>
+{%endblock%}
+{%block info%}
+<ul  class="drop_vert_menu">
+    <li>
+	    <span><b>{{subcategory.parent.title}}</b></span>
+    </li>
+    {% for item in category_list %}
+    {% if item.id == url_item %}
+    <li class="active">
+	    <a href="{% url 'subcategorydetail' slug=item.parent.slug pk=item.id %}"><span>{{item.title}}</span></a>
+    </li>
+    {% else %}
+	<li>
+	    <a href="{% url 'subcategorydetail' slug=item.parent.slug pk=item.id %}"><span>{{item.title}}</span></a>
+    </li>
+    {% endif %}
+	{% endfor %}
+</ul>
+
 {%endblock%}
