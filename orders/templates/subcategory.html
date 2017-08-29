@@ -47,7 +47,6 @@
             <div itemscope itemtype="http://schema.org/Offer">
             <div class="orders-mini clearfix">
                 <div class="orders-mini-img-block">
-                    {% if user.is_authenticated %}
                     {%for file in item.orderimage_set.all|slice:":1"%}
                     {% thumbnail file.file "150" crop="center" as im %}
                     <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
@@ -55,15 +54,12 @@
                     </a>
                     {% endthumbnail %}
                     {%endfor%}
-                    {% else %}
-                    <img itemprop="image" src="/media/images/company/company_no-reg.jpg">
-                    {% endif %}
                 </div>
                 <div class="orders-mini-content">
                     <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
                         <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                     </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|safe|linebreaks|slice:":230"}}...</div>
+                    <div class="orders-mini-content-text" itemprop="description">{{item.body|linebreaksbr|slice:":230"}}...</div>
                     <div class="orders-mini-content-bottom">
                         <div class="left">
                             {%if item.user.company_set.all%}
@@ -155,7 +151,6 @@
             <div itemscope itemtype="http://schema.org/Offer">
             <div class="orders-mini clearfix">
                 <div class="orders-mini-img-block">
-                    {% if user.is_authenticated %}
                     {%for file in item.sentenceimage_set.all|slice:":1"%}
                     {% thumbnail file.file "150" crop="center" as im %}
                     <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
@@ -163,15 +158,12 @@
                     </a>
                     {% endthumbnail %}
                     {%endfor%}
-                    {% else %}
-                    <img itemprop="image" src="/media/images/company/company_no-reg.jpg">
-                    {% endif %}
                 </div>
                 <div class="orders-mini-content">
                     <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
                         <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                     </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|safe|linebreaks|slice:":200"}}</div>
+                    <div class="orders-mini-content-text" itemprop="description">{{item.body|linebreaksbr|slice:":200"}}</div>
                     <div class="orders-mini-content-bottom">
                         <div class="left">
                             {%if item.user.company_set.all%}

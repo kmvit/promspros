@@ -158,7 +158,6 @@
                      {%for item in order_list%}
                      <div class="orders-mini clearfix">
                         <div class="orders-mini-img-block">
-                           {% if user.is_authenticated %}
                            {%for file in item.orderimage_set.all|slice:":1"%}
                            {% thumbnail file.file "150" crop="center" as im %}
                            <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
@@ -166,9 +165,6 @@
                            </a>
                            {% endthumbnail %}
                            {%endfor%}
-                           {% else %}
-                           <img src="/media/images/company/company_no-reg.jpg" alt="{{item.title}}">
-                           {% endif %}
                         </div>
                         <div class="orders-mini-content">
                            <div class="orders-mini-content-top clearfix">
@@ -245,7 +241,6 @@
                      {%for item in sentence_list%}
                      <div class="orders-mini clearfix">
                         <div class="orders-mini-img-block">
-                           {% if user.is_authenticated %}
                            {%for file in item.sentenceimage_set.all|slice:":1"%}
                            {% thumbnail file.file "150" crop="center" as im %}
                            <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
@@ -253,9 +248,6 @@
                            </a>
                            {% endthumbnail %}
                            {%endfor%}
-                           {% else %}
-                           <img src="/media/images/company/company_no-reg.jpg" alt="{{item.title}}">
-                           {% endif %}
                         </div>
                         <div class="orders-mini-content">
                            <div class="orders-mini-content-top clearfix">

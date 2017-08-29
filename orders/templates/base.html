@@ -17,7 +17,8 @@
                <meta name="description" content="{%block description%}Промспрос | Портал производственных решений{%endblock%}">
                <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}"/>
                <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
-
+               <link rel="stylesheet" type="text/css" href="{% static 'css/components.css' %}" />
+               <link rel="stylesheet" type="text/css" href="{% static 'css/components-add.css' %}" />
                {%endblock%} 
             </head>
             <body>
@@ -122,8 +123,8 @@
                         <a href="/order/add" class="order-button">заказ</a>
                         <a href="/sentence/add" class="order-button">предложение</a>
                         {%else%}
-                        <a href="/accounts/login" class="order-button">заказ</a>
-                        <a href="/accounts/login" class="order-button">предложение</a>
+                        <a href="/accounts/login/?next={{request.path}}" class="order-button">заказ</a>
+                        <a href="/accounts/login/?next={{request.path}}" class="order-button">предложение</a>
                         {%endif%}
                         <div class="sidebar-inner">
                            {%block info%}

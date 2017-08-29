@@ -171,7 +171,6 @@
          {%for item in order_list%}
          <div class="orders-mini clearfix">
             <div class="orders-mini-img-block">
-               {% if user.is_authenticated %}
                {%for file in item.orderimage_set.all|slice:":1"%}
                {% thumbnail file.file "100x100" crop="center" as im %}
                <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
@@ -179,15 +178,12 @@
                </a>
                {% endthumbnail %}
                {%endfor%}
-               {% else %}
-               <img src="/media/images/company/company_no-reg.jpg">
-               {% endif %}
             </div>
             <div class="orders-mini-content">
                <div class="orders-mini-content-top clearfix">
                   <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                </div>
-               <div class="orders-mini-content-text">{{item.body|safe|linebreaks|slice:":70"}}</div>
+               <div class="orders-mini-content-text">{{item.body|safe|linebreaksbr|escape|slice:":70"}}</div>
                <div class="orders-mini-content-bottom">
                   <div class="left">
                      {%if item.user.company_set.all%}

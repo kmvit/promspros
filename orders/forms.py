@@ -31,7 +31,7 @@ class EditOrderForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = '__all__'
-        exclude = ['user','status','email','born', 'category']
+        exclude = ['user','status','email','born', 'category', 'slug']
 
     def __init__(self, *args, **kwargs):
         super(EditOrderForm, self).__init__(*args, **kwargs)
@@ -55,7 +55,7 @@ class EditSentenceForm(forms.ModelForm):
     class Meta:
         model = Sentence
         fields = '__all__'
-        exclude = ['user','status','born','email','category']
+        exclude = ['user','status','born','email','category','slug']
 
     def __init__(self, *args, **kwargs):
         super(EditSentenceForm, self).__init__(*args, **kwargs)

@@ -55,7 +55,7 @@
                         {%for item in search_list%}
                         <div class="orders-mini clearfix">
                             <div class="orders-mini-img-block">
-                                {% if user.is_authenticated %}
+                       
                                 {% if modeltype == 'order'%} 
                                 {%for file in item.orderimage_set.all|slice:":1"%}
                                 {% thumbnail file.file "100x100" crop="center" as im %}
@@ -81,9 +81,7 @@
                                 {% endthumbnail %}
                                 {%endfor%}
                                 {%endif%}
-                                {% else %}
-                                <img src="/media/images/company/company_no-reg.jpg">
-                                {% endif %}
+                      
                             </div>
                             <div class="orders-mini-content">
                                 <div class="orders-mini-content-top clearfix">
@@ -96,9 +94,9 @@
                                     {%endif%}
                                 </div>
                                     {% if 'order' in modeltype or 'sentence' in modeltype%} 
-                                    <div class="orders-mini-content-text">{{item.body|safe|slice:":230"}}...</div>
+                                    <div class="orders-mini-content-text">{{item.body|linebreaksbr|slice:":230"}}</div>
                                     {%else%}
-                                    <div class="orders-mini-content-text">{{item.info|slice:":230"}}...</div>
+                                    <div class="orders-mini-content-text">{{item.info|slice:":230"}}</div>
                                     {%endif%}
                                 <div class="orders-mini-content-bottom">
                                     <div class="left">
