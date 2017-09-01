@@ -536,9 +536,14 @@ class SubcategoryDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(SubcategoryDetail, self).get_context_data(**kwargs)
         context['subcategory_list'] = Subsubcategory.objects.filter(parent_id=self.kwargs['pk'])
+        category_list = Subsubcategory.objects.filter(parent_id=self.kwargs['pk'])
+        category_count=[]
+        for item in category_list:
+            category_count.append(item.order_set.all().filter(status='1').count())
         context['category_list'] = Subcategory.objects.filter(parent__slug=self.kwargs['slug'])
         cat = Subcategory.objects.get(id=self.kwargs['pk'])
         context['url_item'] = cat.id
+        context['category_count'] = zip(category_list, category_count)
         context['order_list'] = Order.objects.filter(category__parent_id=self.kwargs['pk'], status=1)
         context['sentence_list'] = Sentence.objects.filter(category__parent_id=self.kwargs['pk'], status=1)
         return context
