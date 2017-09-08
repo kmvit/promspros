@@ -57,7 +57,7 @@
                     <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
                         <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                     </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|safe|linebreaksbr|slice:":230"}}...</div>
+                    <div class="orders-mini-content-text" itemprop="description"><p>{{item.body|linebreaksbr|slice:":170"}}</p></div>
                     <div class="orders-mini-content-bottom">
                         <div class="left">
                             {%if item.user.company_set.all%}
@@ -162,7 +162,7 @@
                     <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
                         <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                     </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|safe|linebreaksbr|slice:":200"}}</div>
+                    <div class="orders-mini-content-text" itemprop="description"><p>{{item.body|linebreaksbr|slice:":200"}}</p></div>
                     <div class="orders-mini-content-bottom">
                         <div class="left">
                             {%if item.user.company_set.all%}
