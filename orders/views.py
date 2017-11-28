@@ -468,18 +468,19 @@ class SearchList(ListView):
     template_name = 'search_list.html'
     def get_context_data(self,**kwargs):
         context = super(SearchList, self).get_context_data(**kwargs)
+        
         if self.request.GET['city'] == '' and self.request.GET['s'] == 'order':
-            context['search_list'] = Order.objects.filter(title__icontains=self.request.GET['q'], status=1)
+            context['search_list'] = Order.objects.filter(title__icontains=self.request.GET['q'].title(), status=1)
         elif self.request.GET['city'] == '' and self.request.GET['s'] == 'sentence':
-            context['search_list'] = Sentence.objects.filter(title__icontains=self.request.GET['q'], status=1)
+            context['search_list'] = Sentence.objects.filter(title__icontains=self.request.GET['q'].title(), status=1)
         elif self.request.GET['city'] == '' and self.request.GET['s'] == 'company':
-            context['search_list'] = Company.objects.filter(title__icontains=self.request.GET['q'])
+            context['search_list'] = Company.objects.filter(title__icontains=self.request.GET['q'].title())
         elif self.request.GET['city'] != '' and self.request.GET['s'] == 'order':
-            context['search_list'] = Order.objects.filter(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)
+            context['search_list'] = Order.objects.filter(title__icontains=self.request.GET['q'].title(), city=self.request.GET['city'], status=1)
         elif self.request.GET['city'] != '' and self.request.GET['s'] == 'sentence':
-            context['search_list'] = Sentence.objects.filter(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)
+            context['search_list'] = Sentence.objects.filter(title__icontains=self.request.GET['q'].title(), city=self.request.GET['city'], status=1)
         elif self.request.GET['city'] != '' and self.request.GET['s'] == 'company':
-            context['search_list'] = Company.objects.filter(title__icontains=self.request.GET['q']).exclude(user__pk=self.request.user.pk)
+            context['search_list'] = Company.objects.filter(title__icontains=self.request.GET['q'].title()).exclude(user__pk=self.request.user.pk)
         context['modeltype'] = self.request.GET['s'] 
         return context    
 

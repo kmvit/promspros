@@ -210,7 +210,7 @@ class Company(models.Model):
     city = models.CharField(max_length=140, verbose_name=u'Город')
     ur_adress = models.CharField(max_length=300, verbose_name=u'Юридиеский адрес')
     pochta_adress = models.CharField(max_length=300, verbose_name=u'Почтовый адрес')
-    inn = models.CharField(max_length=12, verbose_name=u'ИНН', validators=[alphanumeric])
+
 
     class Meta:
         verbose_name = u'Копания'
