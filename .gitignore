@@ -3,7 +3,7 @@ __pycache__/
 *.pyo
 settings_local.py
 db.sqlite3
-
+media/
 myprojectenv/
 
 
