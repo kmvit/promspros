@@ -5,8 +5,8 @@ settings_local.py
 db.sqlite3
 
 myprojectenv/
-media/
-static/
+
+
 
 email-local-spool/
 *.geany

@@ -1,0 +1,11 @@
+.drop_vert_menu li ul {
+    width: 250px;
+    position: absolute;
+    z-index: 10000;
+    display: none;
+    top: 0px;
+    left: -247px;
+}
+.drop_vert_menu li.active {
+    background: rgba(214,214,214,1);
+}

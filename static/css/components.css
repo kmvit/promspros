@@ -1,0 +1,90 @@
+.drop_vert_menu {
+    list-style-type: none; 
+    margin: 0; 
+    padding: 0;
+ }
+ 
+.drop_vert_menu  ul {
+    list-style-type: none; 
+    margin: 0; 
+    padding: 0; 
+}
+.drop_vert_menu > li{
+  position: relative; 
+  padding:5px;
+}
+
+.drop_vert_menu > li:hover {
+background: #e2e2e2;
+}
+.drop_vert_menu > li > a:hover {
+    color: #45a9fe;
+}
+.drop_vert_menu > li > a{
+  font-size:14px;
+  color: #00539a;
+  text-decoration:none;
+}
+
+
+
+ .drop_vert_menu li:hover ul {
+   display: block; 
+   }
+
+.drop_vert_menu li ul li{
+  text-align:left;
+  background: #e2e2e2;
+  padding: 8px 0px 8px 10px;
+}
+
+
+.drop_vert_menu li ul li a{
+  font-size:14px;
+  color:#00539a;
+  text-decoration:none;
+}
+
+.drop_vert_menu li ul li a:hover{
+  font-size: 14px;
+  color: #45a9fe;
+  text-decoration:none;
+}
+.drop_vert_menu b {
+    font-size: 16px;
+}
+
+
+.class-top{    
+   min-height: 2000px;
+   width: 400px;
+   margin: 0 auto;
+}
+#back-top {
+	position: fixed; bottom: 30px; right: 5%;
+}
+#back-top a { 
+	width: 48px; 
+	display: block;
+	text-align: center; 
+	font: bold 8px Arial; 
+	text-transform: uppercase; 
+	text-decoration: none; 
+	color: #fff;		
+	-webkit-transition: 1s; 
+	-moz-transition: 1s; 
+	transition: 1s;
+}
+#back-top a:hover {	
+	text-decoration: underline;
+}
+#back-top span { 
+    font-size:30px;
+	width: 48px; 
+	height: 48px; 
+	display: block; 
+	margin-bottom: -14px;	
+	background: #00539a; 
+	-webkit-transition: 1s; 
+	-moz-transition: 1s; transition: 1s;
+}
