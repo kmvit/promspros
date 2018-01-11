@@ -37,7 +37,7 @@ CACHES = {
 ALLOWED_HOSTS = ['*']
 
 ADMINS = (
-    ('Andrey', 'justscoundrel@yandex.ru'),
+    ('Andrey', 'info@promspros.ru'),
 )
 # Application definition
 
