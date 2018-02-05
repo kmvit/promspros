@@ -11,8 +11,8 @@ from unidecode import unidecode
 class Page(models.Model):
     title = models.CharField(max_length=200, verbose_name=u'Название')
     slug = models.SlugField(unique=True, verbose_name=u'URL')
-    keywords = models.CharField(max_length=200, verbose_name=u'keywords')
-    description = models.CharField(max_length=200, verbose_name=u'description')
+    keywords = models.TextField(default="Test")
+    description = models.TextField()
     body = HTMLField(verbose_name=u'Содержание')
     class Meta:
         verbose_name = u'Страница'
@@ -25,13 +25,21 @@ class Page(models.Model):
 class Category(models.Model):
     title = models.CharField(max_length=300, verbose_name=u'Категории')
     slug = models.SlugField(unique=True, verbose_name='URL')
-    description = models.TextField(verbose_name='Описание', blank=True)
+    description = HTMLField(verbose_name='Описание', blank=True)
     icon = models.ImageField(upload_to='images/icons', blank=True, verbose_name='Иконки')
     my_order = models.PositiveIntegerField(default=0, blank=False, null=False, verbose_name='Порядок')
     class Meta:
         verbose_name = u'Категории'
         verbose_name_plural = u'Категория'
         ordering = ('my_order',)
+        
+    def order_count(self):
+        sentence_list = Sentence.objects.filter(category__parent__parent_slug = self.slug, status=1) 
+        order_list = Order.objects.filter(category__parent__parent_slug = self.slug, status=1) 
+        return sentence_list.count() + order_list.count()
+
+    def __unicode__(self):
+        return u'%s' % self.title
 
 
     def __unicode__(self):
@@ -39,27 +47,40 @@ class Category(models.Model):
         
 class Subcategory(models.Model):
     title = models.CharField(max_length=300, verbose_name=u'Подкатегории')
-    description = models.TextField(verbose_name='Описание', blank=True)
+    description = HTMLField(verbose_name='Описание', blank=True)
     icon = models.ImageField(upload_to='images/icons', blank=True, verbose_name='Иконки')
     parent = models.ForeignKey(Category, verbose_name=u'Родитель')
     class Meta:
         verbose_name = u'Подкатегории'
         verbose_name_plural = u'Подкатегория'
         ordering = ['title']
+    
+    def order_count(self):
+        sentence_list = Sentence.objects.filter(category__parent_id = self.id, status=1) 
+        order_list = Order.objects.filter(category__parent_id = self.id, status=1) 
+        return sentence_list.count() + order_list.count()
 
     def __unicode__(self):
         return u'%s' % self.title
+        
+    
+            
 
 class Subsubcategory(models.Model):
     title = models.CharField(max_length=300, verbose_name=u'Название')
     slug = models.SlugField(unique=True, verbose_name='URL', max_length=300)
-    description = models.TextField(verbose_name='Описание', blank=True)
+    description = HTMLField(verbose_name='Описание', blank=True)
     icon = models.ImageField(upload_to='images/icons', blank=True, verbose_name='Иконки')
     parent = models.ForeignKey(Subcategory, verbose_name=u'Родитель')
     class Meta:
         verbose_name = u'Подподкатегории'
         verbose_name_plural = u'Подподкатегория'
         ordering = ['title']
+    
+    def order_count(self):
+        sentence_list = Sentence.objects.filter(category__slug = self.slug, status=1) 
+        order_list = Order.objects.filter(category__slug = self.slug, status=1) 
+        return sentence_list.count() + order_list.count()
 
     def __unicode__(self):
         return u'%s' % self.title
@@ -200,8 +221,15 @@ class OrderImage(models.Model):
         if extension == '.txt':
             return 'word'
         return 'other'
+        
+        
+def get_file_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (str(instance.id), ext)
+    return os.path.join('uploads','avatar', filename)
 
 class Company(models.Model):
+    logo = models.ImageField(upload_to=get_file_path,blank=True, verbose_name='Лого')
     alphanumeric = RegexValidator(r'^[0-9]*$', u'Только цифры!')
     user = models.ForeignKey(User, verbose_name=u'Пользователь', default='1')
     info = models.TextField(max_length=1900, verbose_name=u'Информация о компании', blank=True)
@@ -264,6 +292,19 @@ class BlockInfo(models.Model):
     body = HTMLField(verbose_name='Содержание')
     class Meta:
         verbose_name = 'Блок Информации'
+    
+    def __unicode__(self):
+        return self.title
+        
+        
+class BlockonPage(models.Model):
+    title = models.CharField(max_length=300)
+    block_one = HTMLField(blank=True)
+    block_two = HTMLField(blank=True)
+    block_three = HTMLField(blank=True)
+    class Meta:
+        verbose_name = 'Блок на странице'
+        verbose_name_plural = u'Блоки на странице'
     
     def __unicode__(self):
         return self.title

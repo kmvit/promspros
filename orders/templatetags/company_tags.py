@@ -35,3 +35,7 @@ def block_info_main(context):
     block = BlockInfo.objects.first()
     context = {'block_info':block}
     return context
+    
+@register.filter
+def add(a, b):
+    return a+b

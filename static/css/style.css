@@ -60,4 +60,20 @@ button.secondaryAction {
     border-radius: 5px;
 }
 
-
+a.add-button {
+    border: #45a9fe 1px solid;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 5px;
+    color: #45a9fe;
+}
+a.add-button:hover {
+    color: #fff;
+    background:#45a9fe;
+}
+.center {
+    text-align: center;
+}
+.block_on_page {
+    margin: 0 5px 5px 5px;
+}

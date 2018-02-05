@@ -90,7 +90,7 @@
                   <td>
                      <form action="/download" method='GET'>
                         <input type="hidden" name = "q" value="{{sentence.id}}">
-                        <button class="main-input-link" type="submit">Скачать архив</button>
+                        <button class="main-input-link" type="submit">Скачать одним архивом</button>
                      </form>
                   </td>
                   {%endfor%}
@@ -187,7 +187,7 @@
                <div class="orders-mini-content-top clearfix">
                   <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                </div>
-               <div class="orders-mini-content-text">{{item.body|safe|slice:":70"}}</div>
+               <div class="orders-mini-content-text">{{item.body|truncatechars:230}}</div>
                <div class="orders-mini-content-bottom">
                   <div class="left">
                      {%if item.user.company_set.all%}
@@ -255,7 +255,7 @@
       {%endfor%}
    </div>
    <div class="sidebar-inner">
-      <div class="sidebar-heading">Другие компании в {{sentence.city}}</div>
+      <div class="sidebar-heading">Другие компании в г.{{sentence.city}}</div>
       <ul class="sidebar-list link-h-underline-parent">
          {%if company.count == 0%}
          <p>Нет компаний</p>

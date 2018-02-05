@@ -7,7 +7,7 @@ from tinymce.widgets import TinyMCE
 class AddProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['avatar','name','phone', 'email']
+        fields = ['name','phone', 'email']
     def __init__(self, *args, **kwargs):
         super(AddProfileForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
@@ -17,7 +17,7 @@ class AddProfileForm(forms.ModelForm):
 class EditProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['avatar','name','phone']
+        fields = ['name','phone']
         widgets = {
             'phone': forms.TextInput(attrs={'placeholder': 'Например: +79241112223'}),
             'description': forms.Textarea(

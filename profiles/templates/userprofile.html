@@ -19,6 +19,14 @@
                     <table class="profile-table">
                         {%for item in profile.company_set.all%}
                         <tr>
+                            <td>Лого:</td>
+                            <td>
+                                {% thumbnail item.logo "200" as im %}
+                                <img src="{{ im.url }}" alt="{{profile.name}}">
+                                {% endthumbnail %}
+                            </td>
+                        </tr>
+                         <tr>
                             <td>Название:</td>
                             <td>{{item.title}}</td>
                         </tr>
@@ -41,14 +49,6 @@
                         <tr>
                             <td>Почтовый адрес:</td>
                             <td>{{item.pochta_adress}}</td>
-                        </tr>
-                        <tr>
-                            <td>ИНН:</td>
-                            <td><span class="profile-table-not">{{item.inn}}</span></td>
-                        </tr>
-                        <tr>
-                            <td>Бик:</td>
-                            <td><span class="profile-table-not">{{item.bik}}</span></td>
                         </tr>
                         <tr>
                             <td>Название банка:</td>
@@ -74,19 +74,19 @@
                             </td>
                         </tr>
                         {%endfor%} 
-                        <tr>
-                            <td></td>
-                            <td>
+                       
+                    
+                    </table>
+                    <div class="center">
                                 {%if company == 1%}
                                 {%for item in profile.company_set.all%}
-                                <a href="/company/edit/{{item.id}}">Редактировать</a>
+                                <a class="add-button center" href="/company/edit/{{item.id}}">Редактировать</a>
                                 {%endfor%}
                                 {%else%}
-                                 <a href="/company/add/">Добавить</a>
-                                {%endif%}    
-                            </td>
-                        </tr>
-                    </table>
+                        
+                                 <a class="add-button" href="/company/add/">Добавить</a>
+                                {%endif%}
+                    </div>
                 </div>
                 <div id="tabs-2">
                     <div class="tabs-inner">
@@ -711,14 +711,7 @@
                 <a href="/sentence/add" class="order-button">предложение</a>
                 <div class="sidebar-inner">
                     <div class="sidebar-heading">Личный кабинет</div>
-                    <div class="profile-sidebar-text">
-                        <div class="profile-sidebar-text-top">Аватар:</div>
-                          {% thumbnail profile.avatar "200" as im %}
-               
-                            <img src="{{ im.url }}" alt="{{profile.name}}">
-               
-                          {% endthumbnail %}
-                    </div>
+
                     <div class="profile-sidebar-text">
                         <div class="profile-sidebar-text-top">ФИО:</div>
                         <p>{{profile.name}}</p>

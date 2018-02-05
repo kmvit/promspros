@@ -45,8 +45,10 @@
             <table class="profile-table">
                <tr>
                   <td>
-                     {%if company.user.userprofile.avatar%}
-                     <img src="{{company.user.userprofile.avatar.url}}" width="100%"  alt="{{company.title}}">
+                     {%if company.logo%}
+                      {% thumbnail company.logo "200" as im %}
+                      <img src="{{ im.url }}" alt="{{company.title}}">
+                        {% endthumbnail %}
                      {%else%}
                      <p>Нет лого</p>
                      {%endif%}

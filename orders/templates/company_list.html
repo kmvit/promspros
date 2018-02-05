@@ -1,7 +1,7 @@
 {%extends 'base.html'%}
 {% load thumbnail %}
-{%block description%}Компании{%endblock%}
-{%block pagetitle%}Компании{%endblock%}
+{%block description%}Производители промышленных товаров, поставщики товаров и услуг для предприятий и населения – каталог компаний на PromSpros{%endblock%}
+{%block pagetitle%}Промспрос – производители и поставщики промышленных товаров, оборудования и услуг{%endblock%}
 {%block content%}
 {% load endless %}
 
@@ -27,7 +27,7 @@
                             <div class="orders-mini-img-block">
                                 
                                 
-                                {% thumbnail item.user.userprofile.avatar "100x100" as im %}
+                                {% thumbnail item.logo "100x100" as im %}
                                 <a href="{{ item.id }}" class="button-h-opacity">
                                 <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                                 </a>
@@ -94,6 +94,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="block_on_page">
+        {{block_page.block_one|safe}}
+    </div>
             </div>
       
 

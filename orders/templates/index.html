@@ -1,11 +1,18 @@
 {%extends 'base.html'%}
 {% load thumbnail %}
-{%block description%}Главная страница{%endblock%}
+{% load company_tags %}
+{%block description%}Промышленные объявления по отраслям на портале ПромСпрос – актуальный спрос и предложение производственных компаний. Широкий выбор промышленных товаров и услуг. Самые актуальные предложения со всей России. {%endblock%}
+{%block pagetitle%}PromSpros – Портал производственных решений. Предложения компаний, заказы покупателей.{% endblock %}
 {%block content%}
+<div class="block_on_page">
+        {{block_page.block_one|safe}}
+    </div>
 <div class="content">
+    
     <div class="content-inner">
+        
         <div class="content-inner-top clearfix">
-                        <h1 class="section-heading">Промышленные объявления</h1>
+                        <h1 class="section-heading">Промышленные объявления по отраслям</h1>
                     </div>
         <div class="categories-wrapper">
                         <ul class="categories-list categories-list-main link-h-underline-parent">
@@ -19,8 +26,9 @@
                                 <a href="{% url 'categorydetail' slug=category.slug%}" class="orders-mini-content-title">{{category.title}}</a>
                                 <ul class="categories-list-inner">
                                     {%for subcategory in category.subcategory_set.all%}
-                                    <li>{%if subcategory.icon%}<img src="{{subcategory.icon.url}}">{%endif%}<a href="{% url 'subcategorydetail' slug=subcategory.parent.slug pk=subcategory.id %}">{{subcategory.title}}</a><span>{{subcategory.order_set.count}}</span></li>
+                                    <li>{%if subcategory.icon%}<img src="{{subcategory.icon.url}}">{%endif%}<a href="{% url 'subcategorydetail' slug=subcategory.parent.slug pk=subcategory.id %}">{{subcategory.title}}</a><span>{{subcategory.order_count}}</span></li>
                                     {%endfor%}
+                                 
                                 </ul>
                             </li>
                             {%endfor%}
@@ -123,6 +131,9 @@
             </form>
         </div>
     </div>
+    <div class="block_on_page">
+        {{block_page.block_two|safe}}
+    </div>
     <div class="content-inner">
         <div class="content-inner-top content-inner-top-2 clearfix">
             <h2 class="section-heading">Новые предложения</h2>
@@ -195,6 +206,9 @@
                 <a href="/sentences">Смотреть все &gt;</a>
             </div>
         </div>
+    </div>
+    <div class="block_on_page">
+        {{block_page.block_three|safe}}
     </div>
 </div>
 {%endblock%}

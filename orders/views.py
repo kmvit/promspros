@@ -27,6 +27,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.contrib.sitemaps import Sitemap
 from django.template.defaultfilters import slugify
+from django.db.models import Q, Count
 
 
 
@@ -110,6 +111,12 @@ class Home(ListView):
     context_object_name = 'order_list'
     def get_context_data(self,**kwargs):
         context = super(Home, self).get_context_data(**kwargs)
+        category_list = Subsubcategory.objects.all()
+        counts = []
+        for category in category_list:
+            counts.append(str(category.order_set.all().count() + category.sentence_set.all().count()))
+        context['counts'] = counts
+        context['block_page'] = BlockonPage.objects.get(id=1)
         context['order_list'] = Order.objects.filter(status=1)
         context['sentence_list'] = Sentence.objects.filter(status=1)
         context['company_list'] = Company.objects.all()
@@ -125,6 +132,7 @@ class OrderList(ListView):
     context_object_name = 'order_list'
     def get_context_data(self,**kwargs):
         context = super(OrderList, self).get_context_data(**kwargs)
+        context['block_page'] = BlockonPage.objects.get(id=3)
         context['order_list'] = Order.objects.filter(status=1).order_by('-born')
         context['sentence_list'] = Sentence.objects.all()
         context['company_list'] = Company.objects.all()
@@ -232,6 +240,7 @@ class SentenceList(ListView):
     context_object_name = 'sentence_list'
     def get_context_data(self,**kwargs):
         context = super(SentenceList, self).get_context_data(**kwargs)
+        context['block_page'] = BlockonPage.objects.get(id=2)
         context['company_list'] = Company.objects.all()
         context['sentence_list'] = Sentence.objects.filter(status=1).order_by('-born')
         return context
@@ -359,6 +368,7 @@ class CompanyList(ListView):
     context_object_name = 'company_list'
     def get_context_data(self,**kwargs):
         context = super(CompanyList, self).get_context_data(**kwargs)
+        context['block_page'] = BlockonPage.objects.get(id=4)
         context['company_list'] = Company.objects.all().exclude(user__pk=self.request.user.pk)
         return context
     
@@ -470,17 +480,17 @@ class SearchList(ListView):
         context = super(SearchList, self).get_context_data(**kwargs)
         
         if self.request.GET['city'] == '' and self.request.GET['s'] == 'order':
-            context['search_list'] = Order.objects.filter(title__icontains=self.request.GET['q'].title(), status=1)
+            context['search_list'] = Order.objects.filter(Q(title__icontains=self.request.GET['q'], status=1)|Q(body__icontains=self.request.GET['q'], status=1))
         elif self.request.GET['city'] == '' and self.request.GET['s'] == 'sentence':
-            context['search_list'] = Sentence.objects.filter(title__icontains=self.request.GET['q'].title(), status=1)
+            context['search_list'] = Sentence.objects.filter(Q(title__icontains=self.request.GET['q'], status=1)|Q(body__icontains=self.request.GET['q'], status=1))
         elif self.request.GET['city'] == '' and self.request.GET['s'] == 'company':
-            context['search_list'] = Company.objects.filter(title__icontains=self.request.GET['q'].title())
+            context['search_list'] = Company.objects.filter(Q(title__icontains=self.request.GET['q'])|Q(info__icontains=self.request.GET['q']))
         elif self.request.GET['city'] != '' and self.request.GET['s'] == 'order':
-            context['search_list'] = Order.objects.filter(title__icontains=self.request.GET['q'].title(), city=self.request.GET['city'], status=1)
+            context['search_list'] = Order.objects.filter(Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|Q(body__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1))
         elif self.request.GET['city'] != '' and self.request.GET['s'] == 'sentence':
-            context['search_list'] = Sentence.objects.filter(title__icontains=self.request.GET['q'].title(), city=self.request.GET['city'], status=1)
+            context['search_list'] = Sentence.objects.filter(Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|Q(body__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1))
         elif self.request.GET['city'] != '' and self.request.GET['s'] == 'company':
-            context['search_list'] = Company.objects.filter(title__icontains=self.request.GET['q'].title()).exclude(user__pk=self.request.user.pk)
+            context['search_list'] = Company.objects.filter(Q(title__icontains=self.request.GET['q'])|Q(info__icontains=self.request.GET['q'])).exclude(user__pk=self.request.user.pk)
         context['modeltype'] = self.request.GET['s'] 
         return context    
 
@@ -525,9 +535,13 @@ class CategoryView(DetailView):
     template_name = 'category_list.html'
     def get_context_data(self, **kwargs):
         context = super(CategoryView, self).get_context_data(**kwargs)
+        category_list = Subcategory.objects.filter(parent__slug=self.kwargs['slug'])
+        order_list = Order.objects.filter(category__parent__parent__slug=self.kwargs['slug'])
+        sentence_list = Sentence.objects.filter(category__parent__parent__slug=self.kwargs['slug'])
         context['subcategory_list'] = Subcategory.objects.filter(parent__slug=self.kwargs['slug'])
         context['order_list'] = Order.objects.filter(category__parent__parent__slug=self.kwargs['slug'])
         context['sentence_list'] = Sentence.objects.filter(category__parent__parent__slug=self.kwargs['slug'])
+
         return context
 
             
@@ -538,13 +552,9 @@ class SubcategoryDetail(DetailView):
         context = super(SubcategoryDetail, self).get_context_data(**kwargs)
         context['subcategory_list'] = Subsubcategory.objects.filter(parent_id=self.kwargs['pk'])
         category_list = Subsubcategory.objects.filter(parent_id=self.kwargs['pk'])
-        category_count=[]
-        for item in category_list:
-            category_count.append(item.order_set.all().filter(status='1').count())
         context['category_list'] = Subcategory.objects.filter(parent__slug=self.kwargs['slug'])
         cat = Subcategory.objects.get(id=self.kwargs['pk'])
         context['url_item'] = cat.id
-        context['category_count'] = zip(category_list, category_count)
         context['order_list'] = Order.objects.filter(category__parent_id=self.kwargs['pk'], status=1)
         context['sentence_list'] = Sentence.objects.filter(category__parent_id=self.kwargs['pk'], status=1)
         return context

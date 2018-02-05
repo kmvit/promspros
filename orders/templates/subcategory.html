@@ -1,5 +1,6 @@
 {%extends 'base.html'%}
 {% load thumbnail %}
+{% load company_tags %}
 {% load endless %}
 {%block pagetitle%}{{subcategory}} от производителя купить не дорого{%endblock%}
 {%block description%}{{subcategory.description}}{%endblock%}
@@ -25,8 +26,8 @@
         <div class="categories-wrapper">
                         <ul class="categories-list link-h-underline-parent">
                    
-                            {%for category,item in category_count%}
-                            <li><a href="{%url 'subsubcategorydetail' category_slug=category.parent.parent.slug pk=category.parent.id slug=category.slug %}">{{category.title}}</a><span>{{item}}</span></li>
+                            {%for category in subcategory_list%}
+                            <li><a href="{%url 'subsubcategorydetail' category_slug=category.parent.parent.slug pk=category.parent.id slug=category.slug %}">{{category.title}}</a><span>{{category.order_count}}</span></li>
                             {%endfor%}
                         </ul>
                     </div>

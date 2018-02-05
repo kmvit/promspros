@@ -1,7 +1,7 @@
 {%extends 'base.html'%}
 {% load thumbnail %}
-{%block description%}Страница заказов{%endblock%}
-{%block pagetitle%}Заказы{%endblock%}
+{%block description%}Заказы от покупателей промышленных товаров на портале ПромСпрос. Здесь можно бесплатно разместить объявление о покупке промышленных товаров и найти продавцов с наилучшими условиями!{%endblock%}
+{%block pagetitle%}Промспрос – объявления о покупке промышленных товаров и заказе услуг{%endblock%}
 {%block content%}
 {% load endless %}
 <div class="breadcrumbs">
@@ -36,7 +36,7 @@
                   <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
                      <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                   </div>
-                  <div class="orders-mini-content-text" itemprop="description">{{item.body|linebreaksbr|slice:":230"}}...</div>
+                  <div class="orders-mini-content-text" itemprop="description">{{item.body|truncatechars:230}}...</div>
                   <div class="orders-mini-content-bottom">
                      <div class="left">
                         {%if item.user.company_set.all%}
@@ -89,6 +89,10 @@
             </div>
          </div>
       </div>
+      
    </div>
+   <div class="block_on_page">
+        {{block_page.block_one|safe}}
+    </div>
 </div>
 {%endblock%}

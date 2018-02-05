@@ -49,7 +49,7 @@
             </div>
             <div class="content">
                 <div class="content-inner">
-                    <div class="search-result-text">Найдено {{search_list_count}} совпадения</div>
+                    <div class="search-result-text">Найдено {{search_list.count}} совпадения/ий</div>
                     <div class="orders-mini-wrapper">
                         {% paginate search_list %}
                         {%for item in search_list%}
@@ -74,7 +74,7 @@
                                 {%endfor%}
                                 {%else%}
                                 {%for file in item.companyimage_set.all|slice:":1"%}
-                                {% thumbnail file.file_up "100x100" crop="center" as im %}
+                                {% thumbnail file.file "100x100" crop="center" as im %}
                                 <a href="/company/{{item.id}}" class="button-h-opacity">
                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{item.title}}">
                                 </a>
@@ -94,7 +94,7 @@
                                     {%endif%}
                                 </div>
                                     {% if 'order' in modeltype or 'sentence' in modeltype%} 
-                                    <div class="orders-mini-content-text">{{item.body|linebreaksbr|slice:":230"}}</div>
+                                    <div class="orders-mini-content-text">{{item.body|truncatechars:230}}</div>
                                     {%else%}
                                     <div class="orders-mini-content-text">{{item.info|slice:":230"}}</div>
                                     {%endif%}
