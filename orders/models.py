@@ -47,6 +47,7 @@ class Category(models.Model):
         
 class Subcategory(models.Model):
     title = models.CharField(max_length=300, verbose_name=u'Подкатегории')
+    slug = models.SlugField(verbose_name='URL', blank=True)
     description = HTMLField(verbose_name='Описание', blank=True)
     icon = models.ImageField(upload_to='images/icons', blank=True, verbose_name='Иконки')
     parent = models.ForeignKey(Category, verbose_name=u'Родитель')
