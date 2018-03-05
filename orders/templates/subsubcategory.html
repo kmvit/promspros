@@ -14,11 +14,11 @@
       </span>
       <span>&frasl;</span>
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
-      <a itemprop="item" href="{% url 'subcategorydetail' slug=subsubcategory.parent.parent.slug pk=subsubcategory.parent.id %}">{{subsubcategory.parent.title}}</a>
+      <a itemprop="item" href="{% url 'subcategorydetail' slug=subsubcategory.parent.parent.slug subcategory_slug=subsubcategory.parent.slug %}">{{subsubcategory.parent.title}}</a>
       </span>
       <span>&frasl;</span>
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
-      <a href="{% url 'subsubcategorydetail' category_slug=subsubcategory.parent.parent.slug  pk=subsubcategory.parent.id slug=subsubcategory.slug %}" itemprop="item" class="active">{{subsubcategory.title}}</a>
+      <a href="{% url 'subsubcategorydetail' category_slug=subsubcategory.parent.parent.slug  subcategory_slug=subsubcategory.parent.slug slug=subsubcategory.slug %}" itemprop="item" class="active">{{subsubcategory.title}}</a>
       </span>
    </div>
 </div>
@@ -236,7 +236,7 @@
     </li>
     {% for item in category_list %}
 	<li>
-	    <a href="{% url 'subsubcategorydetail' slug=item.slug pk=item.parent.id category_slug=item.parent.parent.slug %}"><span>{{item.title}}</span></a>
+	    <a href="{% url 'subsubcategorydetail' slug=item.slug subcategory_slug=item.parent.slug category_slug=item.parent.parent.slug %}"><span>{{item.title}}</span></a>
     </li>
 	{% endfor %}
 </ul>

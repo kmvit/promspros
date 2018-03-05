@@ -14,20 +14,20 @@
       </span>
       <span>&frasl;</span>
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
-      <a href="{% url 'subcategorydetail' slug=subcategory.parent.slug pk=subcategory.id %}" itemprop="item" class="active">{{subcategory.title}}</a>
+      <a href="{% url 'subcategorydetail' slug=subcategory.parent.slug subcategory_slug=subcategory.slug %}" itemprop="item" class="active">{{subcategory.title}}</a>
       </span>
    </div>
 </div>
 <div class="content">
     <div class="content-inner">
         <div class="content-inner-top clearfix">
-                        <h1 class="section-heading">{{category.title}}</h1>
+                        <h1 class="section-heading">{{subcategory.title}}</h1>
                     </div>
         <div class="categories-wrapper">
                         <ul class="categories-list link-h-underline-parent">
                    
                             {%for category in subcategory_list%}
-                            <li><a href="{%url 'subsubcategorydetail' category_slug=category.parent.parent.slug pk=category.parent.id slug=category.slug %}">{{category.title}}</a><span>{{category.order_count}}</span></li>
+                            <li><a href="{%url 'subsubcategorydetail' category_slug=category.parent.parent.slug subcategory_slug=category.parent.slug slug=category.slug %}">{{category.title}}</a><span>{{category.order_count}}</span></li>
                             {%endfor%}
                         </ul>
                     </div>
@@ -240,11 +240,11 @@
     {% for item in category_list %}
     {% if item.id == url_item %}
     <li class="active">
-	    <a href="{% url 'subcategorydetail' slug=item.parent.slug pk=item.id %}"><span>{{item.title}}</span></a>
+	    <a href="{% url 'subcategorydetail' slug=item.parent.slug subcategory_slug=item.slug %}"><span>{{item.title}}</span></a>
     </li>
     {% else %}
 	<li>
-	    <a href="{% url 'subcategorydetail' slug=item.parent.slug pk=item.id %}"><span>{{item.title}}</span></a>
+	    <a href="{% url 'subcategorydetail' slug=item.parent.slug subcategory_slug=item.slug %}"><span>{{item.title}}</span></a>
     </li>
     {% endif %}
 	{% endfor %}

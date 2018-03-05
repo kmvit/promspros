@@ -20,7 +20,7 @@
         <div class="categories-wrapper">
                         <ul class="categories-list link-h-underline-parent">
                             {%for category in subcategory_list%}
-                            <li><a href="{% url 'subcategorydetail' slug=category.parent.slug pk=category.id%}">{{category.title}}</a><span>{{category.order_count}}</span></li>
+                            <li><a href="{% url 'subcategorydetail' slug=category.parent.slug subcategory_slug=category.slug%}">{{category.title}}</a><span>{{category.order_count}}</span></li>
                             {%endfor%}
                         </ul>
                     </div>

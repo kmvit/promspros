@@ -65,8 +65,8 @@ urlpatterns = [
     url(r'^(?P<category_slug>[\w-]+)/(?P<subcategory_pk>\d+)/(?P<subsubcategory_slug>[\w-]+)/s/(?P<slug>[\w-]+)/$', SentenceView.as_view(), name='sentence_detail'),
     
     url(r'^(?P<slug>[\w-]+)/$', CategoryView.as_view(), name='categorydetail'),
-    url(r'^(?P<slug>[\w-]+)/(?P<pk>\d+)/$', SubcategoryDetail.as_view(), name='subcategorydetail'),
-    url(r'^(?P<category_slug>[\w-]+)/(?P<pk>\d+)/(?P<slug>[\w-]+)/$', SubsubcategoryDetail.as_view(), name='subsubcategorydetail'),
+    url(r'^(?P<slug>[\w-]+)/(?P<subcategory_slug>[\w-]+)/$', SubcategoryDetail.as_view(), name='subcategorydetail'),
+    url(r'^(?P<category_slug>[\w-]+)/(?P<subcategory_slug>[\w-]+)/(?P<slug>[\w-]+)/$', SubsubcategoryDetail.as_view(), name='subsubcategorydetail'),
 
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

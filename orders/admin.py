@@ -32,7 +32,7 @@ class CompanyAdmin(admin.ModelAdmin):
 
     
 class SubcategoryAdmin(admin.ModelAdmin):
-    list_display = ('title','parent')
+    list_display = ('title','parent','slug')
     search_fields = ['title']
     list_filter = ['parent']
     

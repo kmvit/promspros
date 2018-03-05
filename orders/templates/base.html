@@ -46,9 +46,7 @@
                      {%else%}
                       <a href="/accounts/login/?next={{request.path}}" class="entry-button">войти</a>
                      {%endif%}
-                  </div>
-                  <div class="header-nav-wrapper main-section-2">
-                     <nav class="header-nav main-section">
+                     <nav class="header-nav">
                         <ul>
                            <li>
                               {% url 'home' as home_url %}
@@ -68,6 +66,9 @@
                            </li>
                         </ul>
                      </nav>
+                  </div>
+                  <div class="header-nav-wrapper main-section-2">
+                     
                   </div>
                </header>
                {%if user.is_authenticated%}

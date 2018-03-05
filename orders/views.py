@@ -293,6 +293,8 @@ class SentenceCreate(CreateView):
             photo.file.save('123.jpg', ContentFile(img_data))
             photo.save()
         return HttpResponseRedirect(self.get_absolute_url())
+        
+
    
 class SentenceUpdate(UpdateView):
     model = Sentence
@@ -548,15 +550,19 @@ class CategoryView(DetailView):
 class SubcategoryDetail(DetailView):
     model = Subcategory
     template_name = 'subcategory.html'
+    
+    def get_object(self):
+        return get_object_or_404(Subcategory, slug=self.kwargs['subcategory_slug'])
+        
     def get_context_data(self, **kwargs):
         context = super(SubcategoryDetail, self).get_context_data(**kwargs)
-        context['subcategory_list'] = Subsubcategory.objects.filter(parent_id=self.kwargs['pk'])
-        category_list = Subsubcategory.objects.filter(parent_id=self.kwargs['pk'])
+        context['subcategory_list'] = Subsubcategory.objects.filter(parent__slug=self.kwargs['subcategory_slug'])
+        category_list = Subsubcategory.objects.filter(parent__slug=self.kwargs['subcategory_slug'])
         context['category_list'] = Subcategory.objects.filter(parent__slug=self.kwargs['slug'])
-        cat = Subcategory.objects.get(id=self.kwargs['pk'])
+        cat = Subcategory.objects.get(slug=self.kwargs['subcategory_slug'])
         context['url_item'] = cat.id
-        context['order_list'] = Order.objects.filter(category__parent_id=self.kwargs['pk'], status=1)
-        context['sentence_list'] = Sentence.objects.filter(category__parent_id=self.kwargs['pk'], status=1)
+        context['order_list'] = Order.objects.filter(category__parent__slug=self.kwargs['subcategory_slug'], status=1)
+        context['sentence_list'] = Sentence.objects.filter(category__parent__slug=self.kwargs['subcategory_slug'], status=1)
         return context
 
 class SubsubcategoryDetail(DetailView):
@@ -567,7 +573,7 @@ class SubsubcategoryDetail(DetailView):
         
     def get_context_data(self, **kwargs):
         context = super(SubsubcategoryDetail, self).get_context_data(**kwargs)
-        context['category_list'] = Subsubcategory.objects.filter(parent__id=self.kwargs['pk']).exclude(slug=self.kwargs['slug'])
+        context['category_list'] = Subsubcategory.objects.filter(parent__slug=self.kwargs['subcategory_slug']).exclude(slug=self.kwargs['slug'])
         context['order_list'] = Order.objects.filter(category__slug=self.kwargs['slug'], status=1)
         context['sentence_list'] = Sentence.objects.filter(category__slug=self.kwargs['slug'], status=1)
         return context

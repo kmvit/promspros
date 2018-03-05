@@ -16,4 +16,9 @@ class Migration(migrations.Migration):
             name='slug',
             field=models.SlugField(verbose_name=b'URL', blank=True),
         ),
+        migrations.AlterField(
+            model_name='subsubcategory',
+            name='slug',
+            field=models.SlugField(unique=True, verbose_name=b'URL'),
+        ),
     ]

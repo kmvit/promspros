@@ -26,7 +26,7 @@
                                 <a href="{% url 'categorydetail' slug=category.slug%}" class="orders-mini-content-title">{{category.title}}</a>
                                 <ul class="categories-list-inner">
                                     {%for subcategory in category.subcategory_set.all%}
-                                    <li>{%if subcategory.icon%}<img src="{{subcategory.icon.url}}">{%endif%}<a href="{% url 'subcategorydetail' slug=subcategory.parent.slug pk=subcategory.id %}">{{subcategory.title}}</a><span>{{subcategory.order_count}}</span></li>
+                                    <li>{%if subcategory.icon%}<img src="{{subcategory.icon.url}}">{%endif%}<a href="{% url 'subcategorydetail' slug=subcategory.parent.slug subcategory_slug=subcategory.slug %}">{{subcategory.title}}</a><span>{{subcategory.order_count}}</span></li>
                                     {%endfor%}
                                  
                                 </ul>
