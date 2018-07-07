@@ -65,7 +65,7 @@
                </tr>
                <tr>
                   <td>Сайт:</td>
-                  <td><a class="main-input-link" href="http://{{company.url}}">{{company.url}}</a></td>
+                  <td><a class="main-input-link" href="http://{{company.site}}">{{company.site}}</a></td>
                </tr>
                <tr>
                   <td>Город:</td>
@@ -160,7 +160,7 @@
                            <div class="orders-mini-content-top clearfix">
                               <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}} </a>
                            </div>
-                           <div class="orders-mini-content-text">{{item.body|safe|linebreaks|slice:":70"}}</div>
+                           <div class="orders-mini-content-text">{{item.body|safe|linebreaks|slice:":200"}}</div>
                            <div class="orders-mini-content-bottom">
                               <div class="left">
                                  {%if item.user.company_set.all%}
@@ -206,7 +206,7 @@
                      </div>
                      {%endfor%}
                      {%else%}
-                     <a href="/accounts/login/?next={{request.path}}">Войдите, чтобы увидеть</a>
+                     <a class="pls-enter" href="/accounts/login/?next={{request.path}}">Войдите, чтобы увидеть</a>
                      {%endif%}
                   </div>
                   <div class="pager">
@@ -243,7 +243,7 @@
                            <div class="orders-mini-content-top clearfix">
                               <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                            </div>
-                           <div class="orders-mini-content-text">{{item.body|safe|linebreaks|slice:":70"}}</div>
+                           <div class="orders-mini-content-text">{{item.body|safe|linebreaks|slice:":200"}}</div>
                            <div class="orders-mini-content-bottom">
                               <div class="left">
                                  {%if item.user.company_set.all%}
@@ -289,7 +289,7 @@
                      </div>
                      {%endfor%}
                      {%else%}
-                     <a href="/accounts/login/?next={{request.path}}">Войдите, чтобы увидеть</a>
+                     <a class="pls-enter" href="/accounts/login/?next={{request.path}}">Войдите, чтобы увидеть</a>
                      {%endif%}
                   </div>
                   <div class="pager">

@@ -7,6 +7,7 @@ import os
 from tinymce.models import HTMLField
 from django.core.validators import RegexValidator
 from unidecode import unidecode
+from urlparse import urlparse
 
 class Page(models.Model):
     title = models.CharField(max_length=200, verbose_name=u'Название')
@@ -239,6 +240,7 @@ class Company(models.Model):
     city = models.CharField(max_length=140, verbose_name=u'Город')
     ur_adress = models.CharField(max_length=300, verbose_name=u'Юридиеский адрес')
     pochta_adress = models.CharField(max_length=300, verbose_name=u'Почтовый адрес')
+    site = models.URLField(max_length=300, verbose_name=u'Сайт', blank=True)
 
 
     class Meta:
@@ -247,6 +249,10 @@ class Company(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.title
+        
+    def url_text(self):
+        parsed_url = urlparse(self.site)
+        return parsed_url.hostname.replace("www.", "") + "/..."
         
     
 

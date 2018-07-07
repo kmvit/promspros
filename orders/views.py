@@ -23,6 +23,7 @@ import json
 from django.core import serializers
 from django.db import transaction
 from django.shortcuts import get_list_or_404, get_object_or_404
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.contrib.sitemaps import Sitemap
@@ -387,7 +388,6 @@ class CompanyView(DetailView):
         return context
 
 
-
 class CompanyCreate(CreateView):
     model = Company
     template_name = 'add_company.html'
@@ -395,6 +395,11 @@ class CompanyCreate(CreateView):
     
     def get_absolute_url(self):
         return reverse('profile_detail', kwargs={'pk': self.request.user.id})
+        
+    def get_context_data(self, **kwargs):
+        context = super(CompanyCreate, self).get_context_data(**kwargs)
+        context['company'] = Company.objects.filter(user=self.request.user)
+        return context
 
     def form_valid(self, form):
         form.instance.user = self.request.user

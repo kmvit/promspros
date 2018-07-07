@@ -9,6 +9,7 @@ from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from endless_pagination.views import AjaxListView
 from orders.ajax import *
+from django.contrib.auth.decorators import login_required
 
 
 from django.contrib.sitemaps import GenericSitemap
@@ -38,7 +39,7 @@ urlpatterns = [
     url(r'^order/add/$', OrderCreate.as_view()),
     url(r'^download$', getfiles, name='zip'),
     url(r'^downloads$', getfiles_sentence, name='zip'),
-    url(r'^company/add/$', CompanyCreate.as_view(), name='company_add'),
+    url(r'^company/add/$', login_required(CompanyCreate.as_view()), name='company_add'),
     url(r'^company/edit/(?P<pk>\d+)/$', CompanyUpdate.as_view(), name='company_edit'),
     url(r'^company/delete/(?P<pk>\d+)/$', CompanyDelete.as_view(), name='company_delete'),
     url(r'^companies/$', CompanyList.as_view(), name='company_list'),

@@ -11,7 +11,7 @@
       <span itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
          <a itemprop="item" href="/sentences"> Предложения </a>
       <span>&frasl;</span>
-        <a itemprop="item" href="/sentence/{{sentence.id}}" class="active">{{sentence.title}}</a>
+        <a itemprop="item" href="{% url 'sentence_detail' category_slug=sentence.category.parent.parent.slug subcategory_pk=sentence.category.parent.id subsubcategory_slug=sentence.category.slug slug=sentence.slug %}" class="active">{{sentence.title}}</a>
       </span>
    </div>
 </div>

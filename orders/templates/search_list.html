@@ -73,13 +73,13 @@
                                 {% endthumbnail %}
                                 {%endfor%}
                                 {%else%}
-                                {%for file in item.companyimage_set.all|slice:":1"%}
-                                {% thumbnail file.file "100x100" crop="center" as im %}
-                                <a href="/company/{{item.id}}" class="button-h-opacity">
+      
+                                {% thumbnail item.logo "100x100" as im %}
+                                <a href="/companies/{{item.id}}" class="button-h-opacity">
                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{item.title}}">
                                 </a>
                                 {% endthumbnail %}
-                                {%endfor%}
+   
                                 {%endif%}
                       
                             </div>
