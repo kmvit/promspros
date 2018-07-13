@@ -236,11 +236,10 @@ class Company(models.Model):
     user = models.ForeignKey(User, verbose_name=u'Пользователь', default='1')
     info = models.TextField(max_length=1900, verbose_name=u'Информация о компании', blank=True)
     title = models.CharField(max_length=100, verbose_name=u'Название компании')
-    url = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Ссылка на сайт')
     city = models.CharField(max_length=140, verbose_name=u'Город')
     ur_adress = models.CharField(max_length=300, verbose_name=u'Юридиеский адрес')
     pochta_adress = models.CharField(max_length=300, verbose_name=u'Почтовый адрес')
-    site = models.URLField(max_length=300, verbose_name=u'Сайт', blank=True)
+    site = models.URLField(max_length=200, blank=True, default='', verbose_name=u'Ссылка на сайт')
 
 
     class Meta:
