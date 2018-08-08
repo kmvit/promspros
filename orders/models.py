@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 import os
 from tinymce.models import HTMLField
+from ckeditor.fields import RichTextField
 from django.core.validators import RegexValidator
 from unidecode import unidecode
 from urlparse import urlparse
@@ -97,7 +98,7 @@ class Sentence(models.Model):
     name = models.CharField(max_length='200', verbose_name=u'Имя представителя')
     phone = models.CharField(max_length='18', verbose_name=u'Телефон')
     city = models.CharField(max_length='100', verbose_name=u'Город')
-    body = HTMLField(verbose_name=u'Описание проекта')
+    body = RichTextField(verbose_name=u'Описание проекта')
     price = models.DecimalField(max_digits=6, decimal_places=0, blank=True, null=True, verbose_name=u'Стоимость')
     change = (
         ('1', 'активные'),
@@ -167,7 +168,7 @@ class Order(models.Model):
     name = models.CharField(max_length='200', verbose_name='Имя представителя')
     phone = models.CharField(max_length='18', verbose_name=u'Телефон')
     city = models.CharField(max_length='100', verbose_name=u'Город')
-    body = HTMLField(verbose_name=u'Описание проекта')
+    body = RichTextField(verbose_name=u'Описание проекта')
     change = (
         ('1', 'активные'),
         ('2', 'неактивные'),

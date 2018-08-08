@@ -24,6 +24,7 @@ class AddOrderForm(forms.ModelForm):
         model = Order
         fields = '__all__'
         exclude = ['user','status','born','category','slug']
+        
 
     
         

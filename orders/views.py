@@ -203,6 +203,7 @@ class OrderUpdate(UpdateView):
         return reverse('order_detail', kwargs={'category_slug': self.object.category.parent.parent.slug, 'subcategory_pk': self.object.category.parent.id, 'subsubcategory_slug': self.object.category.slug, 'slug': self.object.slug})
         
     def form_valid(self, form):
+        form.instance.category = get_object_or_404(Subsubcategory, title=self.request.POST['category'])
         if self.request.user == self.object.user:
             self.object = form.save()
             photos = self.request.POST.getlist('photos[]')
@@ -320,6 +321,7 @@ class SentenceUpdate(UpdateView):
         return reverse('sentence_detail', kwargs={'category_slug': self.object.category.parent.parent.slug, 'subcategory_pk': self.object.category.parent.id, 'subsubcategory_slug': self.object.category.slug, 'slug': self.object.slug})
         
     def form_valid(self, form):
+        form.instance.category = get_object_or_404(Subsubcategory, title=self.request.POST['category'])
         form.instance.user = self.request.user
         form.instance.email = self.request.user.email
         if 'submit-ch' in self.request.POST:

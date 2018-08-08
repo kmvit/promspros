@@ -20,7 +20,7 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 SECRET_KEY = 'jms*7u1v26#r+l#f5n2!1!4k4g*1c*7688xlwum0s^=evogn4e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =  False
+DEBUG =  True
 
 
 TEMPLATE_DEBUG = True
@@ -67,6 +67,7 @@ INSTALLED_APPS = (
     'endless_pagination',
     'sorl.thumbnail',
     'tinymce',
+    'ckeditor',
 
 )
 
@@ -196,7 +197,15 @@ TEMPLATES = [
 AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
-
+CKEDITOR_CONFIGS = {
+    'default': {
+        'removePlugins': 'toolbar',
+        'height': 300,
+        'width': 400,
+    },
+}
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor"
 
 PROJECT_DIR  = os.path.dirname(__file__) 
 
@@ -205,14 +214,7 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-TINYMCE_JS_URL = os.path.join(STATIC_URL + 'tiny_mce/tiny_mce.js')
 
-TINYMCE_DEFAULT_CONFIG = {
-    'theme': 'advanced',
-    'width': 300,
-    'height': 300,
-  
-}
 
 try:
     from .settings_local import *
