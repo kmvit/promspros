@@ -6,7 +6,7 @@ register = template.Library()
 @register.inclusion_tag('company_list_tags.html', takes_context=True)
 def show_company(context):
     request = context['request']
-    company_list = Company.objects.all().exclude(user__pk=request.user.pk)
+    company_list = Company.objects.all().exclude(user__pk=request.user.pk).order_by('-id')[:15]
     context_dict = {'company_list':company_list,}
     return context_dict
 

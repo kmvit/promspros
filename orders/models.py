@@ -97,7 +97,7 @@ class Sentence(models.Model):
     name = models.CharField(max_length='200', verbose_name=u'Имя представителя')
     phone = models.CharField(max_length='18', verbose_name=u'Телефон')
     city = models.CharField(max_length='100', verbose_name=u'Город')
-    body = models.TextField(verbose_name=u'Описание проекта')
+    body = HTMLField(verbose_name=u'Описание проекта')
     price = models.DecimalField(max_digits=6, decimal_places=0, blank=True, null=True, verbose_name=u'Стоимость')
     change = (
         ('1', 'активные'),
@@ -167,7 +167,7 @@ class Order(models.Model):
     name = models.CharField(max_length='200', verbose_name='Имя представителя')
     phone = models.CharField(max_length='18', verbose_name=u'Телефон')
     city = models.CharField(max_length='100', verbose_name=u'Город')
-    body = models.TextField(verbose_name=u'Описание проекта')
+    body = HTMLField(verbose_name=u'Описание проекта')
     change = (
         ('1', 'активные'),
         ('2', 'неактивные'),

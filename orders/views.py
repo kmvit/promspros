@@ -372,7 +372,7 @@ class CompanyList(ListView):
     def get_context_data(self,**kwargs):
         context = super(CompanyList, self).get_context_data(**kwargs)
         context['block_page'] = BlockonPage.objects.get(id=4)
-        context['company_list'] = Company.objects.all().exclude(user__pk=self.request.user.pk)
+        context['company_list'] = Company.objects.all().exclude(user__pk=self.request.user.pk).order_by('-id')
         return context
     
 class CompanyView(DetailView):
@@ -491,13 +491,13 @@ class SearchList(ListView):
         elif self.request.GET['city'] == '' and self.request.GET['s'] == 'sentence':
             context['search_list'] = Sentence.objects.filter(Q(title__icontains=self.request.GET['q'], status=1)|Q(body__icontains=self.request.GET['q'], status=1))
         elif self.request.GET['city'] == '' and self.request.GET['s'] == 'company':
-            context['search_list'] = Company.objects.filter(Q(title__icontains=self.request.GET['q'])|Q(info__icontains=self.request.GET['q']))
+            context['search_list'] = Company.objects.filter(Q(title__icontains=self.request.GET['q'].title())|Q(info__icontains=self.request.GET['q']))
         elif self.request.GET['city'] != '' and self.request.GET['s'] == 'order':
             context['search_list'] = Order.objects.filter(Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|Q(body__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1))
         elif self.request.GET['city'] != '' and self.request.GET['s'] == 'sentence':
             context['search_list'] = Sentence.objects.filter(Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|Q(body__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1))
         elif self.request.GET['city'] != '' and self.request.GET['s'] == 'company':
-            context['search_list'] = Company.objects.filter(Q(title__icontains=self.request.GET['q'])|Q(info__icontains=self.request.GET['q'])).exclude(user__pk=self.request.user.pk)
+            context['search_list'] = Company.objects.filter(Q(title__icontains=self.request.GET['q'].title())|Q(info__icontains=self.request.GET['q'])).exclude(user__pk=self.request.user.pk)
         context['modeltype'] = self.request.GET['s'] 
         return context    
 
