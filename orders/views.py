@@ -499,7 +499,7 @@ class SearchList(ListView):
         elif self.request.GET['city'] != '' and self.request.GET['s'] == 'sentence':
             context['search_list'] = Sentence.objects.filter(Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|Q(body__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1))
         elif self.request.GET['city'] != '' and self.request.GET['s'] == 'company':
-            context['search_list'] = Company.objects.filter(Q(title__icontains=self.request.GET['q'].title())|Q(info__icontains=self.request.GET['q'])).exclude(user__pk=self.request.user.pk)
+            context['search_list'] = Company.objects.filter(Q(title__icontains=self.request.GET['q'].title(), city=self.request.GET['city'])|Q(info__icontains=self.request.GET['q'])).exclude(user__pk=self.request.user.pk)
         context['modeltype'] = self.request.GET['s'] 
         return context    
 

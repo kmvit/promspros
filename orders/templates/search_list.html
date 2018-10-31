@@ -72,7 +72,7 @@
                                 </a>
                                 {% endthumbnail %}
                                 {%endfor%}
-                                {%else%}
+                                {% elif modeltype == 'company'%}
       
                                 {% thumbnail item.logo "100x100" as im %}
                                 <a href="/companies/{{item.id}}" class="button-h-opacity">

@@ -20,7 +20,7 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 SECRET_KEY = 'jms*7u1v26#r+l#f5n2!1!4k4g*1c*7688xlwum0s^=evogn4e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =  True
+DEBUG =  False
 
 
 TEMPLATE_DEBUG = True
