@@ -63,7 +63,9 @@
                                     <li>
                                         <div class="profile-table-img-list-img-block">
                                             <a href="{{file.file_up.url}}" class="button-h-opacity modalbox" rel="gal-1">
-                                            <img src="{{file.file_up.url}}" alt="">
+                                              {% thumbnail file.file_up "200x200" crop="center" as im %}
+                                              <img src="{{ im.url }}" alt="{{profile.name}}">
+                                              {% endthumbnail %}
                                             </a>
                                         </div>
                                         <div><a href="{{file.file_up.url}}" class="main-input-link">Скачать</a></div>
@@ -73,9 +75,9 @@
                                 </ul>
                             </td>
                         </tr>
-                        {%endfor%} 
-                       
-                    
+                        {%endfor%}
+
+
                     </table>
                     <div class="center">
                                 {%if company == 1%}
@@ -83,7 +85,7 @@
                                 <a class="add-button center" href="/company/edit/{{item.id}}">Редактировать</a>
                                 {%endfor%}
                                 {%else%}
-                        
+
                                  <a class="add-button" href="/company/add/">Добавить</a>
                                 {%endif%}
                     </div>
@@ -138,14 +140,14 @@
                                                             <a href="{% url 'order_delete' item.id%}" class="orders-mini-enterprise delete-link">Удалить</a>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="orders-mini-content-top-info clearfix right">
                                                         <form action="/search-city/" class="orders-mini-content-geo" method="get">
                                                             <input type="hidden" name="city" value="{{item.city}}">
                                                             <input type="hidden" name="modeltype" value="order">
                                                             <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}"></p>
                                                         </form>
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -195,14 +197,14 @@
                                                             <a href="{% url 'sentence_delete' item.id%}" class="orders-mini-enterprise delete-link">Удалить</a>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="orders-mini-content-top-info clearfix right">
                                                         <form action="/search-city/" class="orders-mini-content-geo" method="get">
                                                             <input type="hidden" name="city" value="{{item.city}}">
                                                             <input type="hidden" name="modeltype" value="sentence">
                                                             <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}"></p>
                                                         </form>
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -260,7 +262,7 @@
                                                             <input type="hidden" name="modeltype" value="order">
                                                             <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}"></p>
                                                         </form>
-                                                       
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -316,7 +318,7 @@
                                                             <input type="hidden" name="modeltype" value="sentence">
                                                             <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}"></p>
                                                         </form>
-                                                       
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -374,7 +376,7 @@
                                                             <input type="hidden" name="modeltype" value="order">
                                                             <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}"></p>
                                                         </form>
-                                                       
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -430,7 +432,7 @@
                                                             <input type="hidden" name="modeltype" value="sentence">
                                                             <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}"></p>
                                                         </form>
-                                                       
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -489,7 +491,7 @@
                                                         <a href="{%url 'notcompany_detail' item.user.id%}" class="class="orders-mini-enterprise"">{{item.user}}</a>
                                                         {%endif%}
                                                         <span class="orders-mini-date">{{item.born}}</span>
-                                                        
+
                                                     </div>
                                                     <div class="orders-mini-content-top-info clearfix right">
                                                         <form action="/search-city/" class="orders-mini-content-geo" method="get">
@@ -571,7 +573,7 @@
                                                         <a href="{%url 'notcompany_detail' item.user.id%}" class="class="orders-mini-enterprise"">{{item.user}}</a>
                                                         {%endif%}
                                                         <span class="orders-mini-date">{{item.born}}</span>
-                                                        
+
                                                     </div>
                                                     <div class="orders-mini-content-top-info clearfix right">
                                                         <form action="/search-city/" class="orders-mini-content-geo" method="get">
@@ -724,7 +726,7 @@
                         <div class="profile-sidebar-text-top">Телефон:</div>
                         <p>{{profile.phone}}</p>
                     </div>
-                    <a href="/profile/edit/{{profile.id}}">Редактировать</a>       
+                    <a href="/profile/edit/{{profile.id}}">Редактировать</a>
                 </div>
                 <div class="sidebar-inner">
                                     {%block last-company%}

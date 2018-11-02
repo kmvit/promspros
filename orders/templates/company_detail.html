@@ -112,17 +112,16 @@
                   <td>Фотографии:</td>
                   <td>
                   {%for file in company.companyimage_set.all%}
-                  
-                     
-                           {% thumbnail file.file_up "150" crop="center" as im %}
+
+
+
                            <a href="{{ file.file_up.url }}" class="button-h-opacity modalbox" rel="gal-1">
-          
-                             
-                           <img src="{{ im.url }}" alt="{{company.title}}">
+                             {% thumbnail file.file_up "200x200" crop="center" as im %}
+                             <img src="{{ im.url }}" alt="{{profile.name}}">
+                             {% endthumbnail %}
                            </a>
-                           {% endthumbnail %}
-                           
-                  
+
+
                   {%endfor%}
                   </td>
                </tr>

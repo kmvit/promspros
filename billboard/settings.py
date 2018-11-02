@@ -20,7 +20,7 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 SECRET_KEY = 'jms*7u1v26#r+l#f5n2!1!4k4g*1c*7688xlwum0s^=evogn4e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =  False
+
 
 
 TEMPLATE_DEBUG = True
@@ -206,13 +206,6 @@ CKEDITOR_CONFIGS = {
 }
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor"
-
-PROJECT_DIR  = os.path.dirname(__file__) 
-
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 

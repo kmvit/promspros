@@ -49,7 +49,7 @@
                <tr>
                   <td>
                   </td>
-                   
+
                </tr>
                <tr>
                   <td>Описание заказа:</td>
@@ -103,7 +103,9 @@
                         <li>
                            <div class="profile-table-img-list-img-block">
                               <a href="{{file.file.url}}" class="button-h-opacity modalbox" rel="gal-1">
-                              <img src="{{file.file.url}}" alt="{{sentence.title}}">
+                                {% thumbnail file.file "200x200" crop="center" as im %}
+                                <img src="{{ im.url }}" alt="{{profile.name}}">
+                                {% endthumbnail %}
                               </a>
                            </div>
                            <div><a href="{{file.file.url}}" class="main-input-link" download>Скачать</a></div>
@@ -126,7 +128,7 @@
                        {% if user.is_authenticated %}
                     {%if user == sentence.user%}
                   <td>
-   
+
                      <div class="buttons-block clearfix">
                        <ul class="retreat">
                           <li> <a href="{% url 'sentence_edit' sentence.id%}" class="orders-mini-enterprise">Редактировать</a></li>
@@ -149,7 +151,7 @@
                         </div>
                         </li>
                         <li>
-                         
+
                        <li> <a href="{% url 'sentence_delete' sentence.id%}" class="orders-mini-enterprise delete-link">Удалить</a></li>
                         </ul>
                      </div>

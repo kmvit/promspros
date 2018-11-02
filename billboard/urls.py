@@ -3,7 +3,6 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 from orders.views import *
 from profiles.views import *
-from .settings import STATIC_ROOT
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -64,12 +63,13 @@ urlpatterns = [
     url(r'^sentence/delete/(?P<pk>\d+)/$', SentenceDelete.as_view(), name='sentence_delete'),
     url(r'^sentences/$', SentenceList.as_view(), name='sentence_list'),
     url(r'^(?P<category_slug>[\w-]+)/(?P<subcategory_pk>\d+)/(?P<subsubcategory_slug>[\w-]+)/s/(?P<slug>[\w-]+)/$', SentenceView.as_view(), name='sentence_detail'),
-    
+
     url(r'^(?P<slug>[\w-]+)/$', CategoryView.as_view(), name='categorydetail'),
     url(r'^(?P<slug>[\w-]+)/(?P<subcategory_slug>[\w-]+)/$', SubcategoryDetail.as_view(), name='subcategorydetail'),
     url(r'^(?P<category_slug>[\w-]+)/(?P<subcategory_slug>[\w-]+)/(?P<slug>[\w-]+)/$', SubsubcategoryDetail.as_view(), name='subsubcategorydetail'),
 
-    
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-
+]
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
