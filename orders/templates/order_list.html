@@ -19,13 +19,14 @@
          <h1 class="section-heading">Заказы</h1>
       </div>
       <div class="orders-mini-wrapper">
+         
          {% paginate order_list %}
          {%for item in order_list%}
          <div itemscope itemtype="http://schema.org/Offer">
             <div class="orders-mini clearfix">
                <div class="orders-mini-img-block">
                   {%for file in item.orderimage_set.all|slice:":1"%}
-                  {% thumbnail file.file "150" as im %}
+                  {% thumbnail file.file "150x120" crop='center' as im %}
                   <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                   <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                   </a>
@@ -89,7 +90,7 @@
             </div>
          </div>
       </div>
-      
+
    </div>
    <div class="block_on_page">
         {{block_page.block_one|safe}}

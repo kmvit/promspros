@@ -24,11 +24,11 @@
                             {%endfor%}
                         </ul>
                     </div>
-        
-        
+
+
     </div>
-   
-    
+
+
     <div class="content-inner">
       <div class="profile-wrapper">
          <div class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
@@ -39,8 +39,8 @@
             <div id="tabs-1" aria-labelledby="ui-id-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" aria-hidden="false" style="display: block;">
                <div class="tabs-inner">
                   <div class="content-inner-top content-inner-top-2 clearfix">
-            
-           
+
+
         </div>
         <div class="orders-mini-wrapper">
             {% paginate order_list %}
@@ -80,7 +80,7 @@
                             </form>
                             {%if user.is_authenticated%}
                             {%if user == item.user%}
-                            
+
                             {%else%}
                             <a href="#"
                             class="add-to-favorites"
@@ -102,7 +102,7 @@
                             {%endif%}
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             </div>
@@ -115,7 +115,7 @@
                             </div>
                         </div>
                     </div>
-              
+
         </div>
         <div id="favourite_confirm" class="favourite-confirm">
             <form>
@@ -144,8 +144,8 @@
             <div id="tabs-2" aria-labelledby="ui-id-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" aria-hidden="true" style="display: none;">
                <div class="tabs-inner">
                   <div class="content-inner-top content-inner-top-2 clearfix">
-            
-           
+
+
         </div>
         <div class="orders-mini-wrapper">
             {% paginate sentence_list %}
@@ -185,7 +185,7 @@
                             </form>
                             {%if user.is_authenticated%}
                             {%if user == item.user%}
-                          
+
                             {%else%}
                             <a href="#"
                             class="add-to-favorites"
@@ -214,13 +214,13 @@
             <div class="pager">
                         <div class="table-wrapper">
                             <div class="table-wrapper-inner">
-                                
+
                                  {% show_pages %}
                             </div>
                         </div>
                     </div>
         </div>
-        
+
                </div>
             </div>
          </div>
@@ -229,7 +229,7 @@
    <div class="content-inner">
         <div class="categories-wrapper">
             {{category.description|safe}}
-        </div>  
+        </div>
     </div>
 </div>
 {%endblock%}

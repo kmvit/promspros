@@ -12,23 +12,7 @@
          <a href="{{ signup_url }}" class="entry-link">Регистрация</a>
       </div>
       {% get_providers as socialaccount_providers %}
-      {% if socialaccount_providers %}
-      <div class="socialaccount_ballot">
-      
-          
-          
-         
-         
-      </div>
-      {% include "socialaccount/snippets/login_extra.html" %}
-      {% else %}
-      <div class="main-form-wrapper">
-         <p>{% blocktrans %}Если у вас нет аккаунта, пожалуйста зарегистрируйтесь.
-            <a href="{{ signup_url }}">Регистрация</a>{% endblocktrans %}
-         </p>
-       
-      </div>
-        {% endif %}
+
       <form class="login-form clearfix" method="POST" action="{% url 'account_login' %}">
          {% csrf_token %}
          <div class="main-form-wrapper">
@@ -37,9 +21,27 @@
                   {% for field in form %}
                   <tr>
                      <td>{{ field.label_tag }}</td>
-                     <td>{{ field }} {{ field.errors }}</td>
+                     <td>{{ field }}</td>
                   </tr>
                   {% endfor %}
+                  <td>
+                  <td>
+                  {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-error">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-error">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+              </td>
+            </tr>
                </tbody>
             </table>
             {% if redirect_field_value %}
@@ -62,12 +64,12 @@
                 <span class="btn-social btn-social_gp"> <i class="i-social i-social_gp"></i> </span>
             </a>
             </li>
-            <li>    
+            <li>
             <a class="btn btn-social-icon btn-sm btn-vk" href="{% provider_login_url "facebook" method="oauth2" %}">
                 <span class="btn-social btn-social_fb"> <i class="i-social i-social_fb"></i> </span>
             </a>
             </li>
-            <li>    
+            <li>
             <a class="btn btn-social-icon btn-sm btn-ok" href="{% provider_login_url "odnoklassniki" method="oauth2" %}">
                 <span class="btn-social btn-social_ok"> <i class="i-social i-social_ok"></i> </span>
             </a>
@@ -129,4 +131,3 @@
 }
 </style>
 {% endblock %}
-

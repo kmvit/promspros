@@ -148,7 +148,7 @@
                      <div class="orders-mini clearfix">
                         <div class="orders-mini-img-block">
                            {%for file in item.orderimage_set.all|slice:":1"%}
-                           {% thumbnail file.file "150" crop="center" as im %}
+                           {% thumbnail file.file "150x120" crop='center' as im %}
                            <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                            <img src="{{ im.url }}">
                            </a>
@@ -231,7 +231,7 @@
                      <div class="orders-mini clearfix">
                         <div class="orders-mini-img-block">
                            {%for file in item.sentenceimage_set.all|slice:":1"%}
-                           {% thumbnail file.file "150" crop="center" as im %}
+                           {% thumbnail file.file "150x120" crop='center' as im %}
                            <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                            <img src="{{ im.url }}">
                            </a>

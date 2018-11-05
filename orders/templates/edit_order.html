@@ -15,7 +15,7 @@
                   </td>
                   <td class="tabs ui-tabs ui-corner-all ui-widget ui-widget-content" id="category-block">
                      <div id="item" style="width:200px">
-                       <ul class="menu_vert">  
+                       <ul class="menu_vert">
                          {%for category in category_list%}
                           <li>
                               <a href="#">{{category.title}}</a>
@@ -25,31 +25,31 @@
                                   <a href="#" class="click">{{item.title}}</a>
                                   <ul>
                                      {%for i in item.subsubcategory_set.all%}
-                                      <li class="category"><a href="#">{{i.title}}</a></li>  
-                                     {%endfor%} 
+                                      <li class="category"><a href="#">{{i.title}}</a></li>
+                                     {%endfor%}
                                   </ul>
-                              </li>    
+                              </li>
                               {%endfor%}
                                </ul>
                           </li>
                         {%endfor%}
-                     
-                       </ul>  
-                         
-   
+
+                       </ul>
+
+
                     </div>
-                      <input id="id_category" maxlength="500" class="main-input" name="category" type="text">
+                      <input id="id_category" maxlength="500" class="main-input" name="category" type="text" value="{{form.instance.category}}">
                      {{ form.category.errors }}
                      <p id='err_id_category' class='errorlist'></p>
                   </td>
-               </tr>  
-               
+               </tr>
+
                 {% for field in form %}
                 <tr>
-                    
+
                     <td>{{ field.label_tag }}</td>
                     <td>{{ field }} {{ field.errors }}</td>
-                    
+
                 </tr>
                 {% endfor %}
                 <tr>
@@ -79,7 +79,7 @@
             <table class="main-form-table">
                     <tbody>
                         <tr>
-                     <td>   
+                     <td>
             <ul class="offer-img-list">
                 {%for item in orderimage_list%}
                 <li data-id="{{ item.id }}" class="delete__files" data-type="order">
@@ -111,52 +111,52 @@
        isProcessing = false,
        errorMsg, // сообщение об ошибке при валидации файла
        previewPhotoContainer = document.querySelector('#preview-photo'); // контейнер, в котором будут отображаться превью
-   
+
    // Когда пользователь выбрал файлы, обрабатываем их
    $('input[type=file][id=photo]').on('change', function() {
        var newFiles = $(this)[0].files; // массив с выбранными файлами
-   
+
        for (var i = 0; i < newFiles.length; i++) {
-   
+
            var file = newFiles[i];
-   
+
            // В качестве "ключей" в объекте selectedFiles используем названия файлов
            // чтобы пользователь не мог добавлять один и тот же файл
            // Если файл с текущим названием уже существует в массиве, переходим к следующему файлу
            if (selectedFiles[file.name] != undefined) continue;
-   
+
            // Валидация файлов (проверяем формат и размер)
            if ( errorMsg = validateFile(file) ) {
                alert(errorMsg);
                return;
            }
-   
+
            // Добавляем файл в объект selectedFiles
            selectedFiles[file.name] = file;
            queue.push(file);
-   
+
        }
-   
+
        $(this).val('');
        processQueue(); // запускаем процесс создания миниатюр
    });
-   
+
    // Валидация выбранного файла (формат, размер)
    var validateFile = function(file)
    {
        if ( !file.type.match(/image\/(jpeg|jpg|png|gif)/) ) {
            return 'Фотография должна быть в формате jpg, png или gif';
        }
-   
+
        if ( file.size > maxFileSize ) {
            return 'Размер фотографии не должен превышать 2 Мб';
        }
    };
-   
+
    var listen = function(element, event, fn) {
        return element.addEventListener(event, fn, false);
    };
-   
+
    // Создание миниатюры
    var processQueue = function()
    {
@@ -164,33 +164,33 @@
        // чтобы в один момент времени не происходило создание нескольких миниатюр
        // проверяем запущен ли процесс
        if (isProcessing) { return; }
-   
+
        // Если файлы в очереди закончились, завершаем процесс
        if (queue.length == 0) {
            isProcessing = false;
            return;
        }
-   
+
        isProcessing = true;
-   
+
        var file = queue.pop(); // Берем один файл из очереди
-   
+
        var li = document.createElement('LI');
        var span = document.createElement('SPAN');
        var spanDel = document.createElement('SPAN');
        var canvas = document.createElement('CANVAS');
        var ctx = canvas.getContext('2d');
-   
+
        span.setAttribute('class', 'img');
        spanDel.setAttribute('class', 'delete');
        spanDel.innerHTML = 'Удалить';
-   
+
        li.appendChild(span);
        li.appendChild(spanDel);
        li.setAttribute('data-id', file.name);
-   
+
        image.removeEventListener('load', imgLoadHandler, false);
-   
+
        // создаем миниатюру
        imgLoadHandler = function() {
            ctx.drawImage(image, 0, 0, previewWidth, previewHeight);
@@ -199,12 +199,12 @@
            isProcessing = false;
            setTimeout(processQueue, 200); // запускаем процесс создания миниатюры для следующего изображения
        };
-   
+
        // Выводим миниатюру в контейнере previewPhotoContainer
        previewPhotoContainer.appendChild(li);
        listen(image, 'load', imgLoadHandler);
        image.src = URL.createObjectURL(file);
-   
+
        // Сохраняем содержимое оригинального файла в base64 в отдельном поле формы
        // чтобы при отправке формы файл был передан на сервер
        var fr = new FileReader();
@@ -216,24 +216,24 @@
                );
            }
        }) (file);
-       
+
    };
-   
+
    // Удаление фотографии
    $(document).on('click', '#preview-photo li span.delete', function() {
        var fileId = $(this).parents('li').attr('data-id');
-   
+
        if (selectedFiles[fileId] != undefined) delete selectedFiles[fileId]; // Удаляем файл из объекта selectedFiles
        $(this).parents('li').remove(); // Удаляем превью
        $('input[name^=photo][data-id="' + fileId + '"]').remove(); // Удаляем поле с содержимым файла
    });
-   
+
 </script>
 <script>
    dropContainer.ondragover = dropContainer.ondragenter = function(evt) {
      evt.preventDefault();
    };
-   
+
    dropContainer.ondrop = function(evt) {
      // pretty simple -- but not for IE :(
      photo.files = evt.dataTransfer.files;
@@ -277,16 +277,16 @@
 			delayHide:300	    //Задержка перед исчезанием выпадающего меню (ms)
 		};
 		if (params) {
-			$.extend(p, params); 
+			$.extend(p, params);
 		}
 		return this.each(function(){
-			var 
+			var
 			menuWrap = $(this),
 			menuWrapWidth = menuWrap.outerWidth(),
 			menuWrapLeft = menuWrap.offset().left,
 			menuSubSub = $('ul',menuWrap)
 			menuSubSub.each(function(){
-				var 
+				var
 				mArrowRight = $('<div>').addClass('arrow-right'),
 				mSubSub = $(this),
 				mSubList = mSubSub.closest('li'),
@@ -295,18 +295,18 @@
 				mSubArrow2 = $('<div>').addClass('arrow-left2').prependTo(mSubSub),
 				mFuncId = function(){},
 				mFuncIdOut = function(){};
-				
+
 				mSubList.on('mouseenter',function(){
 					clearTimeout(mFuncIdOut);
 					mHoverLink = $(this).children('a');
 					mFuncId = setTimeout(function(){
-						mHoverLink.next('ul').children('li').width(mHoverLink.next('ul').width());	//correct width in ie7			
+						mHoverLink.next('ul').children('li').width(mHoverLink.next('ul').width());	//correct width in ie7
 						mSubArrow.css({top:mSubLink.outerHeight()/2 - 5});
 						mSubArrow2.css({top:mSubLink.outerHeight()/2 - 5});
-						var 
+						var
 						mSubSubLeft = mSubLink.position().left + mSubLink.outerWidth(),
 						p1 = (mSubLink.closest('ul').outerWidth()-mSubLink.closest('ul').width())/2;
-						mSubSub.css({top:(mSubLink.position().top - p1)});	
+						mSubSub.css({top:(mSubLink.position().top - p1)});
 						mSubSub.css({left:mSubSubLeft});
 						mSubSub.show();
 						var w3 = $(window).width();
@@ -318,14 +318,14 @@
 						if(mSubSub.parents('ul').hasClass('toLeft')){
 							mSubSubLeft = -mSubSub.outerWidth();
 						}
-						mSubSub.css({left:mSubSubLeft});				
+						mSubSub.css({left:mSubSubLeft});
 						mSubLink.addClass('active');
 					},p.delayShow)
 				})
 				mSubList.on('mouseleave',function(){
 					clearTimeout(mFuncId);
 					mFuncIdOut = setTimeout(function(){
-						
+
 						mSubSub.hide();
 						mSubLink.removeClass('active')
 					},p.delayHide)
@@ -335,12 +335,12 @@
 			menuWrapLeft = menuWrap.offset().left;
 			$(window).resize(function(){
 				menuWrapWidth = menuWrap.outerWidth();
-				menuWrapLeft = menuWrap.offset().left;	
+				menuWrapLeft = menuWrap.offset().left;
 			});
 		});
 	};
 })(jQuery);
-    
+
     /*инициализация*/
     $('.menu_vert').liMenuVert({
 		delayShow:300,		//Задержка перед появлением выпадающего меню (ms)
@@ -367,7 +367,7 @@
 /*bind css (not edit)*/
 .menu_vert {margin: 0; padding: 0; position: relative; word-spacing: -0.25em; }
 .menu_vert li {border-bottom:1px solid #E8E8E8;  display:block; list-style: none; margin: 0; padding: 0; text-align: left; vertical-align: top; word-spacing: normal; zoom: 1; }
-.menu_vert>li:last-child { border:0} 
+.menu_vert>li:last-child { border:0}
 .menu_vert a {color: #666; display: block; font: 12px/1.2em Arial, Helvetica, sans-serif; padding: 10px 20px 10px 10px; text-align: left; text-decoration: none; position:relative }
 .menu_vert a:hover { background: #eee; color: #000; text-decoration: none; text-shadow: 0 1px 0 #fff; }
 .menu_vert .active { background: #eee; color: #000; }
@@ -386,30 +386,30 @@
 }
 .menu_vert a {
     font:12px/1.2em Arial, Helvetica, sans-serif;
-    text-align:left; 
-    padding: 10px 20px 10px 10px; 
+    text-align:left;
+    padding: 10px 20px 10px 10px;
     text-decoration:none;
     color:#666;
 }
-.menu_vert a:hover { 
-    background:#eee; 
-    color:#000; 
-    text-decoration:none; 
+.menu_vert a:hover {
+    background:#eee;
+    color:#000;
+    text-decoration:none;
     text-shadow:0 1px 0 #fff;
 }
-.menu_vert .active { 
-    background:#eee; 
+.menu_vert .active {
+    background:#eee;
     color:#000;
 }
-.menu_vert ul { 
-    padding:0; 
+.menu_vert ul {
+    padding:0;
     background:#fff;
     border:1px solid #c2c2c2;
     border-radius:5px;
     box-shadow:0 5px 10px rgba(0,0,0,0.2);
 }
-.menu_vert ul li { 
-    padding:0; 
+.menu_vert ul li {
+    padding:0;
     margin:0;
     border:0;
 }
@@ -417,23 +417,23 @@
     border-radius: 5px;
 }
 .arrow-left {
-    border-right-color:#fff; 
-    left:-4px; 
+    border-right-color:#fff;
+    left:-4px;
 }
 .arrow-left2 {
-    border-right-color:#c2c2c2; 
-    left:-5px; 
+    border-right-color:#c2c2c2;
+    left:-5px;
 }
 .toLeft .arrow-left {
     border-left-color:#fff;
-    right:-4px; 
+    right:-4px;
 }
 .toLeft .arrow-left2 {
     border-left-color:#c2c2c2;
-    right:-5px; 
+    right:-5px;
 }
 .arrow-right {
-    top:13px; 
+    top:13px;
     right:8px;
     border-left-color:#666;
 }

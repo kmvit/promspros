@@ -1,16 +1,16 @@
 .drop_vert_menu {
-    list-style-type: none; 
-    margin: 0; 
+    list-style-type: none;
+    margin: 0;
     padding: 0;
  }
- 
+
 .drop_vert_menu  ul {
-    list-style-type: none; 
-    margin: 0; 
-    padding: 0; 
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 .drop_vert_menu > li{
-  position: relative; 
+  position: relative;
   padding:5px;
 }
 
@@ -29,7 +29,7 @@ background: #e2e2e2;
 
 
  .drop_vert_menu li:hover ul {
-   display: block; 
+   display: block;
    }
 
 .drop_vert_menu li ul li{
@@ -55,7 +55,7 @@ background: #e2e2e2;
 }
 
 
-.class-top{    
+.class-top{
    min-height: 2000px;
    width: 400px;
    margin: 0 auto;
@@ -63,28 +63,47 @@ background: #e2e2e2;
 #back-top {
 	position: fixed; bottom: 170px; right: 5%;
 }
-#back-top a { 
-	width: 48px; 
+#back-top a {
+	width: 48px;
 	display: block;
-	text-align: center; 
-	font: bold 8px Arial; 
-	text-transform: uppercase; 
-	text-decoration: none; 
-	color: #fff;		
-	-webkit-transition: 1s; 
-	-moz-transition: 1s; 
+	text-align: center;
+	font: bold 8px Arial;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: #fff;
+	-webkit-transition: 1s;
+	-moz-transition: 1s;
 	transition: 1s;
 }
-#back-top a:hover {	
+#back-top a:hover {
 	text-decoration: underline;
 }
-#back-top span { 
+#back-top span {
     font-size:30px;
-	width: 48px; 
-	height: 48px; 
-	display: block; 
-	margin-bottom: -14px;	
-	background: #00539a; 
-	-webkit-transition: 1s; 
+	width: 48px;
+	height: 48px;
+	display: block;
+	margin-bottom: -14px;
+	background: #00539a;
+	-webkit-transition: 1s;
 	-moz-transition: 1s; transition: 1s;
+}
+.alert{
+  padding: 20px;
+  background-color: #4caf50;
+  color:white;
+  margin-bottom: 15px;
+}
+.closebtn{
+  margin-left:15px;
+  color:white;
+  font-weight: bold;
+  float:right;
+  font-size:22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.closebtn:hover{
+  color:black;
 }

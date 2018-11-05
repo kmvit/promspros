@@ -12,7 +12,7 @@
             </td>
             <td>
                 <select id="s12" name="s" class="cusel" >
-                    {% if modeltype == 'order'%} 
+                    {% if modeltype == 'order'%}
                     <option value="order">Заказы</option>
                     <option value="sentence">Предложения</option>
                     <option value="company">Компания</option>
@@ -55,37 +55,37 @@
                         {%for item in search_list%}
                         <div class="orders-mini clearfix">
                             <div class="orders-mini-img-block">
-                       
-                                {% if modeltype == 'order'%} 
+
+                                {% if modeltype == 'order'%}
                                 {%for file in item.orderimage_set.all|slice:":1"%}
-                                {% thumbnail file.file "100x100" crop="center" as im %}
+                                {% thumbnail file.file "150x120" crop='center' as im %}
                                 <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{item.title}}">
                                 </a>
                                 {% endthumbnail %}
                                 {%endfor%}
-                                {% elif modeltype == 'sentence'%} 
+                                {% elif modeltype == 'sentence'%}
                                 {%for file in item.sentenceimage_set.all|slice:":1"%}
-                                {% thumbnail file.file "100x100" crop="center" as im %}
+                                {% thumbnail file.file "150x120" crop='center' as im %}
                                 <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{item.title}}">
                                 </a>
                                 {% endthumbnail %}
                                 {%endfor%}
                                 {% elif modeltype == 'company'%}
-      
+
                                 {% thumbnail item.logo "100x100" as im %}
                                 <a href="/companies/{{item.id}}" class="button-h-opacity">
                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{item.title}}">
                                 </a>
                                 {% endthumbnail %}
-   
+
                                 {%endif%}
-                      
+
                             </div>
                             <div class="orders-mini-content">
                                 <div class="orders-mini-content-top clearfix">
-                                    {% if 'order' in modeltype%} 
+                                    {% if 'order' in modeltype%}
                                     <h1><a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a></h1>
                                     {% elif 'sentence' in modeltype%}
                                     <h1><a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a></h1>
@@ -93,14 +93,14 @@
                                     <h1><a href="{% url 'company_detail' item.id %}" class="orders-mini-content-title">{{item.title}}</a></h1>
                                     {%endif%}
                                 </div>
-                                    {% if 'order' in modeltype or 'sentence' in modeltype%} 
-                                    <div class="orders-mini-content-text">{{item.body|truncatechars:230}}</div>
+                                    {% if 'order' in modeltype or 'sentence' in modeltype%}
+                                    <div class="orders-mini-content-text">{{item.body|striptags|safe|truncatechars:230}}</div>
                                     {%else%}
-                                    <div class="orders-mini-content-text">{{item.info|slice:":230"}}</div>
+                                    <div class="orders-mini-content-text">{{item.body|striptags|safe|truncatechars:230}}</div>
                                     {%endif%}
                                 <div class="orders-mini-content-bottom">
                                     <div class="left">
-                                        {% if 'order' in modeltype or 'sentence' in modeltype%} 
+                                        {% if 'order' in modeltype or 'sentence' in modeltype%}
                                         {%if item.user.company_set.all%}
                                         {%for a in item.user.company_set.all%}
                                         <a href="/companies/{{a.id}}" class="orders-mini-enterprise">{{a.title}}</a>
@@ -111,22 +111,22 @@
                                         {%else%}
                                         <a href="http://{{item.url}}" itemprop="seller" class="orders-mini-enterprise">{{item.url}}</a>
                                         {%endif%}
-                                        
+
                                         <span class="orders-mini-date">{{item.born}}</span>
                                     </div>
                                     <div class="orders-mini-content-top-info clearfix right">
                                         <form action="/search-city/" class="orders-mini-content-geo" method="get">
                                             <input type="hidden" name="city" value="{{item.city}}">
-                                            {% if modeltype == 'order'%} 
+                                            {% if modeltype == 'order'%}
                                             <input type="hidden" name="modeltype" value="order">
-                                            {% elif modeltype == 'company'%} 
+                                            {% elif modeltype == 'company'%}
                                             <input type="hidden" name="modeltype" value="company">
                                             {% else %}
                                             <input type="hidden" name="modeltype" value="sentence">
                                             {% endif %}
                                             <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}"></p>
                                         </form>
-                                        
+
                                     </div>
                                 </div>
                             </div>

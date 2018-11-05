@@ -29,7 +29,8 @@ from django.shortcuts import render_to_response
 from django.contrib.sitemaps import Sitemap
 from django.template.defaultfilters import slugify
 from django.db.models import Q, Count
-
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 
 
 def getfiles(request):
@@ -66,9 +67,9 @@ def getfiles(request):
     # ..and correct content-disposition
     resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
 
-    return resp    
-    
-    
+    return resp
+
+
 def getfiles_sentence(request):
     # Files (local path) to put in the .zip
     # FIXME: Change this (get paths from DB etc)
@@ -103,7 +104,7 @@ def getfiles_sentence(request):
     # ..and correct content-disposition
     resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
 
-    return resp 
+    return resp
 
 
 class Home(ListView):
@@ -138,7 +139,7 @@ class OrderList(ListView):
         context['sentence_list'] = Sentence.objects.all()
         context['company_list'] = Company.objects.all()
         return context
-    
+
 class OrderView(DetailView):
     model = Order
     template_name = 'order_detail.html'
@@ -148,25 +149,27 @@ class OrderView(DetailView):
         context['company'] = Company.objects.filter(city=self.object.city).exclude(user=self.object.user)
         context['files'] = OrderImage.objects.filter(order__id=self.object.id)
         return context
-    
+
 
 class OrderCreate(CreateView):
     model = Order
     template_name = 'add_order.html'
     form_class = AddOrderForm
-    
+
+
     def get_context_data(self,**kwargs):
         context = super(OrderCreate, self).get_context_data(**kwargs)
         context['user_profile'] = UserProfile.objects.filter(id=self.request.user.id)
         context['category_list'] = Category.objects.all()
         context['subcategory_list'] = Subcategory.objects.all()
         return context
-    
+
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'category_slug': self.object.category.parent.parent.slug, 'subcategory_pk': self.object.category.parent.id, 'subsubcategory_slug': self.object.category.slug, 'slug': self.object.slug})
-        
+
 
     def form_valid(self, form):
+        messages.error(self.request, u'Ваше объявление добавлено!')
         form.instance.user = self.request.user
         form.instance.category = get_object_or_404(Subsubcategory, title=self.request.POST['category'])
         form.instance.slug = slugify(unidecode(form.cleaned_data['title']))
@@ -185,25 +188,29 @@ class OrderCreate(CreateView):
             photo.file.save('123.jpg', ContentFile(img_data))
             photo.save()
         return HttpResponseRedirect(self.get_absolute_url())
-        
-        
-        
 
-class OrderUpdate(UpdateView):
+
+
+
+class OrderUpdate(SuccessMessageMixin, UpdateView):
     model = Order
     form_class = EditOrderForm
     template_name = 'edit_order.html'
+    success_message = 'Ваше объявление отредактировано!'
+
     def get_context_data(self,**kwargs):
         context = super(OrderUpdate, self).get_context_data(**kwargs)
         context['orderimage_list'] = OrderImage.objects.filter(order=self.object.id)
         context['category_list'] = Category.objects.all()
         context['subcategory_list'] = Subcategory.objects.all()
         return context
+
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'category_slug': self.object.category.parent.parent.slug, 'subcategory_pk': self.object.category.parent.id, 'subsubcategory_slug': self.object.category.slug, 'slug': self.object.slug})
-        
+
     def form_valid(self, form):
         form.instance.category = get_object_or_404(Subsubcategory, title=self.request.POST['category'])
+        messages.error(self.request, u'Ваше объявление отредактировано!')
         if self.request.user == self.object.user:
             self.object = form.save()
             photos = self.request.POST.getlist('photos[]')
@@ -217,7 +224,7 @@ class OrderUpdate(UpdateView):
             # Я обычно генерирую md5-хэш данных.
                 photo.file.save('123.jpg', ContentFile(img_data))
                 photo.save()
-            
+
             return HttpResponseRedirect(self.get_absolute_url())
         else:
             return HttpResponseRedirect(self.get_absolute_url())
@@ -225,10 +232,10 @@ class OrderUpdate(UpdateView):
 class OrderDelete(DeleteView):
     model = Order
     template_name = 'delete_order.html'
-    
+
     def get_success_url(self):
         return reverse('profile_detail', kwargs={'pk':self.request.user.userprofile.id})
-        
+
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
         obj = super(OrderDelete, self).get_object()
@@ -246,8 +253,8 @@ class SentenceList(ListView):
         context['company_list'] = Company.objects.all()
         context['sentence_list'] = Sentence.objects.filter(status=1).order_by('-born')
         return context
-   
-    
+
+
 
 class SentenceView(DetailView):
     model = Sentence
@@ -259,24 +266,26 @@ class SentenceView(DetailView):
         context['company'] = Company.objects.filter(city=self.object.city).exclude(user=self.object.user)
         return context
 
-  
-        
+
+
 class SentenceCreate(CreateView):
     model = Sentence
     template_name = 'add_sentence.html'
     form_class = AddSentenceForm
-    
+    success_message = 'Ваше объявление отредактировано!'
+
     def get_context_data(self,**kwargs):
         context = super(SentenceCreate, self).get_context_data(**kwargs)
         context['user_profile'] = UserProfile.objects.filter(id=self.request.user.id)
         context['category_list'] = Category.objects.all()
         context['subcategory_list'] = Subcategory.objects.all()
         return context
-    
+
     def get_absolute_url(self):
         return reverse('sentence_detail', kwargs={'category_slug': self.object.category.parent.parent.slug, 'subcategory_pk': self.object.category.parent.id, 'subsubcategory_slug': self.object.category.slug, 'slug': self.object.slug})
-    
+
     def form_valid(self, form):
+        messages.error(self.request, u'Ваше объявление добавлено!')
         form.instance.user = self.request.user
         form.instance.category = get_object_or_404(Subsubcategory, title=self.request.POST['category'])
         form.instance.slug = slugify(unidecode(form.cleaned_data['title']))
@@ -295,31 +304,37 @@ class SentenceCreate(CreateView):
             photo.file.save('123.jpg', ContentFile(img_data))
             photo.save()
         return HttpResponseRedirect(self.get_absolute_url())
-        
 
-   
-class SentenceUpdate(UpdateView):
+
+
+class SentenceUpdate(SuccessMessageMixin, UpdateView):
     model = Sentence
     form_class = EditSentenceForm
     template_name = 'edit_sentence.html'
-    
+    success_message = 'Ваше объявление отредактировано!'
+
+
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
         obj = super(SentenceUpdate, self).get_object()
         if not obj.user == self.request.user:
             raise Http404
         return obj
-    
+
     def get_context_data(self,**kwargs):
         context = super(SentenceUpdate, self).get_context_data(**kwargs)
         context['sentenceimage_list'] = SentenceImage.objects.filter(sentence=self.object.id)
         context['category_list'] = Category.objects.all()
         context['subcategory_list'] = Subcategory.objects.all()
         return context
-    
+
     def get_absolute_url(self):
-        return reverse('sentence_detail', kwargs={'category_slug': self.object.category.parent.parent.slug, 'subcategory_pk': self.object.category.parent.id, 'subsubcategory_slug': self.object.category.slug, 'slug': self.object.slug})
-        
+        return reverse('sentence_detail', kwargs={
+        'category_slug': self.object.category.parent.parent.slug,
+        'subcategory_pk': self.object.category.parent.id,
+        'subsubcategory_slug': self.object.category.slug,
+        'slug': self.object.slug})
+
     def form_valid(self, form):
         form.instance.category = get_object_or_404(Subsubcategory, title=self.request.POST['category'])
         form.instance.user = self.request.user
@@ -338,8 +353,9 @@ class SentenceUpdate(UpdateView):
             # Я обычно генерирую md5-хэш данных.
             photo.file.save('123.jpg', ContentFile(img_data))
             photo.save()
+        messages.error(self.request, u'Ваше объявление отредактировано!')
         return HttpResponseRedirect(self.get_absolute_url())
-    
+
     def manage_images(request):
         ImageFormSet = formset_factory(form_class)
         if request.method == 'POST':
@@ -351,18 +367,18 @@ class SentenceUpdate(UpdateView):
         else:
             formset = ImageFormSet()
         return render_to_response('manage_images.html', {'formset': formset})
-    
+
 class SentenceDelete(DeleteView):
     model = Sentence
     template_name = 'delete_sentence.html'
-    
+
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
         obj = super(SentenceDelete, self).get_object()
         if not obj.user == self.request.user:
             raise Http404
         return obj
-    
+
     def get_success_url(self):
         return reverse('profile_detail', kwargs={'pk':self.request.user.userprofile.id})
 
@@ -376,7 +392,7 @@ class CompanyList(ListView):
         context['block_page'] = BlockonPage.objects.get(id=4)
         context['company_list'] = Company.objects.all().exclude(user__pk=self.request.user.pk).order_by('-id')
         return context
-    
+
 class CompanyView(DetailView):
     model = Company
     template_name = 'company_detail.html'
@@ -386,7 +402,7 @@ class CompanyView(DetailView):
         context['order_count'] = Order.objects.filter(user=self.object.user, status=1).count()
         context['sentence_count'] = Sentence.objects.filter(user=self.object.user, status=1).count()
         context['sentence_list'] = Sentence.objects.filter(user=self.object.user, status=1)
-        
+
         return context
 
 
@@ -394,10 +410,10 @@ class CompanyCreate(CreateView):
     model = Company
     template_name = 'add_company.html'
     form_class = AddCompanyForm
-    
+
     def get_absolute_url(self):
         return reverse('profile_detail', kwargs={'pk': self.request.user.id})
-        
+
     def get_context_data(self, **kwargs):
         context = super(CompanyCreate, self).get_context_data(**kwargs)
         context['company'] = Company.objects.filter(user=self.request.user)
@@ -417,7 +433,7 @@ class CompanyCreate(CreateView):
             # Я обычно генерирую md5-хэш данных.
             photo.file_up.save('123.jpg', ContentFile(img_data))
             photo.save()
-            
+
         return HttpResponseRedirect(self.get_absolute_url())
 
 
@@ -432,23 +448,23 @@ class CompanyUpdate(UpdateView):
         if self.request.POST:
             context['form'] = AddCompanyForm(self.request.POST, instance=self.object)
         return context
-    
+
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
         obj = super(CompanyUpdate, self).get_object()
         if not obj.user == self.request.user:
             raise Http404
         return obj
-        
+
     def get_absolute_url(self):
         return reverse('profile_detail', kwargs={'pk': self.request.user.id})
-    
-    @login_required                                                               
-    def edit_profile(self, request, pk):                                                      
-        company = get_object_or_404(Company, id=pk)                                      
-        if self.request.user != company.user:                                              
+
+    @login_required
+    def edit_profile(self, request, pk):
+        company = get_object_or_404(Company, id=pk)
+        if self.request.user != company.user:
             raise Http404()
-        
+
     def form_valid(self, form):
         self.object = form.save()
         photos = self.request.POST.getlist('photos[]')
@@ -462,10 +478,10 @@ class CompanyUpdate(UpdateView):
             # Я обычно генерирую md5-хэш данных.
             photo.file_up.save('123.jpg', ContentFile(img_data))
             photo.save()
-            
+
         return HttpResponseRedirect(self.get_absolute_url())
 
-        
+
 class CompanyDelete(DeleteView):
     model = Company
     template_name = 'delete_company.html'
@@ -476,34 +492,65 @@ class CompanyDelete(DeleteView):
         if not obj.user == self.request.user:
             raise Http404
         return obj
-    
+
     def get_success_url(self):
-        return reverse('profile_detail', kwargs={'pk':self.request.user.userprofile.id})    
-    
-    
+        return reverse('profile_detail', kwargs={'pk':self.request.user.userprofile.id})
+
+
 
 class SearchList(ListView):
     model = Order
     template_name = 'search_list.html'
     def get_context_data(self,**kwargs):
         context = super(SearchList, self).get_context_data(**kwargs)
-        
-        if self.request.GET['city'] == '' and self.request.GET['s'] == 'order':
-            context['search_list'] = Order.objects.filter(Q(title__icontains=self.request.GET['q'], status=1)|Q(body__icontains=self.request.GET['q'], status=1))
-        elif self.request.GET['city'] == '' and self.request.GET['s'] == 'sentence':
-            context['search_list'] = Sentence.objects.filter(Q(title__icontains=self.request.GET['q'], status=1)|Q(body__icontains=self.request.GET['q'], status=1))
-        elif self.request.GET['city'] == '' and self.request.GET['s'] == 'company':
-            context['search_list'] = Company.objects.filter(Q(title__icontains=self.request.GET['q'].title())|Q(info__icontains=self.request.GET['q']))
-        elif self.request.GET['city'] != '' and self.request.GET['s'] == 'order':
-            context['search_list'] = Order.objects.filter(Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|Q(body__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1))
-        elif self.request.GET['city'] != '' and self.request.GET['s'] == 'sentence':
-            context['search_list'] = Sentence.objects.filter(Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|Q(body__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1))
-        elif self.request.GET['city'] != '' and self.request.GET['s'] == 'company':
-            context['search_list'] = Company.objects.filter(Q(title__icontains=self.request.GET['q'].title(), city=self.request.GET['city'])|Q(info__icontains=self.request.GET['q'])).exclude(user__pk=self.request.user.pk)
-        context['modeltype'] = self.request.GET['s'] 
-        return context    
 
-        
+        if self.request.GET['city'] == '' and self.request.GET['s'] == 'order':
+            context['search_list'] = Order.objects.filter(
+            Q(title__icontains=self.request.GET['q'], status=1)|
+            Q(title__icontains=self.request.GET['q'].title(), status=1)|
+            Q(body__icontains=self.request.GET['q'], status=1)|
+            Q(body__icontains=self.request.GET['q'].title(), status=1))
+
+        elif self.request.GET['city'] == '' and self.request.GET['s'] == 'sentence':
+            context['search_list'] = Sentence.objects.filter(
+            Q(title__icontains=self.request.GET['q'], status=1)|
+            Q(title__icontains=self.request.GET['q'].title(), status=1)|
+            Q(body__icontains=self.request.GET['q'], status=1)|
+            Q(body__icontains=self.request.GET['q'].title(), status=1))
+
+        elif self.request.GET['city'] == '' and self.request.GET['s'] == 'company':
+            context['search_list'] = Company.objects.filter(
+            Q(title__icontains=self.request.GET['q'])|
+            Q(title__icontains=self.request.GET['q'][0].title())|
+            Q(info__icontains=self.request.GET['q'])|
+            Q(info__icontains=self.request.GET['q'].title()))
+
+        elif self.request.GET['city'] != '' and self.request.GET['s'] == 'order':
+            context['search_list'] = Order.objects.filter(
+            Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|
+            Q(title__icontains=self.request.GET['q'].title(), status=1)|
+            Q(body__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|
+            Q(body__icontains=self.request.GET['q'].title(), status=1))
+
+        elif self.request.GET['city'] != '' and self.request.GET['s'] == 'sentence':
+            context['search_list'] = Sentence.objects.filter(
+            Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|
+            Q(title__icontains=self.request.GET['q'].title(), status=1)|
+            Q(body__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|
+            Q(body__icontains=self.request.GET['q'].title(), status=1))
+
+        elif self.request.GET['city'] != '' and self.request.GET['s'] == 'company':
+            context['search_list'] = Company.objects.filter(
+            Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'])|
+            Q(title__icontains=self.request.GET['q'].title(), city=self.request.GET['city'])|
+            Q(info__icontains=self.request.GET['q']).exclude(user__pk=self.request.user.pk)|
+            Q(info__icontains=self.request.GET['q'].title()).exclude(user__pk=self.request.user.pk))
+
+
+        context['modeltype'] = self.request.GET['s']
+        return context
+
+
 class SearchCityList(ListView):
     model = Order
     template_name = 'search_list.html'
@@ -520,24 +567,24 @@ class SearchCityList(ListView):
             context['search_list'] = Sentence.objects.filter(city=self.request.GET['city'], status=1)
             context['search_list_count'] = Sentence.objects.filter(city=self.request.GET['city'], status=1).count()
         context['modeltype'] = object_model_name
-        return context 
-        
+        return context
+
 class PageView(DetailView):
-     
+
     template_name = 'page_detail.html'
     context_object_name = 'page'
     model = Page
-    
+
     def get_context_data(self, **kwargs):
         context = super(PageView, self).get_context_data(**kwargs)
         context['form'] = ContactForm
         return context
-    
+
 def handle_uploaded_file(f):
     with open('some/file/name.txt', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
-            
+
 
 class CategoryView(DetailView):
     model = Category
@@ -553,14 +600,14 @@ class CategoryView(DetailView):
 
         return context
 
-            
+
 class SubcategoryDetail(DetailView):
     model = Subcategory
     template_name = 'subcategory.html'
-    
+
     def get_object(self):
         return get_object_or_404(Subcategory, slug=self.kwargs['subcategory_slug'])
-        
+
     def get_context_data(self, **kwargs):
         context = super(SubcategoryDetail, self).get_context_data(**kwargs)
         context['subcategory_list'] = Subsubcategory.objects.filter(parent__slug=self.kwargs['subcategory_slug'])
@@ -577,14 +624,14 @@ class SubsubcategoryDetail(DetailView):
     template_name = 'subsubcategory.html'
     def get_object(self):
         return Subsubcategory.objects.get(slug=self.kwargs['slug'])
-        
+
     def get_context_data(self, **kwargs):
         context = super(SubsubcategoryDetail, self).get_context_data(**kwargs)
         context['category_list'] = Subsubcategory.objects.filter(parent__slug=self.kwargs['subcategory_slug']).exclude(slug=self.kwargs['slug'])
         context['order_list'] = Order.objects.filter(category__slug=self.kwargs['slug'], status=1)
         context['sentence_list'] = Sentence.objects.filter(category__slug=self.kwargs['slug'], status=1)
         return context
-            
+
 def contactView(request):
 	if request.method == 'POST':
 		form = ContactForm(request.POST,request.FILES)
@@ -609,6 +656,4 @@ def contactView(request):
 	return render(request, 'contact.html', {'form': form})
 
 def robots(request):
-    return render_to_response('robots.txt', content_type='text/plain')	
-	
-	
+    return render_to_response('robots.txt', content_type='text/plain')

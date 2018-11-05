@@ -22,8 +22,8 @@ class Page(models.Model):
 
     def __unicode__(self):
         return  u'%s' % self.title
-        
-        
+
+
 class Category(models.Model):
     title = models.CharField(max_length=300, verbose_name=u'Категории')
     slug = models.SlugField(unique=True, verbose_name='URL')
@@ -34,10 +34,10 @@ class Category(models.Model):
         verbose_name = u'Категории'
         verbose_name_plural = u'Категория'
         ordering = ('my_order',)
-        
+
     def order_count(self):
-        sentence_list = Sentence.objects.filter(category__parent__parent_slug = self.slug, status=1) 
-        order_list = Order.objects.filter(category__parent__parent_slug = self.slug, status=1) 
+        sentence_list = Sentence.objects.filter(category__parent__parent_slug = self.slug, status=1)
+        order_list = Order.objects.filter(category__parent__parent_slug = self.slug, status=1)
         return sentence_list.count() + order_list.count()
 
     def __unicode__(self):
@@ -46,7 +46,7 @@ class Category(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.title
-        
+
 class Subcategory(models.Model):
     title = models.CharField(max_length=300, verbose_name=u'Подкатегории')
     slug = models.SlugField(verbose_name='URL', blank=True)
@@ -57,17 +57,17 @@ class Subcategory(models.Model):
         verbose_name = u'Подкатегории'
         verbose_name_plural = u'Подкатегория'
         ordering = ['title']
-    
+
     def order_count(self):
-        sentence_list = Sentence.objects.filter(category__parent_id = self.id, status=1) 
-        order_list = Order.objects.filter(category__parent_id = self.id, status=1) 
+        sentence_list = Sentence.objects.filter(category__parent_id = self.id, status=1)
+        order_list = Order.objects.filter(category__parent_id = self.id, status=1)
         return sentence_list.count() + order_list.count()
 
     def __unicode__(self):
         return u'%s' % self.title
-        
-    
-            
+
+
+
 
 class Subsubcategory(models.Model):
     title = models.CharField(max_length=500, verbose_name=u'Название')
@@ -79,10 +79,10 @@ class Subsubcategory(models.Model):
         verbose_name = u'Подподкатегории'
         verbose_name_plural = u'Подподкатегория'
         ordering = ['title']
-    
+
     def order_count(self):
-        sentence_list = Sentence.objects.filter(category__slug = self.slug, status=1) 
-        order_list = Order.objects.filter(category__slug = self.slug, status=1) 
+        sentence_list = Sentence.objects.filter(category__slug = self.slug, status=1)
+        order_list = Order.objects.filter(category__slug = self.slug, status=1)
         return sentence_list.count() + order_list.count()
 
     def __unicode__(self):
@@ -107,7 +107,7 @@ class Sentence(models.Model):
     )
     status = models.CharField(max_length=50, choices=change, default='1', verbose_name=u'Статус')
 
-    
+
     class Meta:
         ordering = ['-born']
         verbose_name = u'Предложение'
@@ -116,7 +116,7 @@ class Sentence(models.Model):
     def __unicode__(self):
         return u'%s' % self.title
 
-    
+
     def get_next(self):
         next = Sentence.objects.filter(id__gt=self.id)
         if next:
@@ -128,10 +128,10 @@ class Sentence(models.Model):
         if prev:
             return prev.first()
         return False
-        
+
     def get_absolute_url(self):
         return reverse('sentence_detail', kwargs={'category_slug': self.category.parent.parent.slug, 'subcategory_pk': self.category.parent.id, 'subsubcategory_slug': self.category.slug, 'slug': self.slug})
-        
+
 class SentenceImage(models.Model):
     file = models.FileField(upload_to='images/sentence',blank=True, null=True,verbose_name=u'Фотографии')
     sentence = models.ForeignKey(Sentence, verbose_name=u'Фото предложения')
@@ -140,8 +140,8 @@ class SentenceImage(models.Model):
         verbose_name_plural = u'Фото'
 
     def __unicode__(self):
-        return  u'%s' % self.id  
-        
+        return  u'%s' % self.id
+
     def css_class(self):
         file, extension = os.path.splitext(self.file.name)
         if extension == '.jpg':
@@ -153,7 +153,7 @@ class SentenceImage(models.Model):
         if extension == '.txt':
             return 'word'
         return 'other'
-        
+
     def filename(self):
         return os.path.basename(self.file.name)
 
@@ -182,7 +182,7 @@ class Order(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.title
-        
+
     def get_next(self):
         next = Order.objects.filter(id__gt=self.id)
         if next:
@@ -194,11 +194,11 @@ class Order(models.Model):
         if prev:
             return prev.first()
         return False
-        
+
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'category_slug': self.category.parent.parent.slug, 'subcategory_pk': self.category.parent.id, 'subsubcategory_slug': self.category.slug, 'slug': self.slug})
-    
-    
+
+
 
 class OrderImage(models.Model):
     file = models.FileField(upload_to='images/order',blank=True, null=True,verbose_name=u'Добавить файлы')
@@ -209,10 +209,10 @@ class OrderImage(models.Model):
 
     def __unicode__(self):
         return  u'%s' % self.id
-    
+
     def filename(self):
         return os.path.basename(self.file.name)
-    
+
     def css_class(self):
         file, extension = os.path.splitext(self.file.name)
         if extension == '.jpg':
@@ -224,8 +224,8 @@ class OrderImage(models.Model):
         if extension == '.txt':
             return 'word'
         return 'other'
-        
-        
+
+
 def get_file_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (str(instance.id), ext)
@@ -238,7 +238,8 @@ class Company(models.Model):
     info = models.TextField(max_length=1900, verbose_name=u'Информация о компании', blank=True)
     title = models.CharField(max_length=100, verbose_name=u'Название компании')
     city = models.CharField(max_length=140, verbose_name=u'Город')
-    ur_adress = models.CharField(max_length=300, verbose_name=u'Юридиеский адрес')
+    ur_adress = models.CharField(max_length=300, verbose_name=u'Юридический адрес')
+    inn = models.CharField(max_length=12, unique=True, default='000000000000', verbose_name=u'ИНН')
     pochta_adress = models.CharField(max_length=300, verbose_name=u'Почтовый адрес')
     site = models.URLField(max_length=200, blank=True, default='', verbose_name=u'Ссылка на сайт')
 
@@ -249,15 +250,15 @@ class Company(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.title
-        
+
     def url_text(self):
         parsed_url = urlparse(self.site)
         return parsed_url.hostname.replace("www.", "") + "/..."
-        
-    
 
-        
-        
+
+
+
+
 class CompanyImage(models.Model):
     file_up = models.ImageField(upload_to='images/company',blank=True, verbose_name=u'Фотографии')
     order = models.ForeignKey(Company, verbose_name=u'Фото компании')
@@ -267,10 +268,10 @@ class CompanyImage(models.Model):
 
     def __unicode__(self):
         return  u'%s' % self.id
-        
+
     def filename(self):
         return os.path.basename(self.file_up.name)
-    
+
     def css_class(self):
         file_up, extension = os.path.splitext(self.file_up.name)
         if extension == '.jpg':
@@ -282,8 +283,8 @@ class CompanyImage(models.Model):
         if extension == '.txt':
             return 'word'
         return 'other'
-        
- 
+
+
 class City(models.Model):
     title = models.CharField(max_length=500, verbose_name='Название населенного пункта')
     class Meta:
@@ -292,18 +293,18 @@ class City(models.Model):
 
     def __unicode__(self):
         return  u'%s' % self.title
-        
-        
+
+
 class BlockInfo(models.Model):
     title = models.CharField(max_length=300, verbose_name='Название')
     body = HTMLField(verbose_name='Содержание')
     class Meta:
         verbose_name = 'Блок Информации'
-    
+
     def __unicode__(self):
         return self.title
-        
-        
+
+
 class BlockonPage(models.Model):
     title = models.CharField(max_length=300)
     block_one = HTMLField(blank=True)
@@ -312,6 +313,6 @@ class BlockonPage(models.Model):
     class Meta:
         verbose_name = 'Блок на странице'
         verbose_name_plural = u'Блоки на странице'
-    
+
     def __unicode__(self):
         return self.title
