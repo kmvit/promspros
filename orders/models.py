@@ -239,7 +239,7 @@ class Company(models.Model):
     title = models.CharField(max_length=100, verbose_name=u'Название компании')
     city = models.CharField(max_length=140, verbose_name=u'Город')
     ur_adress = models.CharField(max_length=300, verbose_name=u'Юридический адрес')
-    inn = models.CharField(max_length=12, unique=True, default='000000000000', verbose_name=u'ИНН')
+    inn = models.CharField(max_length=12, default='000000000000', verbose_name=u'ИНН')
     pochta_adress = models.CharField(max_length=300, verbose_name=u'Почтовый адрес')
     site = models.URLField(max_length=200, blank=True, default='', verbose_name=u'Ссылка на сайт')
 
