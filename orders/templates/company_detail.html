@@ -65,7 +65,7 @@
                </tr>
                <tr>
                   <td>Сайт:</td>
-                  <td><a class="main-input-link" href="{{company.site}}">{{company.site}}</a></td>
+                  <td><a class="main-input-link" href="{% if 'http' in company.site %}{{company.site}}{% else %}http://{{company.site}}{% endif %}">{{company.site}}</a></td>
                </tr>
                <tr>
                   <td>Город:</td>
