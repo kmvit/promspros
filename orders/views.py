@@ -657,11 +657,3 @@ def contactView(request):
 
 def robots(request):
     return render_to_response('robots.txt', content_type='text/plain')
-
-def inn(request):
-    company_list = Company.objects.all()
-    count = 0
-    for item in company_list:
-        item.inn = count
-        count += 1
-        item.save()
