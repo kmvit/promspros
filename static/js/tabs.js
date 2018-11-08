@@ -12,7 +12,7 @@ window.onbeforeunload = function() {
 };
 
 
-window.onload = function() {
+
 	function add_class_tab() {
 		var storage_tab = localStorage.getItem('tab');
 		for (let i = 0; i < tabs.length; i++) {
@@ -24,4 +24,3 @@ window.onload = function() {
 		};
 	};
 	add_class_tab();
-}
