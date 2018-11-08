@@ -11,9 +11,16 @@
         <div class="content-inner-top clearfix">
             <h1 class="section-heading">{{page.title}}</h1>
         </div>
-        <div class="main-form-wrapper">     
+        <div class="main-form-wrapper">
             {{page.body|safe}}
+            <br>
+            {% if page.code %}
+            <div class="block-code">
+              {{page.code|safe}}
+            </div>
+            {% endif %}
         </div>
+
         {%if page.slug == 'info'%}
         <h3>Контакты</h3>
         <form action="{% url "contact_form" %}" method="post">
@@ -51,7 +58,7 @@
         </div>
         <input type="submit" value="Отправить"/>
         </form>
-    
+
 {%endif%}
     </div>
 </div>

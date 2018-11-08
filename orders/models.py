@@ -16,6 +16,7 @@ class Page(models.Model):
     keywords = models.TextField(default="Test")
     description = models.TextField()
     body = HTMLField(verbose_name=u'Содержание')
+    code = models.TextField(verbose_name=u'Код', blank=True)
     class Meta:
         verbose_name = u'Страница'
         verbose_name_plural = u'Страницы'
