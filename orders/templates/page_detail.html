@@ -13,10 +13,16 @@
         </div>
         <div class="main-form-wrapper">
             {{page.body|safe}}
-            <br>
             {% if page.code %}
+            <br>
             <div class="block-code">
               {{page.code|safe}}
+            </div>
+            {% endif %}
+            {% if page.body_two %}
+            <br>
+            <div class="block-code">
+              {{page.body_two|safe}}
             </div>
             {% endif %}
         </div>
