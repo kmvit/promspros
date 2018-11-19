@@ -49,7 +49,7 @@
                            <span itemprop="seller"><a href="{%url 'notcompany_detail' item.user.id%}" class="orders-mini-enterprise">{{item.user}}</a></span>
                            {%endif%}
                            <span class="orders-mini-date" itemprop="validFrom">{{item.born}}</span>
-                           <button data-count="0" class="button__other__order button_order_user">Другие заказы компании</button>
+                           <button data-count="0" class="button__other__order button_order_user_none">Другие заказы компании</button>
                         </div>
                         <div class="orders-mini-content-top-info clearfix right">
                            <form action="/search-city/" class="orders-mini-content-geo" method="get">

@@ -1,32 +1,32 @@
 
+
 function button_order_user() {
 	var order = document.querySelectorAll('.orders-mini');
 	var ads = document.querySelectorAll('.wrap__other');
 
+	var iter_order;
 	for (let i = 0; i < order.length; i++) {
-		order[i].addEventListener('mouseenter', show_button);
-	}
-
-	function show_button(e) {
-		var data_date = e.target.getAttribute('data-date');
-		var data_user = e.target.getAttribute('data-user');
-		for (let i = 0; i < order.length; i++) {
-			var order_date = order[i].getAttribute('data-date');
-			var order_user = order[i].getAttribute('data-user');
-
-			if (order_date == data_date &&
-				order_user == data_user &&
-				order[i].getAttribute('data-ads')) {
-				var button = e.target.querySelector('.button__other__order');
-				button.addEventListener('mouseup', show_block);
+		iter_order = order[i];
+		for (let j = 0; j < ads.length; j++) {
+			if (ads[j] != undefined) {
+				if (ads[j].getAttribute('data-date') == iter_order.getAttribute('data-date') &&
+					ads[j].getAttribute('data-user') == iter_order.getAttribute('data-user')) {
+					other_ads = ads[j].querySelector('.other__ads')
+					var button = order[i].querySelector('.button__other__order')
+					if (button != null) {
+						button.classList.remove('button_order_user_none');
+						button.classList.add('button_order_user');
+						button.addEventListener('mouseup', show_block);
+					}
+				}			
 			}
 		}
-
 	}
+
 	function show_block(e) {
 		var button_active = e.target;
 		if (button_active.getAttribute('data-count') == '0') {
-			button_active.setAttribute('data-count', '1');
+			button_active.setAttribute('data-count', '1')
 			while (true) {
 				if (button_active.classList.contains('orders-mini') == false) {
 					button_active = button_active.parentElement;
@@ -66,7 +66,7 @@ function button_order_user() {
 				}
 			}
 		} else if (button_active.getAttribute('data-count') == '1') {
-			button_active.setAttribute('data-count', '0');;
+			button_active.setAttribute('data-count', '0')
 			while (true) {
 				if (button_active.classList.contains('orders-mini') == false) {
 					button_active = button_active.parentElement;
