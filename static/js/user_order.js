@@ -5,7 +5,6 @@ function button_order_user() {
 
 	for (let i = 0; i < order.length; i++) {
 		order[i].addEventListener('mouseenter', show_button);
-		// order[i].addEventListener('mouseleave', hide_button);
 	}
 
 	function show_button(e) {
@@ -19,21 +18,11 @@ function button_order_user() {
 				order_user == data_user &&
 				order[i].getAttribute('data-ads')) {
 				var button = e.target.querySelector('.button__other__order');
-				// button.classList.add('button_order_user');
-				// button.classList.remove('button_order_user_none');
 				button.addEventListener('mouseup', show_block);
 			}
 		}
 
 	}
-
-	// function hide_button(e) {
-	// 	var button = e.target.querySelector('.button__other__order');
-	// 	button.classList.add('button_order_user_none');
-	// 	button.classList.remove('button_order_user');
-		
-	// }
-
 	function show_block(e) {
 		var button_active = e.target;
 		if (button_active.getAttribute('data-count') == '0') {
