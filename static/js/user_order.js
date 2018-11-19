@@ -5,7 +5,7 @@ function button_order_user() {
 
 	for (let i = 0; i < order.length; i++) {
 		order[i].addEventListener('mouseenter', show_button);
-		order[i].addEventListener('mouseleave', hide_button);
+		// order[i].addEventListener('mouseleave', hide_button);
 	}
 
 	function show_button(e) {
@@ -18,28 +18,26 @@ function button_order_user() {
 			if (order_date == data_date &&
 				order_user == data_user &&
 				order[i].getAttribute('data-ads')) {
-				console.log(order[i])
-				console.log(e.target)
 				var button = e.target.querySelector('.button__other__order');
-				button.classList.add('button_order_user');
-				button.classList.remove('button_order_user_none');
+				// button.classList.add('button_order_user');
+				// button.classList.remove('button_order_user_none');
 				button.addEventListener('mouseup', show_block);
 			}
 		}
 
 	}
 
-	function hide_button(e) {
-		var button = e.target.querySelector('.button__other__order');
-		button.classList.add('button_order_user_none');
-		button.classList.remove('button_order_user');
+	// function hide_button(e) {
+	// 	var button = e.target.querySelector('.button__other__order');
+	// 	button.classList.add('button_order_user_none');
+	// 	button.classList.remove('button_order_user');
 		
-	}
+	// }
 
 	function show_block(e) {
 		var button_active = e.target;
-		if (button_active.textContent == 'Заказы от пользователя') {
-			button_active.textContent = 'Скрыть';
+		if (button_active.getAttribute('data-count') == '0') {
+			button_active.setAttribute('data-count', '1');
 			while (true) {
 				if (button_active.classList.contains('orders-mini') == false) {
 					button_active = button_active.parentElement;
@@ -78,8 +76,8 @@ function button_order_user() {
 					}
 				}
 			}
-		} else if (button_active.textContent == 'Скрыть') {
-			button_active.textContent = 'Заказы от пользователя';
+		} else if (button_active.getAttribute('data-count') == '1') {
+			button_active.setAttribute('data-count', '0');;
 			while (true) {
 				if (button_active.classList.contains('orders-mini') == false) {
 					button_active = button_active.parentElement;
