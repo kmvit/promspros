@@ -21,6 +21,8 @@
                <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
                <link rel="stylesheet" type="text/css" href="{% static 'css/components.css' %}" />
                <link rel="stylesheet" type="text/css" href="{% static 'css/components-add.css' %}" />
+               <link rel="stylesheet" type="text/css" href="{% static 'css/user_order.css' %}" />
+               
                {%endblock%}
             </head>
             <body>
@@ -176,6 +178,7 @@
 
 
                   <!-- JS file -->
+                  <script type="text/javascript" src="{% static 'js/user_order.js' %}"></script>
                   <script   src="https://code.jquery.com/jquery-3.2.1.min.js"   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="   crossorigin="anonymous"></script>
                   <script   src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"   integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="   crossorigin="anonymous"></script>
                   <script type="text/javascript" src="{% static 'js/cookie/jquery.cookie.js' %}"></script>
@@ -221,14 +224,12 @@
                                  });
                              } catch(e) { }
                          });
-
                          var n = d.getElementsByTagName("script")[0],
                              s = d.createElement("script"),
                              f = function () { n.parentNode.insertBefore(s, n); };
                          s.type = "text/javascript";
                          s.async = true;
                          s.src = "https://mc.yandex.ru/metrika/watch.js";
-
                          if (w.opera == "[object Opera]") {
                              d.addEventListener("DOMContentLoaded", f, false);
                          } else { f(); }
@@ -243,16 +244,13 @@
                      $(function(){
                      var options = {
                      url: "{% static 'russia.locality.json'%}",
-
                      getValue: "name",
-
                      list: {
                      match: {
                      enabled: true
                      }
                      }
                      };
-
                      $("#id_city").easyAutocomplete(options);
                      });
                   </script>
@@ -260,16 +258,13 @@
                      $(function(){
                      var options = {
                      url: "{% static 'russia.locality.json'%}",
-
                      getValue: "name",
-
                      list: {
                      match: {
                      enabled: true
                      }
                      }
                      };
-
                      $("#automplete-2").easyAutocomplete(options);
                      });
                   </script>
@@ -278,7 +273,6 @@
                          $(".inline.{{ company_form.prefix }}").formset({
                          prefix: "{{ company_form.prefix }}",
                          })
-
                      })
                   </script>
                   <!-- Fancybox -->
@@ -287,13 +281,10 @@
                      	/*
                      	 *  Simple image gallery. Uses default settings
                      	 */
-
                      	$('.fancybox').fancybox();
-
                      	/*
                      	 *  Different effects
                      	 */
-
                      	// Change title type, overlay closing speed
                      	$(".fancybox-effects-a").fancybox({
                      		helpers: {
@@ -305,26 +296,21 @@
                      			}
                      		}
                      	});
-
                      	// Disable opening and closing animations, change title type
                      	$(".fancybox-effects-b").fancybox({
                      		openEffect  : 'none',
                      		closeEffect	: 'none',
-
                      		helpers : {
                      			title : {
                      				type : 'over'
                      			}
                      		}
                      	});
-
                      	// Set custom style, close if clicked, change title type and overlay color
                      	$(".fancybox-effects-c").fancybox({
                      		wrapCSS    : 'fancybox-custom',
                      		closeClick : true,
-
                      		openEffect : 'none',
-
                      		helpers : {
                      			title : {
                      				type : 'inside'
@@ -336,62 +322,46 @@
                      			}
                      		}
                      	});
-
                      	// Remove padding, set opening and closing animations, close if clicked and disable overlay
                      	$(".fancybox-effects-d").fancybox({
                      		padding: 0,
-
                      		openEffect : 'elastic',
                      		openSpeed  : 150,
-
                      		closeEffect : 'elastic',
                      		closeSpeed  : 150,
-
                      		closeClick : true,
-
                      		helpers : {
                      			overlay : null
                      		}
                      	});
-
                      	/*
                      	 *  Button helper. Disable animations, hide close button, change title type and content
                      	 */
-
                      	$('.fancybox-buttons').fancybox({
                      		openEffect  : 'none',
                      		closeEffect : 'none',
-
                      		prevEffect : 'none',
                      		nextEffect : 'none',
-
                      		closeBtn  : false,
-
                      		helpers : {
                      			title : {
                      				type : 'inside'
                      			},
                      			buttons	: {}
                      		},
-
                      		afterLoad : function() {
                      			this.title = 'Image ' + (this.index + 1) + ' of ' + this.group.length + (this.title ? ' - ' + this.title : '');
                      		}
                      	});
-
-
                      	/*
                      	 *  Thumbnail helper. Disable animations, hide close button, arrows and slide to next gallery item if clicked
                      	 */
-
                      	$('.fancybox-thumbs').fancybox({
                      		prevEffect : 'none',
                      		nextEffect : 'none',
-
                      		closeBtn  : false,
                      		arrows    : false,
                      		nextClick : true,
-
                      		helpers : {
                      			thumbs : {
                      				width  : 50,
@@ -399,7 +369,6 @@
                      			}
                      		}
                      	});
-
                      	/*
                      	 *  Media helper. Group items, disable animations, hide arrows, enable media and button helpers.
                      	*/
@@ -410,23 +379,18 @@
                      			closeEffect : 'none',
                      			prevEffect : 'none',
                      			nextEffect : 'none',
-
                      			arrows : false,
                      			helpers : {
                      				media : {},
                      				buttons : {}
                      			}
                      		});
-
-
                      });
                   </script>
                   <!-- /Fancybox -->
                   <script>
                      $(document).ready(function(){
-
                      var $menu = $("#menu");
-
                      $(window).scroll(function(){
                      if ( $(this).scrollTop() > 73 && $menu.hasClass("default") ){
                       $menu.removeClass("default").addClass("fixed");
@@ -448,12 +412,10 @@
                      DropDown.prototype = {
                      initEvents : function() {
                      var obj = this;
-
                      obj.dd.on('click', function(event){
                      $(this).toggleClass('active');
                      return false;
                      });
-
                      obj.opts.on('click',function(){
                      var opt = $(this);
                      obj.val = opt.text();
@@ -481,7 +443,6 @@
                   <script type="text/javascript">
                      function openbox(id){
                          display = document.getElementById(id).style.display;
-
                          if(display=='none'){
                             document.getElementById(id).style.display='block';
                          }else{
