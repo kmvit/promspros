@@ -1,3 +1,4 @@
+
 function button_order_user() {
 	var order = document.querySelectorAll('.orders-mini');
 	var ads = document.querySelectorAll('.wrap__other');
@@ -13,7 +14,12 @@ function button_order_user() {
 		for (let i = 0; i < order.length; i++) {
 			var order_date = order[i].getAttribute('data-date');
 			var order_user = order[i].getAttribute('data-user');
-			if (order_date == data_date && order_user == data_user && order[i] != e.target) {
+
+			if (order_date == data_date &&
+				order_user == data_user &&
+				order[i].getAttribute('data-ads')) {
+				console.log(order[i])
+				console.log(e.target)
 				var button = e.target.querySelector('.button__other__order');
 				button.classList.add('button_order_user');
 				button.classList.remove('button_order_user_none');
