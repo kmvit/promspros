@@ -7,18 +7,27 @@ function button_order_user() {
 	var iter_order;
 	for (let i = 0; i < order.length; i++) {
 		iter_order = order[i];
+		var iter = 0;
 		for (let j = 0; j < ads.length; j++) {
-			if (ads[j] != undefined) {
+			if (ads[j] != undefined) {	
 				if (ads[j].getAttribute('data-date') == iter_order.getAttribute('data-date') &&
 					ads[j].getAttribute('data-user') == iter_order.getAttribute('data-user')) {
 					other_ads = ads[j].querySelector('.other__ads')
 					var button = order[i].querySelector('.button__other__order')
+					iter++;
 					if (button != null) {
+						
 						button.classList.remove('button_order_user_none');
 						button.classList.add('button_order_user');
+
+						var count_span = button.querySelector('.count__orders')
+						count_span.textContent = iter
+
 						button.addEventListener('mouseup', show_block);
 					}
-				}			
+				} else {
+					iter = 0;
+				}	
 			}
 		}
 	}
@@ -49,6 +58,7 @@ function button_order_user() {
 					break;
 				}
 			}
+
 			additional_ads = wrapper_list.querySelectorAll('.wrap__other')
 			if (additional_ads.length != 0) {
 					hide_block.classList.remove('ads_none');
@@ -86,3 +96,4 @@ function button_order_user() {
 	}
 };
 button_order_user();
+
