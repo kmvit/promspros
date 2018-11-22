@@ -45,67 +45,145 @@
         <div class="orders-mini-wrapper">
             {% paginate order_list %}
             {%for item in order_list%}
-            <div itemscope itemtype="http://schema.org/Offer">
-            <div class="orders-mini clearfix">
-                <div class="orders-mini-img-block">
-                    {%for file in item.orderimage_set.all|slice:":1"%}
-                    {% thumbnail file.file "150" crop="center" as im %}
-                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
-                    <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
-                    </a>
-                    {% endthumbnail %}
-                    {%endfor%}
+             {% ifchanged item.user.id item.born %}
+                <div itemscope itemtype="http://schema.org/Offer">
+                   <div data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="orders-mini clearfix">
+                      <div class="orders-mini-img-block">
+                         {%for file in item.orderimage_set.all|slice:":1"%}
+                         {% thumbnail file.file "150x120" crop='center' as im %}
+                         <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
+                         <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
+                         </a>
+                         {% endthumbnail %}
+                         {%endfor%}
+                      </div>
+                      <div class="orders-mini-content">
+                         <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
+                            <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                         </div>
+                         <div class="orders-mini-content-text" itemprop="description">{{item.body|striptags|safe|truncatechars:230}}...</div>
+                         <div class="orders-mini-content-bottom">
+                            <div class="left">
+                               {%if item.user.company_set.all%}
+                               {%for a in item.user.company_set.all%}
+                               <span itemprop="seller"><a href="/companies/{{a.id}}" class="orders-mini-enterprise">{{a.title}}</a></span>
+                               {%endfor%}
+                               {%else%}
+                               <span itemprop="seller"><a href="{%url 'notcompany_detail' item.user.id%}" class="orders-mini-enterprise">{{item.user}}</a></span>
+                               {%endif%}
+                               <span class="orders-mini-date" itemprop="validFrom">{{item.born}}</span>
+                               <button data-count="0" class="button__other__order button_order_user_none">Ещё <span class="count__orders">0</span> заказов в этот день</button>
+                            </div>
+                            <div class="orders-mini-content-top-info clearfix right">
+                               <form action="/search-city/" class="orders-mini-content-geo" method="get">
+                                  <input type="hidden" name="city" itemprop="eligibleRegion" value="{{item.city}}">
+                                  <input type="hidden" name="modeltype" value="order">
+                                  <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}" ></p>
+                               </form>
+                               {%if user.is_authenticated%}
+                               {%if user == item.user%}
+                               {%else%}
+                               <a href="#"
+                               class="add-to-favorites"
+                               data-id="{{ item.id }}"
+                               {% if item in user.userprofile.liked_order.all %}
+                               data-in_favorites="true"
+                               {% else %}
+                               data-in_favorites="false"
+                               {% endif %}
+                               data-type="order"
+                               >
+                               {% if item in user.userprofile.liked_order.all %}
+                               <i class="orders-mini-content-favourite orders-mini-content-favourite-active" aria-hidden="true"></i>
+                               {% else %}
+                               <i class="orders-mini-content-favourite" aria-hidden="true"></i>
+                               {% endif %}
+                               </a>
+                               {%endif%}
+                               {%endif%}
+                            </div>
+                         </div>
+                      </div>
+                      <div class="ads_none">
+                         <p class="title__none">Другие заказы пользователя:</p>
+                         <div class="add_block"></div>
+                      </div>
+                   </div>
                 </div>
-                <div class="orders-mini-content">
-                    <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                        <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
-                    </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|truncatechars:230}}...</div>
-                    <div class="orders-mini-content-bottom">
-                        <div class="left">
-                            {%if item.user.company_set.all%}
-                            {%for a in item.user.company_set.all%}
-                            <span itemprop="seller"><a href="/companies/{{a.id}}" class="orders-mini-enterprise">{{a.title}}</a></span>
-                            {%endfor%}
-                            {%else%}
-                            <span itemprop="seller"><a href="{%url 'notcompany_detail' item.user.id%}" class="orders-mini-enterprise">{{item.user}}</a></span>
-                            {%endif%}
-                            <span class="orders-mini-date" itemprop="validFrom">{{item.born}}</span>
-                        </div>
-                        <div class="orders-mini-content-top-info clearfix right">
-                            <form action="/search-city/" class="orders-mini-content-geo" method="get">
-                                <input type="hidden" name="city" itemprop="eligibleRegion" value="{{item.city}}">
-                                <input type="hidden" name="modeltype" value="order">
-                                <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}" ></p>
-                            </form>
-                            {%if user.is_authenticated%}
-                            {%if user == item.user%}
 
-                            {%else%}
-                            <a href="#"
-                            class="add-to-favorites"
-                            data-id="{{ item.id }}"
-                            {% if item in user.userprofile.liked_order.all %}
-                            data-in_favorites="true"
-                            {% else %}
-                            data-in_favorites="false"
-                            {% endif %}
-                            data-type="order"
-                            >
-                            {% if item in user.userprofile.liked_order.all %}
-                            <i class="orders-mini-content-favourite orders-mini-content-favourite-active" aria-hidden="true"></i>
-                            {% else %}
-                            <i class="orders-mini-content-favourite" aria-hidden="true"></i>
-                            {% endif %}
-                            </a>
-                            {%endif%}
-                            {%endif%}
-                        </div>
-                    </div>
+                {% else %}
+                   <div data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="wrap__other wrap__other__order__no__active">
+                      
+                      <div class="other__ads">
+                         
 
-                </div>
-            </div>
-            </div>
+
+                         <div itemscope itemtype="http://schema.org/Offer">
+                            <div data-user="{{ item.user.id }}" data-date="{{ item.born }}" data-ads="ads"  class="orders-mini clearfix">
+                               <div class="orders-mini-img-block">
+                                  {%for file in item.orderimage_set.all|slice:":1"%}
+                                  {% thumbnail file.file "150x120" crop='center' as im %}
+                                  <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
+                                  <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
+                                  </a>
+                                  {% endthumbnail %}
+                                  {%endfor%}
+                               </div>
+                               <div class="orders-mini-content">
+                                  <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
+                                     <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                  </div>
+                                  <div class="orders-mini-content-text" itemprop="description">{{item.body|striptags|safe|truncatechars:230}}...</div>
+                                  <div class="orders-mini-content-bottom">
+                                     <div class="left">
+                                        {%if item.user.company_set.all%}
+                                        {%for a in item.user.company_set.all%}
+                                        <span itemprop="seller"><a href="/companies/{{a.id}}" class="orders-mini-enterprise">{{a.title}}</a></span>
+                                        {%endfor%}
+                                        {%else%}
+                                        <span itemprop="seller"><a href="{%url 'notcompany_detail' item.user.id%}" class="orders-mini-enterprise">{{item.user}}</a></span>
+                                        {%endif%}
+                                        <span class="orders-mini-date" itemprop="validFrom">{{item.born}}</span>
+                                     </div>
+                                     <div class="orders-mini-content-top-info clearfix right">
+                                        <form action="/search-city/" class="orders-mini-content-geo" method="get">
+                                           <input type="hidden" name="city" itemprop="eligibleRegion" value="{{item.city}}">
+                                           <input type="hidden" name="modeltype" value="order">
+                                           <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}" ></p>
+                                        </form>
+                                        {%if user.is_authenticated%}
+                                        {%if user == item.user%}
+                                        {%else%}
+                                        <a href="#"
+                                        class="add-to-favorites"
+                                        data-id="{{ item.id }}"
+                                        {% if item in user.userprofile.liked_order.all %}
+                                        data-in_favorites="true"
+                                        {% else %}
+                                        data-in_favorites="false"
+                                        {% endif %}
+                                        data-type="order"
+                                        >
+                                        {% if item in user.userprofile.liked_order.all %}
+                                        <i class="orders-mini-content-favourite orders-mini-content-favourite-active" aria-hidden="true"></i>
+                                        {% else %}
+                                        <i class="orders-mini-content-favourite" aria-hidden="true"></i>
+                                        {% endif %}
+                                        </a>
+                                        {%endif%}
+                                        {%endif%}
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+
+
+
+
+                      </div>
+                   </div>
+             {% endifchanged %}
             {%endfor%}
             <div class="pager">
                         <div class="table-wrapper">
@@ -150,66 +228,145 @@
         <div class="orders-mini-wrapper">
             {% paginate sentence_list %}
             {%for item in sentence_list%}
-            <div itemscope itemtype="http://schema.org/Offer">
-            <div class="orders-mini clearfix">
-                <div class="orders-mini-img-block">
-                    {%for file in item.sentenceimage_set.all|slice:":1"%}
-                    {% thumbnail file.file "150" crop="center" as im %}
-                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
-                    <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
-                    </a>
-                    {% endthumbnail %}
-                    {%endfor%}
+             {% ifchanged item.user.id item.born %}
+                <div itemscope itemtype="http://schema.org/Offer">
+                   <div data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="orders-mini clearfix">
+                      <div class="orders-mini-img-block">
+                         {%for file in item.orderimage_set.all|slice:":1"%}
+                         {% thumbnail file.file "150x120" crop='center' as im %}
+                         <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
+                         <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
+                         </a>
+                         {% endthumbnail %}
+                         {%endfor%}
+                      </div>
+                      <div class="orders-mini-content">
+                         <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
+                            <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                         </div>
+                         <div class="orders-mini-content-text" itemprop="description">{{item.body|striptags|safe|truncatechars:230}}...</div>
+                         <div class="orders-mini-content-bottom">
+                            <div class="left">
+                               {%if item.user.company_set.all%}
+                               {%for a in item.user.company_set.all%}
+                               <span itemprop="seller"><a href="/companies/{{a.id}}" class="orders-mini-enterprise">{{a.title}}</a></span>
+                               {%endfor%}
+                               {%else%}
+                               <span itemprop="seller"><a href="{%url 'notcompany_detail' item.user.id%}" class="orders-mini-enterprise">{{item.user}}</a></span>
+                               {%endif%}
+                               <span class="orders-mini-date" itemprop="validFrom">{{item.born}}</span>
+                               <button data-count="0" class="button__other__order button_order_user_none">Ещё <span class="count__orders">0</span> предложений в этот день</button>
+                            </div>
+                            <div class="orders-mini-content-top-info clearfix right">
+                               <form action="/search-city/" class="orders-mini-content-geo" method="get">
+                                  <input type="hidden" name="city" itemprop="eligibleRegion" value="{{item.city}}">
+                                  <input type="hidden" name="modeltype" value="order">
+                                  <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}" ></p>
+                               </form>
+                               {%if user.is_authenticated%}
+                               {%if user == item.user%}
+                               {%else%}
+                               <a href="#"
+                               class="add-to-favorites"
+                               data-id="{{ item.id }}"
+                               {% if item in user.userprofile.liked_order.all %}
+                               data-in_favorites="true"
+                               {% else %}
+                               data-in_favorites="false"
+                               {% endif %}
+                               data-type="order"
+                               >
+                               {% if item in user.userprofile.liked_order.all %}
+                               <i class="orders-mini-content-favourite orders-mini-content-favourite-active" aria-hidden="true"></i>
+                               {% else %}
+                               <i class="orders-mini-content-favourite" aria-hidden="true"></i>
+                               {% endif %}
+                               </a>
+                               {%endif%}
+                               {%endif%}
+                            </div>
+                         </div>
+                      </div>
+                      <div class="ads_none">
+                         <p class="title__none">Другие заказы пользователя:</p>
+                         <div class="add_block"></div>
+                      </div>
+                   </div>
                 </div>
-                <div class="orders-mini-content">
-                    <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                        <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
-                    </div>
-                    <div class="orders-mini-content-text" itemprop="description">{{item.body|truncatechars:230}}...</div>
-                    <div class="orders-mini-content-bottom">
-                        <div class="left">
-                            {%if item.user.company_set.all%}
-                            {%for a in item.user.company_set.all%}
-                            <span itemprop="seller"><a href="/companies/{{a.id}}" class="orders-mini-enterprise">{{a.title}}</a></span>
-                            {%endfor%}
-                            {%else%}
-                            <span itemprop="seller"><a href="{%url 'notcompany_detail' item.user.id%}" class="orders-mini-enterprise" >{{item.user}}</a></span>
-                            {%endif%}
-                            <span class="orders-mini-date" itemprop="validFrom">{{item.born}}</span>
-                        </div>
-                        <div class="orders-mini-content-top-info clearfix right">
-                            <form action="/search-city/" method="get" class="orders-mini-content-geo">
-                                <input type="hidden" name="city" itemprop="eligibleRegion" value="{{item.city}}">
-                                <input type="hidden" name="modeltype" value="sentence">
-                                <input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}">
-                            </form>
-                            {%if user.is_authenticated%}
-                            {%if user == item.user%}
 
-                            {%else%}
-                            <a href="#"
-                            class="add-to-favorites"
-                            data-id="{{ item.id }}"
-                            {% if item in user.userprofile.liked_sentence.all %}
-                            data-in_favorites="true"
-                            {% else %}
-                            data-in_favorites="false"
-                            {% endif %}
-                            data-type="sentence"
-                            >
-                            {% if item in user.userprofile.liked_sentence.all %}
-                            <i class="orders-mini-content-favourite orders-mini-content-favourite-active" aria-hidden="true"></i>
-                            {% else %}
-                            <i class="orders-mini-content-favourite" aria-hidden="true"></i>
-                            {% endif %}
-                            </a>
-                            {%endif%}
-                            {%endif%}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
+                {% else %}
+                   <div data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="wrap__other wrap__other__order__no__active">
+                      
+                      <div class="other__ads">
+                         
+
+
+                         <div itemscope itemtype="http://schema.org/Offer">
+                            <div data-user="{{ item.user.id }}" data-date="{{ item.born }}" data-ads="ads"  class="orders-mini clearfix">
+                               <div class="orders-mini-img-block">
+                                  {%for file in item.orderimage_set.all|slice:":1"%}
+                                  {% thumbnail file.file "150x120" crop='center' as im %}
+                                  <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
+                                  <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
+                                  </a>
+                                  {% endthumbnail %}
+                                  {%endfor%}
+                               </div>
+                               <div class="orders-mini-content">
+                                  <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
+                                     <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                  </div>
+                                  <div class="orders-mini-content-text" itemprop="description">{{item.body|striptags|safe|truncatechars:230}}...</div>
+                                  <div class="orders-mini-content-bottom">
+                                     <div class="left">
+                                        {%if item.user.company_set.all%}
+                                        {%for a in item.user.company_set.all%}
+                                        <span itemprop="seller"><a href="/companies/{{a.id}}" class="orders-mini-enterprise">{{a.title}}</a></span>
+                                        {%endfor%}
+                                        {%else%}
+                                        <span itemprop="seller"><a href="{%url 'notcompany_detail' item.user.id%}" class="orders-mini-enterprise">{{item.user}}</a></span>
+                                        {%endif%}
+                                        <span class="orders-mini-date" itemprop="validFrom">{{item.born}}</span>
+                                     </div>
+                                     <div class="orders-mini-content-top-info clearfix right">
+                                        <form action="/search-city/" class="orders-mini-content-geo" method="get">
+                                           <input type="hidden" name="city" itemprop="eligibleRegion" value="{{item.city}}">
+                                           <input type="hidden" name="modeltype" value="order">
+                                           <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}" ></p>
+                                        </form>
+                                        {%if user.is_authenticated%}
+                                        {%if user == item.user%}
+                                        {%else%}
+                                        <a href="#"
+                                        class="add-to-favorites"
+                                        data-id="{{ item.id }}"
+                                        {% if item in user.userprofile.liked_order.all %}
+                                        data-in_favorites="true"
+                                        {% else %}
+                                        data-in_favorites="false"
+                                        {% endif %}
+                                        data-type="order"
+                                        >
+                                        {% if item in user.userprofile.liked_order.all %}
+                                        <i class="orders-mini-content-favourite orders-mini-content-favourite-active" aria-hidden="true"></i>
+                                        {% else %}
+                                        <i class="orders-mini-content-favourite" aria-hidden="true"></i>
+                                        {% endif %}
+                                        </a>
+                                        {%endif%}
+                                        {%endif%}
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+
+
+
+
+                      </div>
+                   </div>
+             {% endifchanged %}
             {%endfor%}
             <div class="pager">
                         <div class="table-wrapper">
