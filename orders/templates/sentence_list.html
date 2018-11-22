@@ -27,7 +27,7 @@
                   <div class="orders-mini-img-block">
                      {%for file in item.orderimage_set.all|slice:":1"%}
                      {% thumbnail file.file "150x120" crop='center' as im %}
-                     <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
+                     <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                      <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                      </a>
                      {% endthumbnail %}
@@ -35,7 +35,7 @@
                   </div>
                   <div class="orders-mini-content">
                      <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                        <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                        <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                      </div>
                      <div class="orders-mini-content-text" itemprop="description">{{item.body|striptags|safe|truncatechars:230}}...</div>
                      <div class="orders-mini-content-bottom">
@@ -81,7 +81,7 @@
                      </div>
                   </div>
                   <div class="ads_none">
-                     <p class="title__none">Другие заказы пользователя:</p>
+                     <p class="title__none">Другие предложения пользователя:</p>
                      <div class="add_block"></div>
                   </div>
                </div>
@@ -99,7 +99,7 @@
                            <div class="orders-mini-img-block">
                               {%for file in item.orderimage_set.all|slice:":1"%}
                               {% thumbnail file.file "150x120" crop='center' as im %}
-                              <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
+                              <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="button-h-opacity">
                               <img itemprop="image" src="{{ im.url }}" alt="{{item.title}}">
                               </a>
                               {% endthumbnail %}
@@ -107,7 +107,7 @@
                            </div>
                            <div class="orders-mini-content">
                               <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                                 <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                 <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
                               </div>
                               <div class="orders-mini-content-text" itemprop="description">{{item.body|striptags|safe|truncatechars:230}}...</div>
                               <div class="orders-mini-content-bottom">
