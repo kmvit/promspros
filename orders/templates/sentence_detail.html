@@ -1,5 +1,5 @@
 {%extends 'base.html'%}
-{%block description%}{{sentence.body|safe|slice:":160"}}{%endblock%}
+{%block description%}{{sentence.body|striptags|slice:":160"}}{%endblock%}
 {%block pagetitle%}{{sentence.title}}{%endblock%}
 {% load endless %}
 {% load thumbnail %}
