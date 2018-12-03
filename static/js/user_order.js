@@ -11,7 +11,8 @@ function button_order_user() {
 		for (let j = 0; j < ads.length; j++) {
 			if (ads[j] != undefined) {	
 				if (ads[j].getAttribute('data-date') == iter_order.getAttribute('data-date') &&
-					ads[j].getAttribute('data-user') == iter_order.getAttribute('data-user')) {
+					ads[j].getAttribute('data-user') == iter_order.getAttribute('data-user') &&
+					ads[j].getAttribute('data-type') == iter_order.getAttribute('data-type')) {
 					other_ads = ads[j].querySelector('.other__ads')
 					var button = order[i].querySelector('.button__other__order')
 					iter++;

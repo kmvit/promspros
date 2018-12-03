@@ -43,7 +43,7 @@
             {%for item in order_list|slice:":6"%}
              {% ifchanged item.user.id item.born %}
                 <div itemscope itemtype="http://schema.org/Offer">
-                   <div data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="orders-mini clearfix">
+                   <div data-type="order" data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="orders-mini clearfix">
                       <div class="orders-mini-img-block">
                          {%for file in item.orderimage_set.all|slice:":1"%}
                          {% thumbnail file.file "150x120" crop='center' as im %}
@@ -110,7 +110,7 @@
                 </div>
 
                 {% else %}
-                   <div data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="wrap__other wrap__other__order__no__active">
+                   <div data-type="order" data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="wrap__other wrap__other__order__no__active">
                       
                       <div class="other__ads">
                          
@@ -222,7 +222,7 @@
             {%for item in sentence_list|slice:":6"%}
              {% ifchanged item.user.id item.born %}
                 <div itemscope itemtype="http://schema.org/Offer">
-                   <div data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="orders-mini clearfix">
+                   <div data-type="sentence" data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="orders-mini clearfix">
                       <div class="orders-mini-img-block">
                          {%for file in item.sentenceimage_set.all|slice:":1"%}
                          {% thumbnail file.file "150x120" crop='center' as im %}
@@ -288,14 +288,14 @@
                 </div>
 
                 {% else %}
-                   <div data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="wrap__other wrap__other__order__no__active">
+                   <div data-type="sentence" data-user="{{ item.user.id }}" data-date="{{ item.born }}" class="wrap__other wrap__other__order__no__active">
                       
                       <div class="other__ads">
                          
 
 
                          <div itemscope itemtype="http://schema.org/Offer">
-                            <div data-user="{{ item.user.id }}" data-date="{{ item.born }}" data-ads="ads"  class="orders-mini clearfix">
+                            <div data-type="sentence" data-user="{{ item.user.id }}" data-date="{{ item.born }}" data-ads="ads"  class="orders-mini clearfix">
                                <div class="orders-mini-img-block">
                                   {%for file in item.sentenceimage_set.all|slice:":1"%}
                                   {% thumbnail file.file "150x120" crop='center' as im %}
