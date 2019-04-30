@@ -5,6 +5,35 @@
 {%if profile.username == user.username%}
 <div class="content">
     <div class="content-inner">
+
+ {%if profile.username == user.username%}
+ 
+                    <div class="content-inner-top  clearfix">
+                        <h2 class="section-heading">Личные данные</h2>
+                    </div>
+                    <div class="tabs">
+                        <table class="profile-table">
+                        <tr>
+                            <td>ФИО:</td>
+                            <td>{{profile.name}}</td>
+                        </tr>
+                        <tr>
+                            <td>Электронная почта:</td>
+                            <td><a href="#" class="main-input-link">{{profile.email}}</a></td>
+                        </tr>
+                        <tr>
+                            <td>Телефон:</td>
+                            <td>{{profile.phone}}</td>
+                        </tr>
+                        
+                    
+                    </table>
+                    <div class="center">
+                        <a class="add-button center" href="/profile/edit/{{profile.id}}">Редактировать</a>
+                    </div>
+                    </div>
+          
+             {%endif%}
         <div class="content-inner-top  clearfix">
             <h2 class="section-heading">Профиль</h2>
         </div>
@@ -31,7 +60,7 @@
                             <td>{{item.title}}</td>
                         </tr>
                         <tr>
-                            <td>Информация:</td>
+                            <td>Описание:</td>
                             <td>{{item.info}} </td>
                         </tr>
                         <tr>
@@ -42,20 +71,17 @@
                             <td>Город:</td>
                             <td>{{item.city}}</td>
                         </tr>
+                      
                         <tr>
-                            <td>Юр.адрес:</td>
+                            <td>Адрес:</td>
                             <td>{{item.ur_adress}}</td>
                         </tr>
                         <tr>
-                            <td>Почтовый адрес:</td>
-                            <td>{{item.pochta_adress}}</td>
-                        </tr>
-                        <tr>
-                            <td>Название банка:</td>
-                            <td><span class="profile-table-not">{{item.bank}}</span></td>
-                        </tr>
-                        <tr>
-                            <td>Фотографии:</td>
+                            {% if item.companyimage_set.all %}
+                            <td>Изображения:</td>
+                            {% else %}
+                            <td>Нет изображений</td>
+                            {% endif %}
                             <td>
                                 <ul class="profile-table-img-list">
                                     {%for file in item.companyimage_set.all%}
@@ -122,7 +148,7 @@
                                             </div>
                                             <div class="orders-mini-content">
                                                 <div class="orders-mini-content-top clearfix">
-                                                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_orders %}visited{% endif %}">{{item.title}}</a>
                                                 </div>
                                                 <div class="orders-mini-content-text">{{item.body|striptags|slice:":70"}}</div>
                                                 <div class="orders-mini-content-bottom">
@@ -179,7 +205,7 @@
                                             </div>
                                             <div class="orders-mini-content">
                                                 <div class="orders-mini-content-top clearfix">
-                                                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_sentences %}visited{% endif %}">{{item.title}}</a>
                                                 </div>
                                                 <div class="orders-mini-content-text">{{item.body|striptags|slice:":70"}}</div>
                                                 <div class="orders-mini-content-bottom">
@@ -238,7 +264,7 @@
                                             </div>
                                             <div class="orders-mini-content">
                                                 <div class="orders-mini-content-top clearfix">
-                                                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_orders %}visited{% endif %}">{{item.title}}</a>
                                                 </div>
                                                 <div class="orders-mini-content-text">{{item.body|striptags|slice:":70"}}</div>
                                                 <div class="orders-mini-content-bottom">
@@ -294,7 +320,7 @@
                                             </div>
                                             <div class="orders-mini-content">
                                                 <div class="orders-mini-content-top clearfix">
-                                                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_sentences %}visited{% endif %}">{{item.title}}</a>
                                                 </div>
                                                 <div class="orders-mini-content-text">{{item.body|striptags|slice:":70"}}</div>
                                                 <div class="orders-mini-content-bottom">
@@ -352,7 +378,7 @@
                                             </div>
                                             <div class="orders-mini-content">
                                                 <div class="orders-mini-content-top clearfix">
-                                                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_orders %}visited{% endif %}">{{item.title}}</a>
                                                 </div>
                                                 <div class="orders-mini-content-text">{{item.body|striptags|slice:":70"}}</div>
                                                 <div class="orders-mini-content-bottom">
@@ -408,7 +434,7 @@
                                             </div>
                                             <div class="orders-mini-content">
                                                 <div class="orders-mini-content-top clearfix">
-                                                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_sentences %}visited{% endif %}">{{item.title}}</a>
                                                 </div>
                                                 <div class="orders-mini-content-text">{{item.body|linebreaks|slice:":70"}}</div>
                                                 <div class="orders-mini-content-bottom">
@@ -478,7 +504,7 @@
                                             </div>
                                             <div class="orders-mini-content">
                                                 <div class="orders-mini-content-top clearfix">
-                                                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                                    <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_orders %}visited{% endif %}">{{item.title}}</a>
                                                 </div>
                                                 <div class="orders-mini-content-text">{{item.body|striptags|slice:":70"}}</div>
                                                 <div class="orders-mini-content-bottom">
@@ -560,7 +586,7 @@
                                             </div>
                                             <div class="orders-mini-content">
                                                 <div class="orders-mini-content-top clearfix">
-                                                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                                    <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_sentences %}visited{% endif %}">{{item.title}}</a>
                                                 </div>
                                                 <div class="orders-mini-content-text">{{item.body|striptags|slice:":70"}}</div>
                                                 <div class="orders-mini-content-bottom">
@@ -641,7 +667,7 @@
                                             </div>
                                             <div class="orders-mini-content">
                                                 <div class="orders-mini-content-top clearfix">
-                                                    <a href="/companies/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+                                                    <a href="/companies/{{item.id}}" class="orders-mini-content-title {% if item.id in request.session.visited_companies %}visited{% endif %}">{{item.title}}</a>
                                                 </div>
                                                 <div class="orders-mini-content-text">{{item.info|slice:":70"}}</div>
                                                 <div class="orders-mini-content-bottom">
@@ -706,40 +732,4 @@
 {%endif%}
 {%endblock%}
 
- {%block aside%}
- {%if profile.username == user.username%}
- <aside class="sidebar">
-                <a href="/order/add" class="order-button">заказ</a>
-                <a href="/sentence/add" class="order-button">предложение</a>
-                <div class="sidebar-inner">
-                    <div class="sidebar-heading">Личный кабинет</div>
 
-                    <div class="profile-sidebar-text">
-                        <div class="profile-sidebar-text-top">ФИО:</div>
-                        <p>{{profile.name}}</p>
-                    </div>
-                    <div class="profile-sidebar-text">
-                        <div class="profile-sidebar-text-top">Электронная почта:</div>
-                        <p><a href="#" class="main-input-link">{{profile.email}}</a></p>
-                    </div>
-                    <div class="profile-sidebar-text">
-                        <div class="profile-sidebar-text-top">Телефон:</div>
-                        <p>{{profile.phone}}</p>
-                    </div>
-                    <a href="/profile/edit/{{profile.id}}">Редактировать</a>
-                </div>
-                <div class="sidebar-inner">
-                                    {%block last-company%}
-                                    <div class="sidebar-heading">Новые компании</div>
-                                    <ul class="sidebar-list link-h-underline-parent">
-                                        {% load company_tags%}
-                                        {% show_company %}
-                                    </ul>
-                                    <div class="orders-mini-wrapper-bottom">
-                                        <a href="/companies">Все компании &gt;</a>
-                                    </div>
-                                    {%endblock%}
-                                </div>
-            </aside>
-             {%endif%}
- {%endblock%}

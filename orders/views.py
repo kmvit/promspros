@@ -1,34 +1,29 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render,redirect
-from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from endless_pagination.models import PageList
+
+from orders.helpers import get_first_grouped_items
 from profiles.models import UserProfile
 from models import *
-from django.views.generic.edit import FormView, CreateView,UpdateView, DeleteView
+from django.views.generic.edit import CreateView,UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from forms import *
-from django.core.urlresolvers import reverse_lazy
 from forms import ContactForm
-from django.core.mail import send_mail, EmailMessage, BadHeaderError
+from django.core.mail import EmailMessage, BadHeaderError
 import os
 import zipfile
 import StringIO
-from billboard.settings import PROJECT_ROOT
 from django.forms.formsets import formset_factory
-from django.http import HttpResponseRedirect, Http404, JsonResponse, HttpResponse
+from django.http import HttpResponseRedirect, Http404, HttpResponse, HttpResponseNotAllowed
 import base64
 from django.core.files.base import ContentFile
-import logging
 from django.conf import settings
-import json
-from django.core import serializers
-from django.db import transaction
-from django.shortcuts import get_list_or_404, get_object_or_404
-from django.utils.decorators import method_decorator
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
-from django.contrib.sitemaps import Sitemap
 from django.template.defaultfilters import slugify
-from django.db.models import Q, Count
+from django.db.models import Q
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
@@ -107,10 +102,22 @@ def getfiles_sentence(request):
     return resp
 
 
-class Home(ListView):
+class VisitedMixin(ListView):
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            return HttpResponseNotAllowed(['POST', ])
+
+        key = 'is_hide__{}'.format(request.POST.get('page', ''))
+        request.session[key] = not request.session.get(key, False)
+        return self.get(request, *args, **kwargs)
+
+
+class Home(VisitedMixin):
     model = Order
     template_name = 'index.html'
     context_object_name = 'order_list'
+
     def get_context_data(self,**kwargs):
         context = super(Home, self).get_context_data(**kwargs)
         category_list = Subsubcategory.objects.all()
@@ -119,31 +126,87 @@ class Home(ListView):
             counts.append(str(category.order_set.all().count() + category.sentence_set.all().count()))
         context['counts'] = counts
         context['block_page'] = BlockonPage.objects.get(id=1)
-        context['order_list'] = Order.objects.filter(status=1)
-        context['sentence_list'] = Sentence.objects.filter(status=1)
-        context['company_list'] = Company.objects.all()
+
+        f1 = {'status': 1}
+        e1 = {}
+        is_hide = self.request.session.get('is_hide__order', False)
+        if is_hide:
+            visited = self.request.session.get('visited_orders', [])
+            e1['id__in'] = visited
+        order_params = {'filters': f1, 'excludes': e1}
+        context['order_list'], _ = get_first_grouped_items(Order, order_params, from_idx=1, n=settings.NUMBER_OF_RECORDS)
+
+        f2 = {'status': 1}
+        e2 = {}
+        is_hide = self.request.session.get('is_hide__sentence', False)
+        if is_hide:
+            visited = self.request.session.get('visited_sentences', [])
+            e2['id__in'] = visited
+        sentence_params = {'filters': f2, 'excludes': e2}
+        context['sentence_list'], _ = get_first_grouped_items(Sentence, sentence_params, from_idx=0, n=settings.NUMBER_OF_RECORDS)
+
         context['category_list'] = Category.objects.all()
-        context['subcategory_list'] = Subcategory.objects.all()
         return context
 
 
+class CustomOrderPaginator(Paginator):
 
-class OrderList(ListView):
+    def page(self, number):
+        number = self.validate_number(number)
+        per_page = settings.NUMBER_OF_RECORDS
+        bottom = (number - 1) * per_page
+        object_list, all_len = get_first_grouped_items(Order, {}, from_idx=bottom, n=per_page)
+        self._count = all_len
+        self._num_pages = None
+        _page = self._get_page(object_list, number, self)
+        return _page
+
+
+class OrderList(VisitedMixin):
     model = Order
     template_name = 'order_list.html'
     context_object_name = 'order_list'
-    def get_context_data(self,**kwargs):
-        context = super(OrderList, self).get_context_data(**kwargs)
+    paginator_class = CustomOrderPaginator
+    per_page = settings.NUMBER_OF_RECORDS
+
+    def get_queryset(self):
+        object_list = Order.objects.filter(status=1).order_by('-born')
+        is_hide = self.request.session.get('is_hide__order', False)
+        if is_hide:
+            visited_orders = self.request.session.get('visited_orders', [])
+            object_list = object_list.exclude(id__in=visited_orders)
+        return object_list
+
+    def get_context_data(self, **kwargs):
+        queryset = self.get_queryset()
+        context_object_name = self.get_context_object_name(queryset)
+        paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, self.per_page)
+        self.paginate_by = len(page)
+        context = {
+            'paginator': paginator,
+            'page_obj': page,
+            'is_paginated': is_paginated,
+            'object_list': queryset
+        }
+        if context_object_name is not None:
+            context[context_object_name] = queryset
+        context.update(kwargs)
         context['block_page'] = BlockonPage.objects.get(id=3)
-        context['order_list'] = Order.objects.filter(status=1).order_by('-born')
-        context['sentence_list'] = Sentence.objects.all()
-        context['company_list'] = Company.objects.all()
+        if 'view' not in context:
+            context['view'] = self
+        context['show_pages'] = PageList(self.request, page, 'page')
         return context
+
 
 class OrderView(DetailView):
     model = Order
     template_name = 'order_detail.html'
+
     def get_context_data(self,**kwargs):
+        visited_orders = self.request.session.get('visited_orders', [])
+        if self.object.id not in visited_orders:
+            visited_orders.append(self.object.id)
+            self.request.session['visited_orders'] = visited_orders
         context = super(OrderView, self).get_context_data(**kwargs)
         context['order_list'] = Order.objects.filter(user=self.object.user, status=1).exclude(pk=self.object.id)
         context['company'] = Company.objects.filter(city=self.object.city).exclude(user=self.object.user)
@@ -156,7 +219,6 @@ class OrderCreate(CreateView):
     template_name = 'add_order.html'
     form_class = AddOrderForm
 
-
     def get_context_data(self,**kwargs):
         context = super(OrderCreate, self).get_context_data(**kwargs)
         context['user_profile'] = UserProfile.objects.filter(id=self.request.user.id)
@@ -165,8 +227,12 @@ class OrderCreate(CreateView):
         return context
 
     def get_absolute_url(self):
-        return reverse('order_detail', kwargs={'category_slug': self.object.category.parent.parent.slug, 'subcategory_pk': self.object.category.parent.id, 'subsubcategory_slug': self.object.category.slug, 'slug': self.object.slug})
-
+        return reverse('order_detail', kwargs={
+            'category_slug': self.object.category.parent.parent.slug,
+            'subcategory_pk': self.object.category.parent.id,
+            'subsubcategory_slug': self.object.category.slug,
+            'slug': self.object.slug,
+        })
 
     def form_valid(self, form):
         messages.error(self.request, u'Ваше объявление добавлено!')
@@ -188,8 +254,6 @@ class OrderCreate(CreateView):
             photo.file.save('123.jpg', ContentFile(img_data))
             photo.save()
         return HttpResponseRedirect(self.get_absolute_url())
-
-
 
 
 class OrderUpdate(SuccessMessageMixin, UpdateView):
@@ -229,6 +293,7 @@ class OrderUpdate(SuccessMessageMixin, UpdateView):
         else:
             return HttpResponseRedirect(self.get_absolute_url())
 
+
 class OrderDelete(DeleteView):
     model = Order
     template_name = 'delete_order.html'
@@ -243,29 +308,43 @@ class OrderDelete(DeleteView):
             raise Http404
         return obj
 
-class SentenceList(ListView):
+
+class SentenceList(VisitedMixin):
     model = Sentence
     template_name = 'sentence_list.html'
     context_object_name = 'sentence_list'
-    def get_context_data(self,**kwargs):
-        context = super(SentenceList, self).get_context_data(**kwargs)
-        context['block_page'] = BlockonPage.objects.get(id=2)
-        context['company_list'] = Company.objects.all()
-        context['sentence_list'] = Sentence.objects.filter(status=1).order_by('-born')
-        return context
+    # paginator_class = CustomPaginator
+    # paginate_by = 7
 
+    def get_queryset(self):
+        object_list = Sentence.objects.filter(status=1).order_by('-born')
+        is_hide = self.request.session.get('is_hide__sentence', False)
+        if is_hide:
+            visited_sentences = self.request.session.get('visited_sentences', [])
+            object_list = object_list.exclude(id__in=visited_sentences)
+        return object_list
+
+    def get_context_data(self,**kwargs):
+        object_list = self.get_queryset()
+        context = super(SentenceList, self).get_context_data(object_list=object_list, **kwargs)
+        context['block_page'] = BlockonPage.objects.get(id=2)
+        return context
 
 
 class SentenceView(DetailView):
     model = Sentence
     template_name = 'sentence_detail.html'
+
     def get_context_data(self,**kwargs):
+        visited_sentences = self.request.session.get('visited_sentences', [])
+        if self.object.id not in visited_sentences:
+            visited_sentences.append(self.object.id)
+            self.request.session['visited_sentences'] = visited_sentences
         context = super(SentenceView, self).get_context_data(**kwargs)
         context['files'] = SentenceImage.objects.filter(sentence__id=self.object.id)
         context['sentence_list'] = Sentence.objects.filter(user=self.object.user, status=1).exclude(pk=self.object.id)
         context['company'] = Company.objects.filter(city=self.object.city).exclude(user=self.object.user)
         return context
-
 
 
 class SentenceCreate(CreateView):
@@ -306,13 +385,11 @@ class SentenceCreate(CreateView):
         return HttpResponseRedirect(self.get_absolute_url())
 
 
-
 class SentenceUpdate(SuccessMessageMixin, UpdateView):
     model = Sentence
     form_class = EditSentenceForm
     template_name = 'edit_sentence.html'
     success_message = 'Ваше объявление отредактировано!'
-
 
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
@@ -330,10 +407,11 @@ class SentenceUpdate(SuccessMessageMixin, UpdateView):
 
     def get_absolute_url(self):
         return reverse('sentence_detail', kwargs={
-        'category_slug': self.object.category.parent.parent.slug,
-        'subcategory_pk': self.object.category.parent.id,
-        'subsubcategory_slug': self.object.category.slug,
-        'slug': self.object.slug})
+            'category_slug': self.object.category.parent.parent.slug,
+            'subcategory_pk': self.object.category.parent.id,
+            'subsubcategory_slug': self.object.category.slug,
+            'slug': self.object.slug
+        })
 
     def form_valid(self, form):
         form.instance.category = get_object_or_404(Subsubcategory, title=self.request.POST['category'])
@@ -368,6 +446,7 @@ class SentenceUpdate(SuccessMessageMixin, UpdateView):
             formset = ImageFormSet()
         return render_to_response('manage_images.html', {'formset': formset})
 
+
 class SentenceDelete(DeleteView):
     model = Sentence
     template_name = 'delete_sentence.html'
@@ -383,20 +462,35 @@ class SentenceDelete(DeleteView):
         return reverse('profile_detail', kwargs={'pk':self.request.user.userprofile.id})
 
 
-class CompanyList(ListView):
+class CompanyList(VisitedMixin):
     model = Company
     template_name = 'company_list.html'
     context_object_name = 'company_list'
-    def get_context_data(self,**kwargs):
-        context = super(CompanyList, self).get_context_data(**kwargs)
+
+    def get_queryset(self):
+        object_list = Company.objects.all().exclude(user__pk=self.request.user.pk).order_by('-id')
+        is_hide = self.request.session.get('is_hide__company', False)
+        if is_hide:
+            visited_companies = self.request.session.get('visited_companies', [])
+            object_list = object_list.exclude(id__in=visited_companies)
+        return object_list
+
+    def get_context_data(self, **kwargs):
+        object_list = self.get_queryset()
+        context = super(CompanyList, self).get_context_data(object_list=object_list, **kwargs)
         context['block_page'] = BlockonPage.objects.get(id=4)
-        context['company_list'] = Company.objects.all().exclude(user__pk=self.request.user.pk).order_by('-id')
         return context
+
 
 class CompanyView(DetailView):
     model = Company
     template_name = 'company_detail.html'
+
     def get_context_data(self,**kwargs):
+        visited_companies = self.request.session.get('visited_companies', [])
+        if self.object.id not in visited_companies:
+            visited_companies.append(self.object.id)
+            self.request.session['visited_companies'] = visited_companies
         context = super(CompanyView, self).get_context_data(**kwargs)
         context['order_list'] = Order.objects.filter(user=self.object.user, status=1)
         context['order_count'] = Order.objects.filter(user=self.object.user, status=1).count()
@@ -437,11 +531,11 @@ class CompanyCreate(CreateView):
         return HttpResponseRedirect(self.get_absolute_url())
 
 
-
 class CompanyUpdate(UpdateView):
     model = Company
     form_class = AddCompanyForm
     template_name = 'edit_company.html'
+
     def get_context_data(self, **kwargs):
         context = super(CompanyUpdate, self).get_context_data(**kwargs)
         context['companyimage_list'] = CompanyImage.objects.filter(order=self.object.id)
@@ -497,77 +591,87 @@ class CompanyDelete(DeleteView):
         return reverse('profile_detail', kwargs={'pk':self.request.user.userprofile.id})
 
 
-
-class SearchList(ListView):
+class SearchList(VisitedMixin):
     model = Order
     template_name = 'search_list.html'
-    def get_context_data(self,**kwargs):
-        context = super(SearchList, self).get_context_data(**kwargs)
+    context_object_name = 'search_list'
 
-        if self.request.GET['city'] == '' and self.request.GET['s'] == 'order':
-            context['search_list'] = Order.objects.filter(
-            Q(title__icontains=self.request.GET['q'], status=1)|
-            Q(title__icontains=self.request.GET['q'].title(), status=1)|
-            Q(body__icontains=self.request.GET['q'], status=1)|
-            Q(body__icontains=self.request.GET['q'].title(), status=1))
+    def get_queryset(self):
+        object_model = None
+        qs = None
 
-        elif self.request.GET['city'] == '' and self.request.GET['s'] == 'sentence':
-            context['search_list'] = Sentence.objects.filter(
-            Q(title__icontains=self.request.GET['q'], status=1)|
-            Q(title__icontains=self.request.GET['q'].title(), status=1)|
-            Q(body__icontains=self.request.GET['q'], status=1)|
-            Q(body__icontains=self.request.GET['q'].title(), status=1))
+        city = self.request.GET.get('city', '')
+        s = self.request.GET.get('s')
+        query = self.request.GET.get('q', '')
 
-        elif self.request.GET['city'] == '' and self.request.GET['s'] == 'company':
-            context['search_list'] = Company.objects.filter(
-            Q(title__icontains=self.request.GET['q'])|
-            Q(title__icontains=self.request.GET['q'][0].title())|
-            Q(info__icontains=self.request.GET['q'])|
-            Q(info__icontains=self.request.GET['q'].title()))
+        if s in ('order', 'sentence'):
+            object_model = Order if s == 'order' else Sentence
+            qs = (Q(title__icontains=query) |
+                  Q(title__icontains=query.title()) |
+                  Q(body__icontains=query) |
+                  Q(body__icontains=query.title()))
+            qs &= Q(status=1)
+            if city != '':
+                qs &= Q(city=city)
 
-        elif self.request.GET['city'] != '' and self.request.GET['s'] == 'order':
-            context['search_list'] = Order.objects.filter(
-            Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|
-            Q(title__icontains=self.request.GET['q'].title(), status=1)|
-            Q(body__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|
-            Q(body__icontains=self.request.GET['q'].title(), status=1))
+        elif s == 'company':
+            object_model = Company
+            qs = (Q(title__icontains=query) |
+                  Q(title__icontains=query.title()) |
+                  Q(info__icontains=query) |
+                  Q(info__icontains=query.title()))
+            if city != '':
+                qs &= Q(city=city)
 
-        elif self.request.GET['city'] != '' and self.request.GET['s'] == 'sentence':
-            context['search_list'] = Sentence.objects.filter(
-            Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|
-            Q(title__icontains=self.request.GET['q'].title(), status=1)|
-            Q(body__icontains=self.request.GET['q'], city=self.request.GET['city'], status=1)|
-            Q(body__icontains=self.request.GET['q'].title(), status=1))
+        if object_model:
+            object_list = object_model.objects.filter(qs)
+            is_hide = self.request.session.get('is_hide__search', False)
+            if is_hide:
+                if s == 'order':
+                    visited = self.request.session.get('visited_orders', [])
+                elif s == 'sentence':
+                    visited = self.request.session.get('visited_sentences', [])
+                elif s == 'company':
+                    visited = self.request.session.get('visited_companies', [])
+                else:
+                    visited = []
+                if len(visited):
+                    object_list = object_list.exclude(id__in=visited)
+        else:
+            object_list = Company.objects.none()
 
-        elif self.request.GET['city'] != '' and self.request.GET['s'] == 'company':
-            context['search_list'] = Company.objects.filter(
-            Q(title__icontains=self.request.GET['q'], city=self.request.GET['city'])|
-            Q(title__icontains=self.request.GET['q'].title(), city=self.request.GET['city'])|
-            Q(info__icontains=self.request.GET['q']).exclude(user__pk=self.request.user.pk)|
-            Q(info__icontains=self.request.GET['q'].title()).exclude(user__pk=self.request.user.pk))
+        return object_list
 
-
-        context['modeltype'] = self.request.GET['s']
+    def get_context_data(self, **kwargs):
+        object_list = self.get_queryset()
+        context = super(SearchList, self).get_context_data(object_list=object_list, **kwargs)
+        context['modeltype'] = self.request.GET.get('s')
         return context
 
 
 class SearchCityList(ListView):
     model = Order
     template_name = 'search_list.html'
+
     def get_context_data(self, **kwargs):
         context = super(SearchCityList, self).get_context_data(**kwargs)
-        object_model_name =  self.request.GET['modeltype']
-        if self.request.GET['city'] and object_model_name == 'order':
-            context['search_list'] = Order.objects.filter(city=self.request.GET['city'], status=1)
-            context['search_list_count'] = Order.objects.filter(city=self.request.GET['city'], status=1).count()
-        elif self.request.GET['city'] and object_model_name == 'company':
-            context['search_list'] = Company.objects.filter(city=self.request.GET['city'])
-            context['search_list_count'] = Company.objects.filter(city=self.request.GET['city']).count()
+        object_model_name = self.request.GET['modeltype']
+        city = self.request.GET['city']
+
+        if city and object_model_name == 'order':
+            search_list = Order.objects.filter(city=city, status=1)
+        elif city and object_model_name == 'company':
+            search_list = Company.objects.filter(city=city)
         else:
-            context['search_list'] = Sentence.objects.filter(city=self.request.GET['city'], status=1)
-            context['search_list_count'] = Sentence.objects.filter(city=self.request.GET['city'], status=1).count()
-        context['modeltype'] = object_model_name
+            search_list = Sentence.objects.filter(city=city, status=1)
+
+        context.update({
+            'search_list': search_list,
+            'search_list_count': search_list.count(),
+            'modeltype': object_model_name,
+        })
         return context
+
 
 class PageView(DetailView):
 
@@ -576,9 +680,8 @@ class PageView(DetailView):
     model = Page
 
     def get_context_data(self, **kwargs):
-        context = super(PageView, self).get_context_data(**kwargs)
-        context['form'] = ContactForm
-        return context
+        return super(PageView, self).get_context_data(form=ContactForm, **kwargs)
+
 
 def handle_uploaded_file(f):
     with open('some/file/name.txt', 'wb+') as destination:
@@ -589,14 +692,15 @@ def handle_uploaded_file(f):
 class CategoryView(DetailView):
     model = Category
     template_name = 'category_list.html'
+
     def get_context_data(self, **kwargs):
         context = super(CategoryView, self).get_context_data(**kwargs)
         category_list = Subcategory.objects.filter(parent__slug=self.kwargs['slug'])
         order_list = Order.objects.filter(category__parent__parent__slug=self.kwargs['slug'])
         sentence_list = Sentence.objects.filter(category__parent__parent__slug=self.kwargs['slug'])
-        context['subcategory_list'] = Subcategory.objects.filter(parent__slug=self.kwargs['slug'])
-        context['order_list'] = Order.objects.filter(category__parent__parent__slug=self.kwargs['slug'])
-        context['sentence_list'] = Sentence.objects.filter(category__parent__parent__slug=self.kwargs['slug'])
+        context['subcategory_list'] = category_list
+        context['order_list'] = order_list
+        context['sentence_list'] = sentence_list
 
         return context
 
@@ -610,8 +714,8 @@ class SubcategoryDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(SubcategoryDetail, self).get_context_data(**kwargs)
-        context['subcategory_list'] = Subsubcategory.objects.filter(parent__slug=self.kwargs['subcategory_slug'])
         category_list = Subsubcategory.objects.filter(parent__slug=self.kwargs['subcategory_slug'])
+        context['subcategory_list'] = category_list
         context['category_list'] = Subcategory.objects.filter(parent__slug=self.kwargs['slug'])
         cat = Subcategory.objects.get(slug=self.kwargs['subcategory_slug'])
         context['url_item'] = cat.id
@@ -619,9 +723,11 @@ class SubcategoryDetail(DetailView):
         context['sentence_list'] = Sentence.objects.filter(category__parent__slug=self.kwargs['subcategory_slug'], status=1)
         return context
 
+
 class SubsubcategoryDetail(DetailView):
     model = Subsubcategory
     template_name = 'subsubcategory.html'
+
     def get_object(self):
         return Subsubcategory.objects.get(slug=self.kwargs['slug'])
 
@@ -632,28 +738,29 @@ class SubsubcategoryDetail(DetailView):
         context['sentence_list'] = Sentence.objects.filter(category__slug=self.kwargs['slug'], status=1)
         return context
 
+
 def contactView(request):
-	if request.method == 'POST':
-		form = ContactForm(request.POST,request.FILES)
-		#Если форма заполнена корректно, сохраняем все введённые пользователем значения
-		if form.is_valid():
-			subject = form.cleaned_data['subject']
-			sender = form.cleaned_data['sender']
-			message = form.cleaned_data['message']
-			recipients = ['justscoundrel@yandex.ru']
-			#Если пользователь захотел получить копию себе, добавляем его в список получателей
-			try:
-				mail = EmailMessage(subject, message, 'registry@promspros.ru', ['info@promspros.ru',])
-				mail.send()
-			except BadHeaderError: #Защита от уязвимости
-				return HttpResponse('Invalid header found')
-			#Переходим на другую страницу, если сообщение отправлено
-			return render(request, 'thanks.html')
-	else:
-		#Заполняем форму
-		form = ContactForm()
-	#Отправляем форму на страницу
-	return render(request, 'contact.html', {'form': form})
+    if request.method == 'POST':
+        form = ContactForm(request.POST,request.FILES)
+        #Если форма заполнена корректно, сохраняем все введённые пользователем значения
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            sender = form.cleaned_data['sender']
+            message = form.cleaned_data['message']
+            recipients = ['justscoundrel@yandex.ru']
+            #Если пользователь захотел получить копию себе, добавляем его в список получателей
+            try:
+                mail = EmailMessage(subject, message, 'registry@promspros.ru', ['info@promspros.ru',])
+                mail.send()
+            except BadHeaderError: #Защита от уязвимости
+                return HttpResponse('Invalid header found')
+            #Переходим на другую страницу, если сообщение отправлено
+            return render(request, 'thanks.html')
+    else:
+        #Заполняем форму
+        form = ContactForm()
+    #Отправляем форму на страницу
+    return render(request, 'contact.html', {'form': form})
 
 def robots(request):
     return render_to_response('robots.txt', content_type='text/plain')

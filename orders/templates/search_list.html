@@ -46,6 +46,13 @@
                 <a href="/">Главная</a>
                 <span>&frasl;</span>
                 <a href="#" class="active"> Результаты поиска </a>
+                {% if request.user.is_authenticated %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="page" value="search">
+                    <button class="set__visit__show" type="submit">{% if request.session.is_hide__search%}Отображать{% else %}Скрывать{% endif %} просмотренные</button>
+                 </form>
+                {% endif %}
             </div>
             <div class="content">
                 <div class="content-inner">
@@ -86,11 +93,11 @@
                             <div class="orders-mini-content">
                                 <div class="orders-mini-content-top clearfix">
                                     {% if 'order' in modeltype%}
-                                    <h1><a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a></h1>
+                                    <h1><a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_orders %}visited{% endif %}">{{item.title}}</a></h1>
                                     {% elif 'sentence' in modeltype%}
-                                    <h1><a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a></h1>
+                                    <h1><a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_sentences %}visited{% endif %}">{{item.title}}</a></h1>
                                     {%else%}
-                                    <h1><a href="{% url 'company_detail' item.id %}" class="orders-mini-content-title">{{item.title}}</a></h1>
+                                    <h1><a href="{% url 'company_detail' item.id %}" class="orders-mini-content-title {% if item.id in request.session.visited_companies %}visited{% endif %}">{{item.title}}</a></h1>
                                     {%endif%}
                                 </div>
                                     {% if 'order' in modeltype or 'sentence' in modeltype%}
@@ -146,3 +153,4 @@
     </div>
 </div>
 {%endblock%}
+

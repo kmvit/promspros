@@ -107,3 +107,7 @@ background: #e2e2e2;
 .closebtn:hover{
   color:black;
 }
+a.support-project {
+    padding: 4px;
+    border: 1px solid #d6b827;
+}

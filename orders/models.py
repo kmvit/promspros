@@ -101,7 +101,6 @@ class Sentence(models.Model):
     phone = models.CharField(max_length='18', verbose_name=u'Телефон')
     city = models.CharField(max_length='100', verbose_name=u'Город')
     body = RichTextField(verbose_name=u'Описание проекта')
-    price = models.DecimalField(max_digits=6, decimal_places=0, blank=True, null=True, verbose_name=u'Стоимость')
     change = (
         ('1', 'активные'),
         ('2', 'неактивные'),
@@ -237,12 +236,11 @@ class Company(models.Model):
     logo = models.ImageField(upload_to=get_file_path,blank=True, verbose_name='Лого')
     alphanumeric = RegexValidator(r'^[0-9]*$', u'Только цифры!')
     user = models.ForeignKey(User, verbose_name=u'Пользователь', default='1')
-    info = models.TextField(max_length=1900, verbose_name=u'Информация о компании', blank=True)
+    info = models.TextField(max_length=1900, verbose_name=u'Описание', blank=True)
     title = models.CharField(max_length=100, verbose_name=u'Название компании')
     city = models.CharField(max_length=140, verbose_name=u'Город')
-    ur_adress = models.CharField(max_length=300, verbose_name=u'Юридический адрес')
+    ur_adress = models.CharField(max_length=300, verbose_name=u'Адрес')
     inn = models.CharField(max_length=12, unique=True, default='000000000000', verbose_name=u'ИНН')
-    pochta_adress = models.CharField(max_length=300, verbose_name=u'Почтовый адрес')
     site = models.URLField(max_length=200, blank=True, default='', verbose_name=u'Ссылка на сайт')
 
 

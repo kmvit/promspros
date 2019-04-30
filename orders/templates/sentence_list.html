@@ -17,6 +17,13 @@
    <div class="content-inner">
       <div class="content-inner-top clearfix">
          <h1 class="section-heading">Предложения</h1>
+         {% if request.user.is_authenticated %}
+         <form action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="page" value="sentence">
+            <button class="set__visit__show" type="submit">{% if request.session.is_hide__sentence %}Отображать{% else %}Скрывать{% endif %} просмотренные</button>
+         </form>
+         {% endif %}
       </div>
       <div class="orders-mini-wrapper">
          {% paginate sentence_list %}
@@ -35,7 +42,8 @@
                   </div>
                   <div class="orders-mini-content">
                      <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                        <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                        <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}"
+                           class="orders-mini-content-title {% if item.id in request.session.visited_sentences %}visited{% endif %}">{{item.title}}</a>
                      </div>
                      <div class="orders-mini-content-text" itemprop="description">{{item.body|striptags|safe|truncatechars:230}}...</div>
                      <div class="orders-mini-content-bottom">
@@ -53,7 +61,7 @@
                         <div class="orders-mini-content-top-info clearfix right">
                            <form action="/search-city/" class="orders-mini-content-geo" method="get">
                               <input type="hidden" name="city" itemprop="eligibleRegion" value="{{item.city}}">
-                              <input type="hidden" name="modeltype" value="order">
+                              <input type="hidden" name="modeltype" value="sentence">
                               <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}" ></p>
                            </form>
                            {%if user.is_authenticated%}
@@ -78,7 +86,7 @@
                            {%endif%}
                            {%endif%}
                         </div>
-                        <button data-count="0" class="button__other__order button_order_user_none">Ещё <span class="count__orders">0</span> предложения(й) в этот день</button>
+                        <a class="button__other__order button_order_user_none">Ещё <span class="count__orders">0</span> предложения(й) в этот день</a><button class="button__show__more button_order_user_none" data-count="0">Развернуть <i class="down"></i></button>
                      </div>
                   </div>
                   <div class="ads_none">
@@ -108,7 +116,8 @@
                            </div>
                            <div class="orders-mini-content">
                               <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                                 <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                 <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}"
+                                    class="orders-mini-content-title {% if item.id in request.session.visited_sentences %}visited{% endif %}">{{item.title}}</a>
                               </div>
                               <div class="orders-mini-content-text" itemprop="description">{{item.body|striptags|safe|truncatechars:230}}...</div>
                               <div class="orders-mini-content-bottom">
@@ -125,7 +134,7 @@
                                  <div class="orders-mini-content-top-info clearfix right">
                                     <form action="/search-city/" class="orders-mini-content-geo" method="get">
                                        <input type="hidden" name="city" itemprop="eligibleRegion" value="{{item.city}}">
-                                       <input type="hidden" name="modeltype" value="order">
+                                       <input type="hidden" name="modeltype" value="sentence">
                                        <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}" ></p>
                                     </form>
                                     {%if user.is_authenticated%}

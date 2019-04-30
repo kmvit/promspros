@@ -18,6 +18,13 @@
                 <div class="content-inner">
                     <div class="content-inner-top clearfix">
                         <h1 class="section-heading">Компании</h1>
+                        {% if request.user.is_authenticated %}
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="page" value="company">
+                            <button class="set__visit__show" type="submit">{% if request.session.is_hide__company%}Отображать{% else %}Скрывать{% endif %} просмотренные</button>
+                         </form>
+                        {% endif %}
                     </div>
                     <div class="orders-mini-wrapper">
                         {% paginate company_list %}
@@ -36,7 +43,7 @@
                             </div>
                             <div class="orders-mini-content">
                                 <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                                    <a href="/companies/{{item.id}}" class="orders-mini-content-title">{{item.title}}</a>
+                                    <a href="/companies/{{item.id}}" class="orders-mini-content-title {% if item.id in request.session.visited_companies %}visited{% endif %}">{{item.title}}</a>
                                 </div>
                                 <div class="orders-mini-content-text" itemprop="description">{{item.info|slice:":70"}}</div>
                                 <div class="orders-mini-content-bottom">
@@ -101,3 +108,4 @@
       
 
 {%endblock%}
+

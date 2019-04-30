@@ -22,6 +22,14 @@
                <link rel="stylesheet" type="text/css" href="{% static 'css/components.css' %}" />
                <link rel="stylesheet" type="text/css" href="{% static 'css/components-add.css' %}" />
                <link rel="stylesheet" type="text/css" href="{% static 'css/user_order.css' %}" />
+
+               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-4818305781115412",
+    enable_page_level_ads: true
+  });
+</script>
                
                {%endblock%}
             </head>
@@ -73,6 +81,18 @@
 
                   </div>
                </header>
+               {% if messages %}
+                  <section class="main-section">
+                     <div class="alert">
+                     {% for message in messages %}
+                        {% ifchanged message %}
+                           <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                           {{ message }}
+                        {% endifchanged %}
+                     {% endfor %}
+                     </div>
+                  </section>
+               {% endif %}
                {%if user.is_authenticated%}
                {%if user.company_set.count == 1%}
                {%else%}
@@ -159,7 +179,7 @@
                         <a href="#" class="logo"></a>
                         <div class="ya-share2" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,linkedin" data-limit="3"></div>
                         <div class="footer-info">
-                           <a href="/page/support">Поддержать проект </a>
+                           <a class="support-project" href="/page/support">Поддержать проект </a>
                            <a href="/page/confir">Правила пользования </a>
                         </div>
                      </div>
@@ -243,13 +263,18 @@
                   <script>
                      $(function(){
                      var options = {
-                     url: "{% static 'russia.locality.json'%}",
-                     getValue: "name",
-                     list: {
-                     match: {
-                     enabled: true
-                     }
-                     }
+                        url: "{% static 'russia.locality.json'%}",
+                        getValue: "name",
+                        list: {
+                           match: {
+                              enabled: true,
+                              method: function(element, phrase) {
+                                  if (element.toUpperCase().indexOf(phrase.toUpperCase()) === 0) {
+                                      return element;
+                                  }
+                              }
+                           }
+                        }
                      };
                      $("#id_city").easyAutocomplete(options);
                      });
@@ -257,13 +282,18 @@
                   <script>
                      $(function(){
                      var options = {
-                     url: "{% static 'russia.locality.json'%}",
-                     getValue: "name",
-                     list: {
-                     match: {
-                     enabled: true
-                     }
-                     }
+                        url: "{% static 'russia.locality.json'%}",
+                        getValue: "name",
+                        list: {
+                           match: {
+                              enabled: true,
+                              method: function(element, phrase) {
+                                  if (element.toUpperCase().indexOf(phrase.toUpperCase()) === 0) {
+                                      return element;
+                                  }
+                              }
+                           }
+                        }
                      };
                      $("#automplete-2").easyAutocomplete(options);
                      });
@@ -434,8 +464,8 @@
                   <script>
                      window.onload = function(){
                          document.getElementById('close').onclick = function(){
-                             this.parentNode.parentNode.parentNode
-                             .removeChild(this.parentNode.parentNode);
+                             this.parentNode.parentNode.parentNode.parentNode
+                             .removeChild(this.parentNode.parentNode.parentNode);
                              return false;
                          };
                      };

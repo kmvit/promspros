@@ -36,7 +36,7 @@
                {%else%}
                 <tr>
                   <td></td>
-                  <td>    <a href="#" class="main-input-link">Авторизуйтесь</a>
+                  <td>    <a href="/accounts/login/?next={{request.path}}" class="main-input-link">Авторизуйтесь</a>
                      <span>чтобы увидеть полную информацию о компании</span>
                   </td>
                </tr>
@@ -78,9 +78,9 @@
                         </div>
                         <div class="orders-mini-content">
                            <div class="orders-mini-content-top clearfix">
-                              <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}} </a>
+                              <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_orders %}visited{% endif %}">{{item.title}} </a>
                            </div>
-                           <div class="orders-mini-content-text">{{item.body|safe|linebreaks|slice:":70"}}</div>
+                           <div class="orders-mini-content-text">{{item.body|striptags|safe|truncatechars:230}}...</div>
                            <div class="orders-mini-content-bottom">
                               <div class="left">
                                  {%if item.user.company_set.all%}
@@ -165,9 +165,9 @@
                         </div>
                         <div class="orders-mini-content">
                            <div class="orders-mini-content-top clearfix">
-                              <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                              <a href="{% url 'sentence_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title {% if item.id in request.session.visited_sentences %}visited{% endif %}">{{item.title}}</a>
                            </div>
-                           <div class="orders-mini-content-text">{{item.body|safe|linebreaks|slice:":70"}}</div>
+                           <div class="orders-mini-content-text">{{item.body|striptags|safe|truncatechars:230}}...</div>
                            <div class="orders-mini-content-bottom">
                               <div class="left">
                                  {%if item.user.company_set.all%}

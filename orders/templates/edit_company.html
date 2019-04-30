@@ -237,4 +237,17 @@
    	return true;
    };
 </script>
+<script>
+<input id="img_file" type="file" onchange="readURL(this)"><br>
+<img id="img_prev" width="150" src="" alt="Preview">
+</script>
+<script type="text/javascript">
+    var uploadField = document.getElementById("id_logo");
+    uploadField.onchange = function() {
+        if(this.files[0].size > 307200){
+           alert("Файл слишком большой!");
+           this.value = "";
+        };
+    };
+</script>
 {%endblock%}

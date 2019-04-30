@@ -17,6 +17,13 @@
    <div class="content-inner">
       <div class="content-inner-top clearfix">
          <h1 class="section-heading">Заказы</h1>
+         {% if request.user.is_authenticated %}
+         <form action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="page" value="order">
+            <button class="set__visit__show" type="submit">{% if request.session.is_hide__order %}Отображать{% else %}Скрывать{% endif %} просмотренные</button>
+         </form>
+         {% endif %}
       </div>
       <div class="orders-mini-wrapper">
          
@@ -36,7 +43,8 @@
                   </div>
                   <div class="orders-mini-content">
                      <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                        <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                        <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}"
+                           class="orders-mini-content-title {% if item.id in request.session.visited_orders %}visited{% endif %}">{{item.title}}</a>
                      </div>
                      <div class="orders-mini-content-text" itemprop="description">{{item.body|striptags|safe|truncatechars:230}}...</div>
                      <div class="orders-mini-content-bottom">
@@ -79,7 +87,7 @@
                            {%endif%}
                            {%endif%}
                         </div>
-                        <button data-count="0" class="button__other__order button_order_user_none">Ещё <span class="count__orders">0</span> заказа(ов) в этот день</button>
+                        <a class="button__other__order button_order_user_none">Ещё <span class="count__orders">0</span> заказа(ов) в этот день</a><button class="button__show__more button_order_user_none" data-count="0">Развернуть <i class="down"></i></button>
                      </div>
                   </div>
                   <div class="ads_none">
@@ -109,7 +117,8 @@
                            </div>
                            <div class="orders-mini-content">
                               <div class="orders-mini-content-top clearfix" itemprop="itemOffered">
-                                 <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}" class="orders-mini-content-title">{{item.title}}</a>
+                                 <a href="{% url 'order_detail' category_slug=item.category.parent.parent.slug subcategory_pk=item.category.parent.id subsubcategory_slug=item.category.slug slug=item.slug %}"
+                                    class="orders-mini-content-title {% if item.id in request.session.visited_orders %}visited{% endif %}">{{item.title}}</a>
                               </div>
                               <div class="orders-mini-content-text" itemprop="description">{{item.body|striptags|safe|truncatechars:230}}...</div>
                               <div class="orders-mini-content-bottom">

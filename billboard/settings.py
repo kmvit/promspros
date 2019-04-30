@@ -210,6 +210,7 @@ CKEDITOR_CONFIGS = {
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor"
 
+NUMBER_OF_RECORDS = 7
 
 
 try:

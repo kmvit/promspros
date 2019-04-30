@@ -17,14 +17,19 @@ function button_order_user() {
 					var button = order[i].querySelector('.button__other__order')
 					iter++;
 					if (button != null) {
-						
+
 						button.classList.remove('button_order_user_none');
 						button.classList.add('button_order_user');
 
 						var count_span = button.querySelector('.count__orders')
 						count_span.textContent = iter
+					}
+					var button_more = order[i].querySelector('.button__show__more')
+					if (button_more != null) {
+						button_more.classList.remove('button_order_user_none');
+						button_more.classList.add('button_order_user_more');
 
-						button.addEventListener('mouseup', show_block);
+						button_more.addEventListener('mouseup', show_block);
 					}
 				} else {
 					iter = 0;
@@ -35,6 +40,14 @@ function button_order_user() {
 
 	function show_block(e) {
 		var button_active = e.target;
+		if (button_active.type !== 'submit') {
+			button_active = button_active.parentElement;
+		}
+		if (button_active.textContent.indexOf('Развернуть') === -1) {
+			button_active.innerHTML = 'Развернуть <i class="down"></i>';
+		} else {
+			button_active.innerHTML = 'Свернуть <i class="up"></i>';
+		}
 		if (button_active.getAttribute('data-count') == '0') {
 			button_active.setAttribute('data-count', '1')
 			while (true) {
