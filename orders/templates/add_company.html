@@ -5,6 +5,7 @@
 <div class="content">
    <div class="contetn-inner">
       <div class="main-form-wrapper">
+         {% if not company %}
          <form onsubmit="return checkForm(this)" action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <table class="main-form-table">
@@ -35,12 +36,11 @@
                </ul>
             </div>
             <br>
-            {% if company %}
-            Вы уже добавили компании, перейдите в профиль, чтобы увидеть!
-            {% else %}
             <button class="btn btn-primary" type="submit" name="submit">Добавить</button>
-            {% endif %}
          </form>
+         {% else %}
+            Вы уже добавили компании, <a href="{% url 'profile_detail' pk=user.pk %}">перейдите в профиль</a>, чтобы увидеть!
+         {% endif %}
       </div>
    </div>
 </div>

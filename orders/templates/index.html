@@ -39,10 +39,13 @@
             <h2 class="section-heading">Новые заказы</h2>
             <a href="/orders" class="orders-more-link button-h-opacity"></a>
             {% if user.is_authenticated %}
-            <form action="" method="post">
+            <form action="" method="post" id="sort_form_2" class="hide__form">
                 {% csrf_token %}
                 <input type="hidden" name="page" value="order">
-                <button class="set__visit__show" type="submit">{% if request.session.is_hide__order %}Отображать{% else %}Скрывать{% endif %} просмотренные</button>
+                <input type="checkbox" id="sort_form_cb2" onchange="$('#sort_form_2').submit();" {% if request.session.is_hide__order %}checked="checked"{% endif %}>
+                <label for="sort_form_cb2">
+                    Скрывать просмотренные
+                </label>
              </form>
             {% endif %}
         </div>
@@ -225,10 +228,13 @@
             <h2 class="section-heading">Новые предложения</h2>
             <a href="/sentences" class="orders-more-link button-h-opacity"></a>
             {% if user.is_authenticated %}
-            <form action="" method="post">
+            <form action="" method="post" id="sort_form_1" class="hide__form">
                 {% csrf_token %}
                 <input type="hidden" name="page" value="sentence">
-                <button class="set__visit__show" type="submit">{% if request.session.is_hide__sentence %}Отображать{% else %}Скрывать{% endif %} просмотренные</button>
+                <input type="checkbox" id="sort_form_cb1" onchange="$('#sort_form_1').submit();" {% if request.session.is_hide__sentence %}checked="checked"{% endif %}>
+                <label for="sort_form_cb1">
+                    Скрывать просмотренные
+                </label>
              </form>
             {% endif %}
         </div>
@@ -338,7 +344,7 @@
                                      <div class="orders-mini-content-top-info clearfix right">
                                         <form action="/search-city/" class="orders-mini-content-geo" method="get">
                                            <input type="hidden" name="city" itemprop="eligibleRegion" value="{{item.city}}">
-                                           <input type="hidden" name="modeltype" value="order">
+                                           <input type="hidden" name="modeltype" value="sentence">
                                            <p><input type="submit" class="search-button-new button-h-opacity" value="{{item.city}}" ></p>
                                         </form>
                                         {%if user.is_authenticated%}

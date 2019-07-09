@@ -1,4 +1,5 @@
 {%extends 'base.html'%}
+{% load staticfiles %}
 {%block description%}Добавить предложение{%endblock%}
 {%block pagetitle%}Добавить предложение{%endblock%}
 {%block content%}
@@ -10,7 +11,7 @@
 <div class="content">
    <div class="content-inner">
       <div class="content-inner-top clearfix">
-         <h2 class="section-heading">Добавление предложениея</h2>
+         <h2 class="section-heading">Добавление предложения</h2>
       </div>
       <form onsubmit="return checkForm(this)" action="" method="post" enctype="multipart/form-data">
          {% csrf_token %}
@@ -46,7 +47,7 @@
                        </ul>  
                          
                      </div>
-                     <input id="id_category" maxlength="500" class="main-input" name="category" type="text">
+                     <input  required="required" id="id_category" maxlength="500" class="main-input" name="category" type="text">
                      {{ form.category.errors }}
                      <p id='err_id_category' class='errorlist'></p>
                   </td>
@@ -56,7 +57,7 @@
                      <label class="main-input-label">Название</label>
                   </td>
                   <td>
-                     <input type="text" id="id_title"  name="title" class="main-input" placeholder="Введите название">
+                     <input type="text" id="id_title"  name="title" class="main-input" placeholder="Введите название" required="required">
                      {{ form.title.errors }}
                      <p id='err_id_title' class='errorlist'></p>
                   </td>
@@ -66,7 +67,7 @@
                      <label class="main-input-label">ФИО представителя</label>
                   </td>
                   <td>
-                     <input type="text" id="id_name" name="name" class="main-input" value="{{user.userprofile.name}}" placeholder="Введите ФИО">
+                     <input type="text" id="id_name" name="name" class="main-input" value="{{user.userprofile.name}}" placeholder="Введите ФИО" required="required">
                      {{ form.name.errors }}
                      <p id='err_id_name' class='errorlist'></p>
                   </td>
@@ -76,7 +77,7 @@
                      <label class="main-input-label">Телефон</label>
                   </td>
                   <td>
-                     <input type="text" id="id_phone" name="phone" class="main-input input-phone" value="{{user.userprofile.phone}}" placeholder="+7 (999) 999-99-99">
+                     <input type="text" id="id_phone" name="phone" class="main-input input-phone" value="{{user.userprofile.phone}}" placeholder="+7 (999) 999-99-99" required="required">
                      {{ form.phone.errors }}
                      <p id='err_id_phone' class='errorlist'></p>
                   </td>
@@ -86,7 +87,7 @@
                      <label class="main-input-label">Email</label>
                   </td>
                   <td>
-                     <input type="text" id="id_email"  name="email" class="main-input" value="{{user.userprofile.email}}">
+                     <input type="text" id="id_email"  name="email" class="main-input" value="{{user.userprofile.email}}" required="required">
                      {{ form.email.errors }}
                      <p id='err_id_email' class='errorlist'></p>
                   </td>
@@ -96,7 +97,7 @@
                      <label class="main-input-label">Город</label>
                   </td>
                   <td>
-                     <input type="text" id="id_city" name="city" class="main-input" placeholder="Введите город" value="{{user.userprofile.city}}" autocomplete="off">
+                     <input type="text" id="id_city" name="city" class="main-input" placeholder="Введите город" value="{{user.userprofile.city}}" autocomplete="off" required="required">
                      {{ form.city.errors }}
                      <p id='err_id_city' class='errorlist'></p>
                   </td>
@@ -323,97 +324,8 @@
    	return true;
    };
 </script>
-<script>
-(function($){
-	$.fn.liMenuVert = function(params){
-		var p = {
-			delayShow:300,		//Задержка перед появлением выпадающего меню (ms)
-			delayHide:300	    //Задержка перед исчезанием выпадающего меню (ms)
-		};
-		if (params) {
-			$.extend(p, params); 
-		}
-		return this.each(function(){
-			var 
-			menuWrap = $(this),
-			menuWrapWidth = menuWrap.outerWidth(),
-			menuWrapLeft = menuWrap.offset().left,
-			menuSubSub = $('ul',menuWrap)
-			menuSubSub.each(function(){
-				var 
-				mArrowRight = $('<div>').addClass('arrow-right'),
-				mSubSub = $(this),
-				mSubList = mSubSub.closest('li'),
-				mSubLink = mSubList.children('a').append(mArrowRight),
-				mSubArrow = $('<div>').addClass('arrow-left').prependTo(mSubSub),
-				mSubArrow2 = $('<div>').addClass('arrow-left2').prependTo(mSubSub),
-				mFuncId = function(){},
-				mFuncIdOut = function(){};
-				
-				mSubList.on('mouseenter',function(){
-					clearTimeout(mFuncIdOut);
-					mHoverLink = $(this).children('a');
-					mFuncId = setTimeout(function(){
-						mHoverLink.next('ul').children('li').width(mHoverLink.next('ul').width());	//correct width in ie7			
-						mSubArrow.css({top:mSubLink.outerHeight()/2 - 5});
-						mSubArrow2.css({top:mSubLink.outerHeight()/2 - 5});
-						var 
-						mSubSubLeft = mSubLink.position().left + mSubLink.outerWidth(),
-						p1 = (mSubLink.closest('ul').outerWidth()-mSubLink.closest('ul').width())/2;
-						mSubSub.css({top:(mSubLink.position().top - p1)});	
-						mSubSub.css({left:mSubSubLeft});
-						mSubSub.show();
-						var w3 = $(window).width();
-						var w6 = (mSubSub.offset().left + mSubSub.outerWidth());
-						if(w6 >= w3){
-							mSubSub.closest('ul').addClass('toLeft');
-							mSubSubLeft = -mSubSub.outerWidth();
-						}
-						if(mSubSub.parents('ul').hasClass('toLeft')){
-							mSubSubLeft = -mSubSub.outerWidth();
-						}
-						mSubSub.css({left:mSubSubLeft});				
-						mSubLink.addClass('active');
-					},p.delayShow)
-				})
-				mSubList.on('mouseleave',function(){
-					clearTimeout(mFuncId);
-					mFuncIdOut = setTimeout(function(){
-						
-						mSubSub.hide();
-						mSubLink.removeClass('active')
-					},p.delayHide)
-				});
-			});
-			menuWrapWidth = menuWrap.outerWidth();
-			menuWrapLeft = menuWrap.offset().left;
-			$(window).resize(function(){
-				menuWrapWidth = menuWrap.outerWidth();
-				menuWrapLeft = menuWrap.offset().left;	
-			});
-		});
-	};
-})(jQuery);
-    
-    /*инициализация*/
-    $('.menu_vert').liMenuVert({
-		delayShow:300,		//Задержка перед появлением выпадающего меню (ms)
-		delayHide:300	    //Задержка перед исчезанием выпадающего меню (ms)
-	});
+<script src="{% static 'js/liMenuVert.js' %}"></script>
 
-
-   $('.category').on('click', function() {
-       var number = $('a').text();
-       $('#id_category').val($(this).text());
-       $('#item').css('display','none');
-       $('#id_category').css('display','block');
-   });
-   $('#id_category').on('click', function() {
-       $('#id_category').val('');
-       $('#id_category').css('display','none');
-       $('#item').css('display','block');
-   });
-</script>
 <style>
 /*layout css*/
 
@@ -456,7 +368,7 @@
     background:#eee; 
     color:#000;
 }
-.menu_vert ul { 
+.menu_vert, .menu_vert ul {
     padding:0; 
     background:#fff;
     border:1px solid #c2c2c2;
@@ -495,3 +407,4 @@
 
 </style>
 {%endblock%}
+

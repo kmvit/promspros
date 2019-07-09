@@ -29,6 +29,7 @@ class Page(models.Model):
 class Category(models.Model):
     title = models.CharField(max_length=300, verbose_name=u'Категории')
     slug = models.SlugField(unique=True, verbose_name='URL')
+    top_description = HTMLField(verbose_name='Верхнее описание', blank=True)
     description = HTMLField(verbose_name='Описание', blank=True)
     icon = models.ImageField(upload_to='images/icons', blank=True, verbose_name='Иконки')
     my_order = models.PositiveIntegerField(default=0, blank=False, null=False, verbose_name='Порядок')
@@ -52,6 +53,7 @@ class Category(models.Model):
 class Subcategory(models.Model):
     title = models.CharField(max_length=300, verbose_name=u'Подкатегории')
     slug = models.SlugField(verbose_name='URL', blank=True)
+    top_description = HTMLField(verbose_name='Верхнее описание', blank=True)
     description = HTMLField(verbose_name='Описание', blank=True)
     icon = models.ImageField(upload_to='images/icons', blank=True, verbose_name='Иконки')
     parent = models.ForeignKey(Category, verbose_name=u'Родитель')
@@ -74,6 +76,7 @@ class Subcategory(models.Model):
 class Subsubcategory(models.Model):
     title = models.CharField(max_length=500, verbose_name=u'Название')
     slug = models.SlugField(unique=True, verbose_name='URL')
+    top_description = HTMLField(verbose_name='Верхнее описание', blank=True)
     description = HTMLField(verbose_name='Описание', blank=True)
     icon = models.ImageField(upload_to='images/icons', blank=True, verbose_name='Иконки')
     parent = models.ForeignKey(Subcategory, verbose_name=u'Родитель')
@@ -89,6 +92,7 @@ class Subsubcategory(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.title
+
 
 class Sentence(models.Model):
     title = models.CharField(max_length=200, verbose_name=u'Название')

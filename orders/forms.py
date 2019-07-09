@@ -32,7 +32,8 @@ class EditOrderForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EditOrderForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
-            self.fields[myField].widget.attrs['class'] = 'main-input'
+            self.fields[myField].widget.attrs.update({'class': 'main-input', 'required': True})
+        self.fields['phone'].widget.attrs['class'] += ' input-phone'
 
 
 class AddSentenceForm(forms.ModelForm):
@@ -54,7 +55,8 @@ class EditSentenceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EditSentenceForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
-            self.fields[myField].widget.attrs['class'] = 'main-input'
+            self.fields[myField].widget.attrs.update({'class': 'main-input', 'required': True})
+        self.fields['phone'].widget.attrs['class'] += ' input-phone'
 
 
 class AddCompanyForm(forms.ModelForm):
@@ -67,3 +69,5 @@ class AddCompanyForm(forms.ModelForm):
         super(AddCompanyForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
             self.fields[myField].widget.attrs['class'] = 'main-input'
+            if myField not in ('logo', 'site'):
+                self.fields[myField].widget.attrs['required'] = True

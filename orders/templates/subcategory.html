@@ -31,6 +31,15 @@
                             {%endfor%}
                         </ul>
                     </div>
+    </div>
+    {% if subcategory.top_description %}
+    <div class="content-inner">
+        <div class="categories-wrapper">
+            {{subcategory.top_description|safe}}
+        </div>
+    </div>
+    {% endif %}
+    <div class="content-inner">
       <div class="profile-wrapper">
          <div class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
             <ul class="menu-list ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" role="tablist">

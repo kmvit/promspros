@@ -263,7 +263,8 @@ a.add-button:hover {
 	display: inline-block;
 	border: none;
 	background-color: white;
-	color: red;
+	color: #00539a;
+    border: 1px solid #00539a;
 	font-family: 'Roboto',sans-serif;
 	white-space: nowrap;
 	padding: 4px 10px;
@@ -273,6 +274,7 @@ a.add-button:hover {
 	cursor: pointer;
 	opacity: 1;
 	transition: 0.05s ease;
+    border-radius: 5px;
 }
 .button_order_user_more:focus {
 	outline: none;
@@ -285,7 +287,7 @@ a.add-button:hover {
 }
 
 .button__show__more i {
-	border: solid red;
+	border: solid #00539a;
 	border-width: 0 3px 3px 0;
 	display: inline-block;
 	padding: 3px;
@@ -294,9 +296,63 @@ a.add-button:hover {
 .button__show__more i.up {
   transform: rotate(-135deg);
   -webkit-transform: rotate(-135deg);
+    position: relative;
+    top: 3px;
 }
 
 .button__show__more i.down {
   transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
 }
+
+.support-project {
+    border: 2px solid #45a9fe !important;
+    border-radius: 5px;
+}
+
+.button_order_user {
+    color: #fff !important;
+}
+
+#sort_form_2, #sort_form_1, .hide__form {
+    display: inline-block;
+    float: right;
+    position: relative;
+    top: -3px;
+    margin: 0 10px 0 0;
+}
+
+
+@media only screen and (max-width: 999px) {
+    #sort_form_2, #sort_form_1, .hide__form {
+        float: none;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    #sort_form_2, #sort_form_1, .hide__form {
+        top: 0;
+        margin: 5px 5px 5px 5px;
+        float: none;
+    }
+}
+
+#sort_form_2 input#sort_form_cb2, #sort_form_1 input, .hide__form input {
+    display: none;
+}
+
+#sort_form_2 label, #sort_form_1 label, .hide__form label  {
+    position: relative;
+    top: -3px;
+    margin-left: 10px;
+    display: block;
+    padding: 0 0 0 35px;
+    line-height: 30px;
+    background: url('../img/icons/mycheckbox.png') no-repeat left center;
+    cursor: pointer;
+}
+
+#sort_form_2 input#sort_form_cb2:checked + label, #sort_form_1 input:checked + label, .hide__form input:checked + label  {
+    background: url('../img/icons/mycheckbox-checked.png') no-repeat left center;
+}
+

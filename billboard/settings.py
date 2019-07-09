@@ -211,7 +211,7 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor"
 
 NUMBER_OF_RECORDS = 7
-
+COMPANY_NUMBER_OF_RECORDS = 10
 
 try:
     from .settings_local import *

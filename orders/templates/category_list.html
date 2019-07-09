@@ -29,6 +29,13 @@
     </div>
 
 
+    {% if category.top_description %}
+    <div class="content-inner">
+        <div class="categories-wrapper">
+            {{category.top_description|safe}}
+        </div>
+    </div>
+    {% endif %}
     <div class="content-inner">
       <div class="profile-wrapper">
          <div class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">

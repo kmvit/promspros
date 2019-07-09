@@ -61,8 +61,8 @@ class NotCompanyView(DetailView):
     context_object_name = 'profile'
     def get_context_data(self,**kwargs):
         context = super(NotCompanyView, self).get_context_data(**kwargs)
-        context['order_list'] = Order.objects.filter(user=self.object.userprofile)
-        context['sentence_list'] = Sentence.objects.filter(user=self.object.userprofile)
+        context['order_list'] = Order.objects.filter(user=self.object.userprofile).order_by('-born')
+        context['sentence_list'] = Sentence.objects.filter(user=self.object.userprofile).order_by('-born')
         context['order_count'] = Order.objects.filter(user=self.object.userprofile).count()
         context['sentence_count'] = Sentence.objects.filter(user=self.object.userprofile).count()
         return context

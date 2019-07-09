@@ -19,15 +19,17 @@
                     <div class="content-inner-top clearfix">
                         <h1 class="section-heading">Компании</h1>
                         {% if request.user.is_authenticated %}
-                        <form action="" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="page" value="company">
-                            <button class="set__visit__show" type="submit">{% if request.session.is_hide__company%}Отображать{% else %}Скрывать{% endif %} просмотренные</button>
-                         </form>
+                        <form action="" method="post" id="sort_form" class="hide__form">
+                             {% csrf_token %}
+                            <input type="hidden" name="page" value="company">                             
+                            <input type="checkbox" id="sort_form_cb" onchange="$('#sort_form').submit();" {% if request.session.is_hide__company %}checked="checked"{% endif %}>
+                            <label for="sort_form_cb">
+                                Скрывать просмотренные
+                            </label>
+                          </form>
                         {% endif %}
                     </div>
                     <div class="orders-mini-wrapper">
-                        {% paginate company_list %}
                         {%for item in company_list%}
                         <div class="orders-mini clearfix">
                             <div itemscope itemtype="http://schema.org/Offer">
@@ -96,7 +98,7 @@
                     <div class="pager">
                         <div class="table-wrapper">
                             <div class="table-wrapper-inner">
-                                {% show_pages %}
+                                {{ show_pages }}
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.paginator import Paginator
 from django.shortcuts import render
+from django.views.generic.list import MultipleObjectMixin
 from endless_pagination.models import PageList
 
 from orders.helpers import get_first_grouped_items
@@ -113,6 +114,51 @@ class VisitedMixin(ListView):
         return self.get(request, *args, **kwargs)
 
 
+class PaginatedViewMixin(MultipleObjectMixin):
+
+    per_page = settings.NUMBER_OF_RECORDS
+
+    def get_context_data(self, **kwargs):
+        queryset = self.get_queryset()
+        context_object_name = self.get_context_object_name(queryset)
+        paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, self.per_page)
+        self.paginate_by = len(page)
+        context = {
+            'paginator': paginator,
+            'page_obj': page,
+            'is_paginated': is_paginated,
+            'object_list': queryset
+        }
+        if context_object_name is not None:
+            context[context_object_name] = queryset
+        context.update(kwargs)
+        context['show_pages'] = PageList(self.request, context['page_obj'], 'page')
+        if 'view' not in context:
+            context['view'] = self
+        return context
+
+
+class PaginatePageMixin(Paginator):
+    model_class = Order
+
+    def page(self, number):
+        number = self.validate_number(number)
+        per_page = settings.NUMBER_OF_RECORDS
+        bottom = (number - 1) * per_page
+        id__in = self.object_list.values_list('id', flat=True)
+        object_list, self._count = get_first_grouped_items(self.model_class, id__in, from_idx=bottom, n=per_page)
+        self._num_pages = None
+        return self._get_page(object_list, number, self)
+
+
+class CustomOrderPaginator(PaginatePageMixin):
+    model_class = Order
+
+
+class CustomSentencePaginator(PaginatePageMixin):
+    model_class = Sentence
+
+
 class Home(VisitedMixin):
     model = Order
     template_name = 'index.html'
@@ -133,8 +179,8 @@ class Home(VisitedMixin):
         if is_hide:
             visited = self.request.session.get('visited_orders', [])
             e1['id__in'] = visited
-        order_params = {'filters': f1, 'excludes': e1}
-        context['order_list'], _ = get_first_grouped_items(Order, order_params, from_idx=1, n=settings.NUMBER_OF_RECORDS)
+        id__in1 = Order.objects.filter(**f1).exclude(**e1).values_list('id', flat=True)
+        context['order_list'], _ = get_first_grouped_items(Order, id__in1, from_idx=0, n=settings.NUMBER_OF_RECORDS)
 
         f2 = {'status': 1}
         e2 = {}
@@ -142,32 +188,18 @@ class Home(VisitedMixin):
         if is_hide:
             visited = self.request.session.get('visited_sentences', [])
             e2['id__in'] = visited
-        sentence_params = {'filters': f2, 'excludes': e2}
-        context['sentence_list'], _ = get_first_grouped_items(Sentence, sentence_params, from_idx=0, n=settings.NUMBER_OF_RECORDS)
+        id__in2 = Sentence.objects.filter(**f2).exclude(**e2).values_list('id', flat=True)
+        context['sentence_list'], _ = get_first_grouped_items(Sentence, id__in2, from_idx=0, n=settings.NUMBER_OF_RECORDS)
 
         context['category_list'] = Category.objects.all()
         return context
 
 
-class CustomOrderPaginator(Paginator):
-
-    def page(self, number):
-        number = self.validate_number(number)
-        per_page = settings.NUMBER_OF_RECORDS
-        bottom = (number - 1) * per_page
-        object_list, all_len = get_first_grouped_items(Order, {}, from_idx=bottom, n=per_page)
-        self._count = all_len
-        self._num_pages = None
-        _page = self._get_page(object_list, number, self)
-        return _page
-
-
-class OrderList(VisitedMixin):
+class OrderList(VisitedMixin, PaginatedViewMixin):
     model = Order
     template_name = 'order_list.html'
     context_object_name = 'order_list'
     paginator_class = CustomOrderPaginator
-    per_page = settings.NUMBER_OF_RECORDS
 
     def get_queryset(self):
         object_list = Order.objects.filter(status=1).order_by('-born')
@@ -178,23 +210,8 @@ class OrderList(VisitedMixin):
         return object_list
 
     def get_context_data(self, **kwargs):
-        queryset = self.get_queryset()
-        context_object_name = self.get_context_object_name(queryset)
-        paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, self.per_page)
-        self.paginate_by = len(page)
-        context = {
-            'paginator': paginator,
-            'page_obj': page,
-            'is_paginated': is_paginated,
-            'object_list': queryset
-        }
-        if context_object_name is not None:
-            context[context_object_name] = queryset
-        context.update(kwargs)
+        context = super(OrderList, self).get_context_data(**kwargs)
         context['block_page'] = BlockonPage.objects.get(id=3)
-        if 'view' not in context:
-            context['view'] = self
-        context['show_pages'] = PageList(self.request, page, 'page')
         return context
 
 
@@ -239,6 +256,7 @@ class OrderCreate(CreateView):
         form.instance.user = self.request.user
         form.instance.category = get_object_or_404(Subsubcategory, title=self.request.POST['category'])
         form.instance.slug = slugify(unidecode(form.cleaned_data['title']))
+        form.instance.city = form.cleaned_data['city'].title()
         if 'submit-ch' in self.request.POST:
             form.instance.status = '3'
         self.object = form.save()
@@ -309,12 +327,11 @@ class OrderDelete(DeleteView):
         return obj
 
 
-class SentenceList(VisitedMixin):
+class SentenceList(VisitedMixin, PaginatedViewMixin):
     model = Sentence
     template_name = 'sentence_list.html'
     context_object_name = 'sentence_list'
-    # paginator_class = CustomPaginator
-    # paginate_by = 7
+    paginator_class = CustomSentencePaginator
 
     def get_queryset(self):
         object_list = Sentence.objects.filter(status=1).order_by('-born')
@@ -324,9 +341,8 @@ class SentenceList(VisitedMixin):
             object_list = object_list.exclude(id__in=visited_sentences)
         return object_list
 
-    def get_context_data(self,**kwargs):
-        object_list = self.get_queryset()
-        context = super(SentenceList, self).get_context_data(object_list=object_list, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(SentenceList, self).get_context_data(**kwargs)
         context['block_page'] = BlockonPage.objects.get(id=2)
         return context
 
@@ -368,6 +384,7 @@ class SentenceCreate(CreateView):
         form.instance.user = self.request.user
         form.instance.category = get_object_or_404(Subsubcategory, title=self.request.POST['category'])
         form.instance.slug = slugify(unidecode(form.cleaned_data['title']))
+        form.instance.city = form.cleaned_data['city'].title()
         if 'submit-ch' in self.request.POST:
             form.instance.status = '3'
         self.object = form.save()
@@ -466,6 +483,7 @@ class CompanyList(VisitedMixin):
     model = Company
     template_name = 'company_list.html'
     context_object_name = 'company_list'
+    paginate_by = settings.COMPANY_NUMBER_OF_RECORDS
 
     def get_queryset(self):
         object_list = Company.objects.all().exclude(user__pk=self.request.user.pk).order_by('-id')
@@ -479,6 +497,7 @@ class CompanyList(VisitedMixin):
         object_list = self.get_queryset()
         context = super(CompanyList, self).get_context_data(object_list=object_list, **kwargs)
         context['block_page'] = BlockonPage.objects.get(id=4)
+        context['show_pages'] = PageList(self.request, context['page_obj'], 'page')
         return context
 
 
@@ -595,12 +614,13 @@ class SearchList(VisitedMixin):
     model = Order
     template_name = 'search_list.html'
     context_object_name = 'search_list'
+    paginate_by = settings.COMPANY_NUMBER_OF_RECORDS
 
     def get_queryset(self):
         object_model = None
         qs = None
 
-        city = self.request.GET.get('city', '')
+        city = self.request.GET.get('city', '').title()
         s = self.request.GET.get('s')
         query = self.request.GET.get('q', '')
 
@@ -612,7 +632,7 @@ class SearchList(VisitedMixin):
                   Q(body__icontains=query.title()))
             qs &= Q(status=1)
             if city != '':
-                qs &= Q(city=city)
+                qs &= (Q(city=city) | Q(city=city.lower()))
 
         elif s == 'company':
             object_model = Company
@@ -621,7 +641,7 @@ class SearchList(VisitedMixin):
                   Q(info__icontains=query) |
                   Q(info__icontains=query.title()))
             if city != '':
-                qs &= Q(city=city)
+                qs &= (Q(city=city) | Q(city=city.lower()))
 
         if object_model:
             object_list = object_model.objects.filter(qs)
@@ -644,32 +664,59 @@ class SearchList(VisitedMixin):
 
     def get_context_data(self, **kwargs):
         object_list = self.get_queryset()
-        context = super(SearchList, self).get_context_data(object_list=object_list, **kwargs)
-        context['modeltype'] = self.request.GET.get('s')
+        context = {'search_list_count': len(object_list)}
+        ctx = super(SearchList, self).get_context_data(object_list=object_list, **kwargs)
+        context.update(ctx)
+        context['city'] = self.request.GET.get('city', '').title()
+        context['modeltype'] = self.request.GET.get('s', '')
+        context['query'] = self.request.GET.get('q', '')
+        context['show_pages'] = PageList(self.request, context['page_obj'], 'page')
         return context
 
 
-class SearchCityList(ListView):
+class SearchCityList(VisitedMixin):
     model = Order
     template_name = 'search_list.html'
+    paginate_by = settings.COMPANY_NUMBER_OF_RECORDS
+    context_object_name = 'search_list'
+
+    def get_queryset(self):
+        object_model_name = self.request.GET.get('modeltype', '')
+        city = self.request.GET.get('city', '').title()
+
+        if city and object_model_name == 'order':
+            qs = (Q(city=city) | Q(city=city.lower()))
+            qs &= Q(status=1)
+            search_list = Order.objects.filter(qs)
+        elif city and object_model_name == 'company':
+            qs = (Q(city=city) | Q(city=city.lower()))
+            search_list = Company.objects.filter(qs)
+        else:
+            qs = (Q(city=city) | Q(city=city.lower()))
+            qs &= Q(status=1)
+            search_list = Sentence.objects.filter(qs)
+
+        is_hide = self.request.session.get('is_hide__search', False)
+        if is_hide:
+            if object_model_name == 'order':
+                visited = self.request.session.get('visited_orders', [])
+            elif object_model_name == 'sentence':
+                visited = self.request.session.get('visited_sentences', [])
+            elif object_model_name == 'company':
+                visited = self.request.session.get('visited_companies', [])
+            else:
+                visited = []
+            if len(visited):
+                search_list = search_list.exclude(id__in=visited)
+        return search_list
 
     def get_context_data(self, **kwargs):
         context = super(SearchCityList, self).get_context_data(**kwargs)
-        object_model_name = self.request.GET['modeltype']
-        city = self.request.GET['city']
-
-        if city and object_model_name == 'order':
-            search_list = Order.objects.filter(city=city, status=1)
-        elif city and object_model_name == 'company':
-            search_list = Company.objects.filter(city=city)
-        else:
-            search_list = Sentence.objects.filter(city=city, status=1)
-
-        context.update({
-            'search_list': search_list,
-            'search_list_count': search_list.count(),
-            'modeltype': object_model_name,
-        })
+        context['modeltype'] = self.request.GET.get('modeltype', '')
+        context['city'] = self.request.GET.get('city', '').title()
+        context['query'] = self.request.GET.get('q', '')
+        context['show_pages'] = PageList(self.request, context['page_obj'], 'page')
+        context['search_list_count'] = context['paginator'].count
         return context
 
 
@@ -764,3 +811,4 @@ def contactView(request):
 
 def robots(request):
     return render_to_response('robots.txt', content_type='text/plain')
+

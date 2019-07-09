@@ -8,12 +8,12 @@
     <table class="search-form-table">
         <tr>
             <td>
-                <input type="text" name="q" class="search-input" placeholder="Введите ключевые слова">
+                <input type="text" name="q" class="search-input" placeholder="Введите ключевые слова" value="{{ query }}">
             </td>
             <td>
                 <select id="s12" name="s" class="cusel" >
                     {% if modeltype == 'order'%}
-                    <option value="order">Заказы</option>
+                    <option value="order" selected="selected">Заказы</option>
                     <option value="sentence">Предложения</option>
                     <option value="company">Компания</option>
                     {% elif modeltype == 'sentence'%}
@@ -28,7 +28,7 @@
                 </select>
             </td>
             <td>
-                <input type="text" class="search-input" name="city" id="automplete-2" placeholder="Введите город">
+                <input type="text" class="search-input" name="city" id="automplete-2" placeholder="Введите город" value="{{ city }}">
             </td>
             <td>
                 <input type="submit"  class="search-button button-h-opacity" value="НАЙТИ">
@@ -45,20 +45,22 @@
             <div class="breadcrumbs">
                 <a href="/">Главная</a>
                 <span>&frasl;</span>
-                <a href="#" class="active"> Результаты поиска </a>
+                <a href="#" class="active"> Результаты поиска </a>{% if city %}<span>{% if modeltype == 'order' %}в заказах {% elif modeltype == 'sentence' %}в предложениях {% endif %}в г. {{ city }}</span>{% endif %}
                 {% if request.user.is_authenticated %}
-                <form action="" method="post">
+                <form action="" method="post" id="sort_form" class="hide__form">
                     {% csrf_token %}
                     <input type="hidden" name="page" value="search">
-                    <button class="set__visit__show" type="submit">{% if request.session.is_hide__search%}Отображать{% else %}Скрывать{% endif %} просмотренные</button>
+                    <input type="checkbox" id="sort_form_cb" onchange="$('#sort_form').submit();" {% if request.session.is_hide__search %}checked="checked"{% endif %}>
+                    <label for="sort_form_cb">
+                        Скрывать просмотренные
+                    </label>
                  </form>
                 {% endif %}
             </div>
             <div class="content">
                 <div class="content-inner">
-                    <div class="search-result-text">Найдено {{search_list.count}} совпадения/ий</div>
+                    <div class="search-result-text">Найдено {{search_list_count}} совпадения/ий</div>
                     <div class="orders-mini-wrapper">
-                        {% paginate search_list %}
                         {%for item in search_list%}
                         <div class="orders-mini clearfix">
                             <div class="orders-mini-img-block">
@@ -143,7 +145,7 @@
                     <div class="pager">
                         <div class="table-wrapper">
                             <div class="table-wrapper-inner">
-                                {% show_pages %}
+                                {{ show_pages }}
                             </div>
                         </div>
                     </div>
