@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from models import *
 from orders.models import *
 from forms import *
@@ -45,10 +45,21 @@ class ProfileUpdate(UpdateView):
     model = UserProfile
     form_class = EditProfileForm
     template_name = 'edit_profile.html'
+    
+            
+    def get_object(self, queryset=None):
+        obj = super(ProfileUpdate, self).get_object()
+        if self.request.user.userprofile.id == obj.id:
+            return obj
+        else:
+            raise Http404 
+            
     def get_context_data(self,**kwargs):
         context = super(ProfileUpdate, self).get_context_data(**kwargs)
         context['profile'] = UserProfile.objects.filter(id=self.object.id)
+        context['profile_id'] = self.request.user.userprofile.id
         return context
+        
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(ProfileUpdate, self).dispatch(*args, **kwargs)
