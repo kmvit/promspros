@@ -14,7 +14,7 @@ django-filters==0.2.1
 django-guardian==1.4.6
 django-multiforloop==0.2.1
 django-multiupload==0.5.1
-django-registration==2.0.3
+django-registration==3.1.2
 django-registration-redux==1.2
 django-tinymce==2.0.6
 django-userena==1.4.1
